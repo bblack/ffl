@@ -1,0 +1,15 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  mfl_id: 1
+  first_name: MyString
+  last_name: MyString
+  nfl_team: MyString
+  position: MyString
+
+two:
+  mfl_id: 1
+  first_name: MyString
+  last_name: MyString
+  nfl_team: MyString
+  position: MyString

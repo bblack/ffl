@@ -1,0 +1,17 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  league_id: 1
+  team_id: 1
+  player_id: 1
+  first_year: 1
+  length: 1
+  value: 1
+
+two:
+  league_id: 1
+  team_id: 1
+  player_id: 1
+  first_year: 1
+  length: 1
+  value: 1

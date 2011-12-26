@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Ffl</title>
+  <%= stylesheet_link_tag :all %>
+  <%= javascript_include_tag :defaults %>
+  <%= csrf_meta_tag %>
+</head>
+<body>
+
+  <% player = Player.find(params[:pid]) %>
+  Player #<%= player.id %><br/>
+  <span style="font-size: 150%;"><%= player.first_name %> <%= player.last_name %></span><br/>
+  <%= player.position %>, <%= player.nfl_team %><br/><br/>
+  
+  Status in each league:<br/>
+  <table>
+    <tr>
+      <th>League</th>
+      <th>Team</th>
+      <th>Value</th>
+    </tr>
+  <%League.all.each do |l| %>
+    <tr>
+      <td><%= l.name %></td>
+      <% contract = l.get_contract_for_player(player) %>
+      <% if contract.nil? %>
+        <td><a href="/create_contract">Free agent</td>
+      <% else %>
+        <td><%= contract.team.name %></td>
+        <td><%= contract.value %></td>
+      <% end %>
+    </tr>
+  <% end %>
+  </table>
+</body>
+</html>
