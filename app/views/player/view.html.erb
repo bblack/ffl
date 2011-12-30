@@ -1,17 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Ffl</title>
-  <%= stylesheet_link_tag :all %>
-  <%= javascript_include_tag :defaults %>
-  <%= csrf_meta_tag %>
-</head>
-<body>
 
   <% player = Player.find(params[:pid]) %>
-  Player #<%= player.id %><br/>
-  <span style="font-size: 150%;"><%= player.first_name %> <%= player.last_name %></span><br/>
-  <%= player.position %>, <%= player.nfl_team %><br/><br/>
+  <%= render :partial => "components/playercard", :locals => {:player_id => player.id}%><br/><br/>
   
   Status in each league:<br/>
   <table>
@@ -19,19 +8,39 @@
       <th>League</th>
       <th>Team</th>
       <th>Value</th>
+      <th>Year</th>
+      <th>Length</th>
+      <th>Action</th>
     </tr>
-  <%League.all.each do |l| %>
+  <% League.all.each do |l| %>
     <tr>
-      <td><%= l.name %></td>
       <% contract = l.get_contract_for_player(player) %>
-      <% if contract.nil? %>
-        <td><a href="/create_contract">Free agent</td>
-      <% else %>
-        <td><%= contract.team.name %></td>
-        <td><%= contract.value %></td>
-      <% end %>
+      <form action="<%= "/contracts#{contract ? '/' + contract.id.to_s : '' }" %>" method="post">
+        <% if !contract.nil? %>
+          <input name="_method" type="hidden" value="put" />
+        <% end %>
+        <td><%= l.name %></td>
+        <td>
+          <%= render :partial => "components/teampicker", :locals => {:league_id => l.id, :default_team_id => contract ? contract.team_id.to_s : ""} %>
+        </td>
+        <td>
+          <input type="text" name="value" value="<%= contract.value unless contract.nil? %>" onChange="fieldValueChanged(this);" style="width: 4em;"/>
+        </td>
+        <td>
+          <input type="text" name="first_year" value="<%= contract.first_year unless contract.nil? %>" onChange="fieldValueChanged(this);" style="width: 4em;"/>          
+        </td>
+        <td>
+          <% if contract.nil? %>
+            <input type="text" name="length" style="width: 4em;" />
+          <% else %>
+            <%= contract.length %>
+          <% end %>
+        </td>
+        <td>
+          <input name="player_id" type="hidden" value="<%= player.id %>" />
+          <input type="submit" value="<%= contract.nil? ? 'Create' : 'Update' %>" />
+        </td>
+      </form>
     </tr>
   <% end %>
   </table>
-</body>
-</html>

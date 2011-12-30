@@ -1,11 +1,11 @@
-<html>
-<body>
   <form name="input" action="/player/search" method="get">
   Last name: <input type="text" name="last_name" /><br/>
   <input type="submit" value="Submit" />
   </form>
   <% criteria = params.slice('last_name', 'first_name', 'nfl_team', 'position')
-  players = Player.where(criteria).all %>
+  criteria[:position] ||= ['QB', 'RB', 'WR', 'TE', 'Def', 'PK']
+  players = Player.where(criteria).all
+  @warnings << "No results matched your query" if players.empty? %>
   <table style="margin-top: 1em;">
   <% players.each do |p| %>
     <tr>
@@ -22,5 +22,3 @@
     </tr>
   <% end %>
   </table>
-</body>
-</html>

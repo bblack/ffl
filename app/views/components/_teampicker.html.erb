@@ -1,0 +1,10 @@
+<% default_team_id ||= "" %>
+
+<select name="team_id" onchange="fieldValueChanged(this);">
+  <option value="" <%= default_team_id ? "selected" : "" %>>[FREE AGENT]</option>
+  <% l = League.find(league_id) %>
+  
+  <% l.teams.each do |team| %>
+    <option value="<%= team.id %>" <%= default_team_id.to_s == team.id.to_s ? "selected" : "" %>><%= team.name %></option>
+  <%end%>
+</select>

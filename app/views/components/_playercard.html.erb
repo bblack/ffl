@@ -1,0 +1,9 @@
+<% player = Player.find(player_id) %>
+<span style="display: inline-block; margin-bottom: 1em; background-color: silver; padding: .25em;">
+  <img src="<%= player.espn_img_url %>">
+  <span style="display: inline-block;">
+    Player #<%= player.id %><br/>
+    <span style="font-size: 150%;"><%= player.first_name %> <%= player.last_name %></span><br/>
+    <span><%= player.position %>, <%= player.nfl_team %></span>
+  </span>
+</span>

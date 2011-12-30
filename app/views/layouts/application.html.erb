@@ -3,12 +3,27 @@
 <head>
   <title>Ffl</title>
   <%= stylesheet_link_tag :all %>
-  <%= javascript_include_tag :defaults %>
+  <%= javascript_include_tag :all %>
   <%= csrf_meta_tag %>
 </head>
-<body>
-
+<body style="margin:0px;">
+<div id="header">
+  <span style="font-weight: bold; margin-right: 2em;">FFL</span>
+  <a href="/player/search">players</a>
+</div>
+<% @warnings.each do |msg| %>
+  <div class="warning">
+    <%= msg %>
+  </div>
+<% end %>
+<% @errors.each do |msg| %>
+  <div class="error">
+    <%= msg %>
+  </div>
+<% end %>
+<div id="bigdiv" style="margin: .5em;">
 <%= yield %>
+</div>
 
 </body>
 </html>
