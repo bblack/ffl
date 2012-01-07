@@ -1,7 +1,6 @@
 class Contract < ActiveRecord::Base
   belongs_to :player
   belongs_to :team, :include => :league
-  
 end
 
 class ContractValidator < ActiveModel::Validator
@@ -12,7 +11,7 @@ class ContractValidator < ActiveModel::Validator
     existing_contracts = Contract.where :player_id => player.id, :team_id => team_ids_on_league
     existing_contracts.each do |contract|
       if contract.id != record.id
-        errors[:team] << "Must belong to a league for which this player doesn't already have a contract"
+        errors[:team] << "must belong to a league for which this player doesn't already have a contract"
       end
     end
   end

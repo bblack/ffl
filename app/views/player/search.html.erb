@@ -2,12 +2,9 @@
   Last name: <input type="text" name="last_name" /><br/>
   <input type="submit" value="Submit" />
   </form>
-  <% criteria = params.slice('last_name', 'first_name', 'nfl_team', 'position')
-  criteria[:position] ||= ['QB', 'RB', 'WR', 'TE', 'Def', 'PK']
-  players = Player.where(criteria).all
-  @warnings << "No results matched your query" if players.empty? %>
+  <%  %>
   <table style="margin-top: 1em;">
-  <% players.each do |p| %>
+  <% @players.each do |p| %>
     <tr>
       <td>
         <a href="/player/view?pid=<%= p.id %>">

@@ -3,7 +3,6 @@
 <a href="/player/view?pid=<%= contract.player.id %>" style="text-decoration: none;">
 <%= render :partial => "components/playercard", :locals => {:player_id => contract.player.id} %>
 </a><br/>
-Team: <%= contract.team.name if contract.team %><br/>
-Value: <%= contract.value %><br/>
-Year: <%= contract.first_year %><br/>
-Length: <%= contract.length %>
+<%= contract.team.name if contract.team %><br/>
+$<%= contract.value %><br/>
+Purchased <%= contract.first_year %>, <%= contract.length %> years

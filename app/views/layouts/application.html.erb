@@ -1,25 +1,57 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Ffl</title>
+  <title>ffl</title>
   <%= stylesheet_link_tag :all %>
   <%= javascript_include_tag :all %>
   <%= csrf_meta_tag %>
+  <link type="text/css" href="/css/smoothness/jquery-ui-1.8.16.custom.css" rel="stylesheet" />	
+  		<script type="text/javascript" src="/js/jquery-1.6.2.min.js"></script>
+  		<script type="text/javascript" src="/js/jquery-ui-1.8.16.custom.min.js"></script>
+  
 </head>
 <body style="margin:0px;">
+  <% if 1 %>
+  <table style="font-size: 8pt;">
+    <tr><th colspan="2">Session</th></tr>
+    <% session.each do |k,v| %>
+      <tr><td><%= k %></td><td><%= v %></td></tr>
+    <% end %>
+  </table>
+  Referer: <%= request.referer %>
+  <% end %>
 <div id="header">
-  <span style="font-weight: bold; margin-right: 2em;">FFL</span>
+  <span style="font-weight: bold;">FFL</span> &middot; 
+  <a href="/leagues/choose">
+  <% if session[:league_id] %>
+    <span style="color: lightgreen;"><%= League.find(session[:league_id]).name %></span>
+  <% else %>
+    <span style="color: salmon; font-style:italic;">No league selected</span>
+  <% end %>
+  </a>
+  &middot;
   <a href="/player/search">players</a>
+  <span style="float:right; white-space:nowrap;">
+    <% if session[:user_id] %>
+      <a href="/application/logout">logout</a>
+    <% else %>
+      <%= form_tag :controller => 'application', :action => 'login', :method => 'post' do %>
+        <%= label_tag(:name, "Username") %>
+        <%= text_field_tag(:name) %>
+        <%= label_tag(:password, "Password") %>
+        <%= password_field_tag(:password) %>
+        <%= submit_tag("Log in") %>
+        <a href="/users/new">register</a>
+      <% end %>
+    <% end %>
+  </span>
 </div>
-<% @warnings.each do |msg| %>
-  <div class="warning">
-    <%= msg %>
-  </div>
-<% end %>
-<% @errors.each do |msg| %>
-  <div class="error">
-    <%= msg %>
-  </div>
+<% [[@errors, 'error'], [@warnings, 'warning'], [@notices, 'notice']].each do |list, cssclass|%>
+  <% list.each do |msg| %>
+    <div class="<%= cssclass %>">
+      <%= msg %>
+    </div>
+  <% end %>
 <% end %>
 <div id="bigdiv" style="margin: .5em;">
 <%= yield %>

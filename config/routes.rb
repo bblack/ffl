@@ -6,9 +6,15 @@ Ffl::Application.routes.draw do
   #   match 'products/:id' => 'catalog#view'
   # Keep in mind you can assign values other than :controller and :action
   root :to => 'player#search'
+  match 'application/logout' => 'application#logout'
+  match 'application/login' => 'application#login'
   match 'player/view' => 'player#view'
   match 'player/search' => 'player#search'
+  match 'player/search_ac' => 'player#search_ac'
+  match 'leagues/choose' => 'leagues#choose' 
+  resources :teams
   resources :contracts
+  resources :users#, :only => [:create]
 
   # Sample of named route:
   #   match 'products/:id/purchase' => 'catalog#purchase', :as => :purchase

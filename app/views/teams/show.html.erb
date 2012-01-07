@@ -1,0 +1,33 @@
+<h1><%= @team.name %></h1>
+<% salary_used = 0
+@team.contracts.each { |c| salary_used += c.value }
+%>
+<table style="margin-bottom:1em; border:none;">
+  <tr><th style="font-size:9pt; text-transform:uppercase;">Payroll</th></tr>
+  <tr><td style="font-size:24pt; text-align:center;"><%= salary_used %></td></tr>
+</table>
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Value</th>
+    <th>First year</th>
+    <th>Length</th>
+  </tr>
+  <% @team.contracts.each do |c| %>
+    <tr>
+      <td>
+        <%= c.player.first_name %> <%= c.player.last_name %>,
+        <%= c.player.position %> <%= c.player.nfl_team %>
+      </td>
+      <td>
+        <%= c.value %>
+      </td>
+      <td>
+        <%= c.first_year %>
+      </td>
+      <td>
+        <%= c.length %>
+      </td>
+    </tr>
+  <% end %>
+</table>
