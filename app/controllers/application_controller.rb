@@ -36,9 +36,9 @@ class ApplicationController < ActionController::Base
   end
   
   def set_errors
-    flash[:errors] ||= []
-    flash[:warnings] ||= []
-    flash[:notices] ||= []
+    flash[:errors] = []
+    flash[:warnings] = []
+    flash[:notices] = []
   end
   
   def login
@@ -57,8 +57,8 @@ class ApplicationController < ActionController::Base
   
   def logout
     reset_session
-    # set_errors # Has to happen after reset_session
-    # add_notice "You are now logged out"
+    set_errors # Has to happen after reset_session
+    add_notice "You are now logged out"
   end
   
 end
