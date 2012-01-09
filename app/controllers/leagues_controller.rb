@@ -11,7 +11,7 @@ class LeaguesController < ApplicationController
       add_notice "You are now browsing league '#{league.name}'"
     end
     
-    render :index
+    render 'teams/index'
   end
   
 end

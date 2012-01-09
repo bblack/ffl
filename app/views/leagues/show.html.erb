@@ -1,0 +1,5 @@
+<% league = League.find session[:league_id] rescue nil %>
+<% if league %>
+  League #<%= league.id %>: <%= league.name %><br/>
+  League page
+<% end %>
