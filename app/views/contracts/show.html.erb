@@ -1,8 +1,13 @@
-<% contract = @contract %>
-<h1>Contract #<%= contract.id %></h1>
-<a href="/player/view?pid=<%= contract.player.id %>" style="text-decoration: none;">
-<%= render :partial => "components/playercard", :locals => {:player_id => contract.player.id} %>
+
+<h1>Contract #<%= @contract.id %></h1>
+<a href="/player/view?pid=<%= @contract.player.id %>" style="text-decoration: none;">
+<%= render :partial => "components/playercard", :locals => {:player_id => @contract.player.id} %>
 </a><br/>
-<%= contract.team.name if contract.team %><br/>
-$<%= contract.value %><br/>
-Purchased <%= contract.first_year %>, <%= contract.length %> years
+<% if @contract.team %>
+  <a href="/teams/<%= @contract.team.id %>"><%= @contract.team.name %></a>
+<% else %>
+  [FREE AGENT]
+<% end %>
+<br/>
+$<%= @contract.value %><br/>
+Purchased <%= @contract.first_year %>, <%= @contract.length %> years

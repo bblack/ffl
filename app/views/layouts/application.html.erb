@@ -11,43 +11,51 @@
   
 </head>
 <body style="margin:0px;">
-  <% if 1 %>
-  <table style="font-size: 8pt;">
-    <tr><th colspan="2">Session</th></tr>
+  <% if nil %>
+  <table style="font-size: 8pt; display: inline-table;">
+    <tr><th colspan="2">session</th></tr>
     <% session.each do |k,v| %>
+      <tr><td><%= k %></td><td><%= v %></td></tr>
+    <% end %>
+  </table>
+  <table style="font-size: 8pt; display: inline-table;">
+    <tr><th colspan="2">request.path_parameters</th></tr>
+    <% request.path_parameters.each do |k,v| %>
       <tr><td><%= k %></td><td><%= v %></td></tr>
     <% end %>
   </table>
   Referer: <%= request.referer %>
   <% end %>
 <div id="header">
-  <span style="font-weight: bold;">FFL</span> &middot; 
-  <a href="/leagues/choose">
+  <span style="font-weight: bold;">FFL</span> &middot;
   <% if session[:league_id] %>
-    <span style="color: lightgreen;"><%= League.find(session[:league_id]).name %></span>
+    <a href="/leagues" style="color: lightgreen;"><%= League.find(session[:league_id]).name %></a>
   <% else %>
-    <span style="color: salmon; font-style:italic;">No league selected</span>
+    <a href="/leagues" style="color: salmon; font-style:italic;">No league selected</a>
   <% end %>
   </a>
-  &middot;
-  <a href="/player/search">players</a>
-  <span style="float:right; white-space:nowrap;">
+  <ul>
+    <li><a href="/players">players</a></li>
+    <li><a href="/teams">teams</a></li>
+  </ul>
+  <span id="login_logout" style="float:right; white-space:nowrap; font-size: 8pt;">
     <% if session[:user_id] %>
-      <a href="/application/logout">logout</a>
+      <span style="">Welcome, <%= User.find(session[:user_id]).name %>!</span>
+      <a href="/application/logout">Logout</a>
     <% else %>
       <%= form_tag :controller => 'application', :action => 'login', :method => 'post' do %>
         <%= label_tag(:name, "Username") %>
-        <%= text_field_tag(:name) %>
+        <%= text_field_tag(:name, nil, :style => 'width: 8em;') %>
         <%= label_tag(:password, "Password") %>
-        <%= password_field_tag(:password) %>
-        <%= submit_tag("Log in") %>
-        <a href="/users/new">register</a>
+        <%= password_field_tag(:password, nil, :style => 'width: 8em;') %>
+        <%= submit_tag("Login") %>
+        <a href="/users/new">Register</a>
       <% end %>
     <% end %>
   </span>
 </div>
-<% [[@errors, 'error'], [@warnings, 'warning'], [@notices, 'notice']].each do |list, cssclass|%>
-  <% list.each do |msg| %>
+<% [[:errors, 'error'], [:warnings, 'warning'], [:notices, 'notice']].each do |list, cssclass|%>
+  <% (flash[list] || []).each do |msg| %>
     <div class="<%= cssclass %>">
       <%= msg %>
     </div>

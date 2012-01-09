@@ -1,8 +1,8 @@
-class PlayerController < ApplicationController
+class PlayersController < ApplicationController
   
-  def search
+  def index
     find_players
-    @warnings << "No results matched your query" if @players.empty?
+    add_warning "No results matched your query" if @players.empty?
     respond_to do |format|
       format.html
       format.json {

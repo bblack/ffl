@@ -1,0 +1,16 @@
+  <form name="input" action="/players" method="get">
+  Last name: <input type="text" name="last_name" /><br/>
+  <input type="submit" value="Submit" />
+  </form>
+  <%  %>
+  <table style="margin-top: 1em;">
+  <% @players.each do |p| %>
+    <tr>
+      <td>
+        <a href="/players/<%= p.id %>"><%= p.last_name %>, <%= p.first_name %></a>
+      </td>
+      <td><%= p.position %></td>
+      <td><%= p.nfl_team %></td>
+    </tr>
+  <% end %>
+  </table>

@@ -9,6 +9,10 @@ namespace :db do
     players.each do |player|
       puts "Fetching for #{player.id}: #{player.first_name} #{player.last_name}"
       begin
+        if Player.where(:first_name => player.first_name, :last_name => player.last_name).count > 1
+          player.espn_id = nil
+          raise StandardError, "Ambiguous player name #{player.first_name} #{player.last_name}"
+        end
         player.espn_id = player.try_fetch_espn_id
       rescue Exception => e
         errors << [player.id, e]

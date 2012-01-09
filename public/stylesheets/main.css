@@ -19,9 +19,25 @@ td, th {
 }
 
 #header a {
-  color: silver;
-  text-transform: capitalize;
   text-decoration: none;
+  color: silver;
+}
+
+#header ul {
+  display: inline-block;
+  margin-left: .5em;
+  margin-right: .5em;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  padding: 0px;
+}
+
+#header ul li {
+  margin: 0px;
+  padding-left: .5em;
+  padding-right: .5em;
+  text-transform: capitalize;
+  display: inline-block;
 }
 
 .warning {

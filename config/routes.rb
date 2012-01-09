@@ -5,13 +5,11 @@ Ffl::Application.routes.draw do
   # Sample of regular route:
   #   match 'products/:id' => 'catalog#view'
   # Keep in mind you can assign values other than :controller and :action
-  root :to => 'player#search'
+  root :to => 'players#index'
   match 'application/logout' => 'application#logout'
   match 'application/login' => 'application#login'
-  match 'player/view' => 'player#view'
-  match 'player/search' => 'player#search'
-  match 'player/search_ac' => 'player#search_ac'
-  match 'leagues/choose' => 'leagues#choose' 
+  resources :players
+  resources :leagues
   resources :teams
   resources :contracts
   resources :users#, :only => [:create]

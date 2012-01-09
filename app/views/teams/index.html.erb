@@ -1,0 +1,16 @@
+<h1>Teams</h1>
+<% if session[:league_id] %>
+  <table>
+    <tr>
+      <th>Team name</th>
+      <th>Payroll</th>
+    </tr>
+    <% teams = League.find(session[:league_id]).teams %>
+    <% teams.each do |team| %>
+      <tr>
+        <td><a href="/teams/<%= team.id %>"><%= team.name %></a></td>
+        <td><%= team.payroll %></td>
+      </tr>
+    <% end %>
+  </table>
+<% end %>

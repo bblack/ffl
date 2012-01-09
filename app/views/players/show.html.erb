@@ -1,0 +1,7 @@
+
+  <% player = Player.find(params[:id]) %>
+  <%= render :partial => "components/playercard", :locals => {:player_id => player.id}%><br/><br/>
+
+  <% if session[:league_id] %>
+    <%= render :partial => 'components/contract_widget', :locals => { :league_id => session[:league_id], :player_id => player.id} %>
+  <% end %>

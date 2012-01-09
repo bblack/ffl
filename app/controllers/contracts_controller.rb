@@ -8,16 +8,22 @@ class ContractsController < ApplicationController
       :value => params[:value],
       :length => params[:length].presence || (params[:value].to_f/15).round # HACK
     )
-    @notices << "Contract created"
+    if @contract.valid?
+      add_notice "Contract created"
+    else
+      @contract.errors.each do |att, rest|
+        add_error "Couldn't create contract. Reason: #{att} #{rest}"
+      end
+    end
     params[:id] = @contract.id
     render :show
   end
   
   def update
-    Contract.update(params[:id], params.reject { |k,v| ['_method', 'action', 'controller'].member? k })
+    Contract.update(params[:id], params.slice(:team_id, :first_year, :value, :length))
     
     @contract ||= Contract.find(params[:id])
-    @notices << "Contract updated"
+    add_notice "Contract updated"
     render :show
   end
   
