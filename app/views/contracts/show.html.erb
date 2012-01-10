@@ -1,6 +1,6 @@
 
 <h1>Contract #<%= @contract.id %></h1>
-<a href="/player/view?pid=<%= @contract.player.id %>" style="text-decoration: none;">
+<a href="/players/<%= @contract.player.id %>" style="text-decoration: none;">
 <%= render :partial => "components/playercard", :locals => {:player_id => @contract.player.id} %>
 </a><br/>
 <% if @contract.team %>

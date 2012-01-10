@@ -9,21 +9,22 @@ class ContractsController < ApplicationController
       :length => params[:length].presence || (params[:value].to_f/15).round # HACK
     )
     if @contract.valid?
-      add_notice "Contract created"
+      add_flash :notice, false, "Contract created"
+      redirect_to :action => 'show', :id => @contract.id
+      #render :action => 'show', :id => @contract.id
     else
       @contract.errors.each do |att, rest|
-        add_error "Couldn't create contract. Reason: #{att} #{rest}"
+        add_flash :error, true, "Couldn't create contract. Reason: #{att} #{rest}"
+        render :inline => '', :layout => true
       end
     end
-    params[:id] = @contract.id
-    render :show
   end
   
   def update
     Contract.update(params[:id], params.slice(:team_id, :first_year, :value, :length))
     
     @contract ||= Contract.find(params[:id])
-    add_notice "Contract updated"
+    add_flash :notice, true, "Contract updated"
     render :show
   end
   

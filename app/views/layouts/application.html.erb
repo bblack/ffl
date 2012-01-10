@@ -24,6 +24,12 @@
       <tr><td><%= k %></td><td><%= v %></td></tr>
     <% end %>
   </table>
+  <table style="font-size: 8pt; display: inline-table;">
+    <tr><th colspan="2">flash</th></tr>
+    <% flash.each do |k,v| %>
+      <tr><td><%= k %></td><td><%= v.to_json %></td></tr>
+    <% end %>
+  </table>
   Referer: <%= request.referer %>
   <% end %>
 <div id="header">
@@ -54,11 +60,10 @@
     <% end %>
   </span>
 </div>
-<% [[:errors, 'error'], [:warnings, 'warning'], [:notices, 'notice']].each do |list, cssclass|%>
-  <% (flash[list] || []).each do |msg| %>
-    <div class="<%= cssclass %>">
-      <%= msg %>
-    </div>
+<% [:error, :warning, :notice].each do |cat| %>
+  <% next unless flash[cat] %>
+  <% flash[cat].each do |msg| %>
+    <div class="<%= cat %>"><%= msg %></div>
   <% end %>
 <% end %>
 <div id="bigdiv" style="margin: .5em;">

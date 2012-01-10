@@ -2,7 +2,7 @@ class PlayersController < ApplicationController
   
   def index
     find_players
-    add_warning "No results matched your query" if @players.empty?
+    add_flash :warning, true, "No results matched your query" if @players.empty?
     respond_to do |format|
       format.html
       format.json {

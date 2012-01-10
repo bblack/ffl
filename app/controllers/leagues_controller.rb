@@ -5,10 +5,10 @@ class LeaguesController < ApplicationController
 
     if league.nil?
       session[:league_id] = nil
-      add_warning "You are not browsing a league anymore"
+      add_flash :warning, true, "You are not browsing a league anymore"
     else
       session[:league_id] = league.id
-      add_notice "You are now browsing league '#{league.name}'"
+      add_flash :notice, true, "You are now browsing league '#{league.name}'"
     end
     
     render 'teams/index'
