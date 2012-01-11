@@ -41,30 +41,39 @@ td, th {
 
 .warning {
   padding: .5em;
-  margin-bottom: 1px;
+  margin: .5em;
   font-weight: bold;
-  color: white;
-  background-color: goldenrod;
-  background-image: url('/images/notice-bg.png');
-  background-repeat: repeat-y;  
+  color: black;
+  background-color: gold;
+  border: 1px solid goldenrod;
+  border-radius: 4px;
+  box-shadow: 2px 2px 4px gray;
+  background-image: url('/images/notice-bg.png');  
+  background-repeat: repeat-y; 
 }
 
 .error {
   padding: .5em;
-  margin-bottom: 1px;
+  margin: .5em;
   font-weight: bold;
   color: white;
-  background-color: firebrick;
+  background-color: red;
+  border: 1px solid darkred;
+  border-radius: 4px;
+  box-shadow: 2px 2px 4px gray;
   background-image: url('/images/notice-bg.png');  
   background-repeat: repeat-y;    
 }
 
 .notice {
   padding: .5em;
-  margin-bottom: 1px;
+  margin: .5em;
   font-weight: bold;
-  color: white;
-  background-color: green;
-  background-image: url('/images/notice-bg.png');
-  background-repeat: repeat-y;  
+  color: black;
+  background-color: lightgreen;
+  border: 1px solid darkgreen;
+  border-radius: 4px;
+  box-shadow: 2px 2px 4px gray;
+  background-image: url('/images/notice-bg.png');  
+  background-repeat: repeat-y;
 }

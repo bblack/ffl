@@ -10,8 +10,8 @@ class ContractsController < ApplicationController
     )
     if @contract.valid?
       add_flash :notice, false, "Contract created"
-      redirect_to :action => 'show', :id => @contract.id
-      #render :action => 'show', :id => @contract.id
+      #redirect_to :action => 'show', :id => @contract.id
+      redirect_to :back
     else
       @contract.errors.each do |att, rest|
         add_flash :error, false, "Couldn't create contract. Reason: #{att} #{rest}"
