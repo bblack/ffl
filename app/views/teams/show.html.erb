@@ -1,8 +1,14 @@
 <h1><%= @team.name %></h1>
 
-<table style="margin-bottom:1em; border:none;">
+<table style="display:inline-table;">
   <tr><th style="font-size:9pt; text-transform:uppercase;">Payroll</th></tr>
   <tr><td style="font-size:24pt; text-align:center;"><%= @team.payroll %></td></tr>
+</table>
+<table style="display:inline-table;">
+  <tr><th style="font-size:9pt; text-transform:uppercase;">Quick sign</th></tr>
+  <tr><td>
+    <%= render :partial => 'components/quick_sign', :locals => {:team => @team} %>
+  </td></tr>
 </table>
 <table>
   <tr>
@@ -31,54 +37,3 @@
     </tr>
   <% end %>
 </table>
-<h2>Quick-sign</h2>
-<%= form_tag "/contracts", :method => 'post' do %>
-  <%= label_tag :player_finder, 'Last name'%>
-  <%= text_field_tag :player_finder %>
-  <%= hidden_field_tag :player_id, '', :style => "width: 4em;" %><br/>
-  <%= hidden_field_tag :team_id, @team.id %>
-  <%= label_tag :value %>
-  <%= text_field_tag :value %><br/>
-  <%= label_tag :first_year %>
-  <%= text_field_tag :first_year %><br/>
-  <%= submit_tag "Sign new contract" %>
-  <style>
-  	.ui-autocomplete-loading { background: white url('/images/tiny-throbber.gif') right center no-repeat; }
-	</style>
-  <script>
-    $(function (){
-      var cache = {}, lastXhr;
-      $("#player_finder").autocomplete({
-        minLength: 3,
-        select: function(event, ui){
-          $("#player_id").val(ui.item.id.toString());
-        },
-        source: function(request, response) {
-          var term = request.term;
-          if (term in cache) {
-            response(cache[term]);
-            return;
-          }
-          
-          lastXhr = $.getJSON("/players.json", {'last_name': term}, function(data, status, xhr){
-            ret = [];
-            for (var i = 0; i < data.length; i++)
-            {
-              var p = data[i].player;
-              var showtext = p.first_name + " " + p.last_name + " (" + p.position + ", " + p.nfl_team + ")";
-              ret.push({
-                label: showtext,
-                value: showtext,
-                id: data[i].player.id
-              });
-            }
-            cache[term] = ret;
-            if (xhr === lastXhr) {
-              response(ret);
-            }
-          });
-        }
-      });
-    });
-  </script>
-<% end %>
