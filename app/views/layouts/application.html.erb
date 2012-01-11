@@ -13,18 +13,19 @@
 <body style="margin:0px;">
 <%# render :partial => 'components/debug_panel' %>
 <div id="header">
-  <a href="/" style="color: white; font-weight: bold;">FFL</a> &middot;
-  <% if session[:league_id] %>
-    <a href="/leagues" style="color: lightgreen;"><%= League.find(session[:league_id]).name %></a>
-  <% else %>
-    <a href="/leagues" style="color: salmon; font-style:italic;">No league selected</a>
-  <% end %>
-  </a>
   <ul>
+    <li><a href="/" style="color: white; font-weight: bold;">FFL</a></li>
+    <li>
+      <% if session[:league_id] %>
+        <a href="/leagues" style="color: lightgreen;"><%= League.find(session[:league_id]).name %></a>
+      <% else %>
+        <a href="/leagues" style="color: salmon; font-style:italic;">No league selected</a>
+      <% end %>
+    </li>
     <li><a href="/players">players</a></li>
     <li><a href="/teams">teams</a></li>
   </ul>
-  <span id="login_logout" style="float:right; white-space:nowrap; font-size: 8pt;">
+  <span id="login_logout" style="float:right; white-space:nowrap; ">
     <% if session[:user_id] %>
       <span style="">Welcome, <%= User.find(session[:user_id]).name %>!</span>
       <a href="/application/logout">Logout</a>

@@ -42,6 +42,9 @@
   <%= label_tag :first_year %>
   <%= text_field_tag :first_year %><br/>
   <%= submit_tag "Sign new contract" %>
+  <style>
+  	.ui-autocomplete-loading { background: white url('/images/tiny-throbber.gif') right center no-repeat; }
+	</style>
   <script>
     $(function (){
       var cache = {}, lastXhr;

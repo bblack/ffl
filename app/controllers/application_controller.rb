@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
     errors = []
     
     if !request.get?
-      if [request.path_parameters[:controller], request.path_parameters[:action]] == ['application', 'login']
+      if [['application', 'login'], ['users', 'create']].member? [request.path_parameters[:controller], request.path_parameters[:action]]
         # We're cool here
       elsif session[:user_id].blank?
         errors << "Gotta be logged in to do that, bro."
@@ -16,8 +16,8 @@ class ApplicationController < ActionController::Base
     end
 
     if errors.count > 0
-      errors.each { |e| add_flash :error, true, e }
-      render :inline => '', :layout => true
+      errors.each { |e| add_flash :error, false, e }
+      redirect_to :back
     end
     
   end 
