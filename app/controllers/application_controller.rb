@@ -1,6 +1,5 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
-  before_filter :set_errors
   before_filter :reject_posts_by_nongods
   
   def reject_posts_by_nongods
@@ -52,7 +51,6 @@ class ApplicationController < ActionController::Base
   
   def logout
     reset_session
-    set_errors # Has to happen after reset_session
     add_flash :notice, false, "You are now logged out"
     redirect_to :action => 'index'
   end

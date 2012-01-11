@@ -33,7 +33,7 @@
   Referer: <%= request.referer %>
   <% end %>
 <div id="header">
-  <span style="font-weight: bold;">FFL</span> &middot;
+  <a href="/" style="color: white; font-weight: bold;">FFL</a> &middot;
   <% if session[:league_id] %>
     <a href="/leagues" style="color: lightgreen;"><%= League.find(session[:league_id]).name %></a>
   <% else %>
