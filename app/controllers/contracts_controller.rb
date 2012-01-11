@@ -14,8 +14,8 @@ class ContractsController < ApplicationController
       #render :action => 'show', :id => @contract.id
     else
       @contract.errors.each do |att, rest|
-        add_flash :error, true, "Couldn't create contract. Reason: #{att} #{rest}"
-        render :inline => '', :layout => true
+        add_flash :error, false, "Couldn't create contract. Reason: #{att} #{rest}"
+        redirect_to :back
       end
     end
   end

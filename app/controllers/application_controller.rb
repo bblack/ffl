@@ -37,31 +37,24 @@ class ApplicationController < ActionController::Base
     end
   end
   
-  def set_errors
-    Rails.logger.debug "flash is: #{flash.to_json}"
-    [:error, :warning, :notice].each do |cat|
-      #flash[cat] = []
-    end
-    Rails.logger.debug "setup flash; it is now #{flash.to_json}"
-  end
-  
   def login
     users = User.where(:name => params[:name], :pw_hash => Digest::MD5.hexdigest(params[:password]))
     if users.count == 0
-      add_flash :error, true, "User '#{params[:name]}' doesn't exist, or password is incorrect."
+      add_flash :error, false, "User '#{params[:name]}' doesn't exist, or password is incorrect."
     elsif users.count > 1
-      add_flash :error, true, "Lolwut, found multiple users with that name and password"
+      add_flash :error, false, "Lolwut, found multiple users with that name and password"
     else
       session[:user_id] = users.first.id
-      add_flash :notice, true, "Welcome #{users.first.name}!"
+      add_flash :notice, false, "Welcome #{users.first.name}!"
     end
-    render :inline => '', :layout => true
+    redirect_to :back
   end
   
   def logout
     reset_session
     set_errors # Has to happen after reset_session
-    add_flash :notice, true, "You are now logged out"
+    add_flash :notice, false, "You are now logged out"
+    redirect_to :action => 'index'
   end
   
 end
