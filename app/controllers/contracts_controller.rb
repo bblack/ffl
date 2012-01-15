@@ -8,24 +8,24 @@ class ContractsController < ApplicationController
       :value => params[:value],
       :length => params[:length].presence || (params[:value].to_f/15).round # HACK
     )
+    
     if @contract.valid?
       add_flash :notice, false, "Contract created"
-      #redirect_to :action => 'show', :id => @contract.id
-      redirect_to :back
     else
       @contract.errors.each do |att, rest|
         add_flash :error, false, "Couldn't create contract. Reason: #{att} #{rest}"
-        redirect_to :back
       end
     end
+    
+    redirect_to :back
   end
   
   def update
     Contract.update(params[:id], params.slice(:team_id, :first_year, :value, :length))
     
     @contract ||= Contract.find(params[:id])
-    add_flash :notice, true, "Contract updated"
-    render :show
+    add_flash :notice, false, "Contract updated"
+    redirect_to :back
   end
   
   def show

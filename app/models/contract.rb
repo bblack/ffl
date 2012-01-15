@@ -2,6 +2,7 @@ class Contract < ActiveRecord::Base
   belongs_to :player
   belongs_to :team, :include => :league
   validate :one_contract_per_player_per_league
+  validates :player_id, :first_year, :value, :length, :presence => true
   
   def one_contract_per_player_per_league
     team_ids_on_league = Team.where :league_id => self.team.league.id
