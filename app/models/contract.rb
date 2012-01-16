@@ -3,6 +3,9 @@ class Contract < ActiveRecord::Base
   belongs_to :team, :include => :league
   validate :one_contract_per_player_per_league
   validates :player_id, :first_year, :value, :length, :presence => true
+  validates_each :value do |model, att, value|
+    model.errors.add(att, 'must be positive') if value <= 0
+  end
   
   def one_contract_per_player_per_league
     team_ids_on_league = Team.where :league_id => self.team.league.id
