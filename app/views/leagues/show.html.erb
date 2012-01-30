@@ -1,5 +1,14 @@
 <% league = League.find session[:league_id] rescue nil %>
 <% if league %>
-  League #<%= league.id %>: <%= league.name %><br/>
-  League page
+  League homepage for league #<%= league.id %>: <%= league.name %><br/><br/>
+  <% league.rfa_periods.each do |rfa| %>
+    <span style="display:inline-block; border:1px solid goldenrod; background-color: lightyellow; padding:.5em;">
+      <span style="font-weight:bold;">
+        Hey, check it! There's an RFA period
+      </span>
+      from <%= rfa.open_date %>
+      until <%= rfa.close_date %>
+      for players with contracts expiring at the end of the <%= rfa.final_year %> season. <a href="/rfa_periods/<%= rfa.id %>">Take a look.</a>
+    </span>
+  <% end %>
 <% end %>

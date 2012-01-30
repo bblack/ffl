@@ -11,7 +11,7 @@ end
 group :production do
   gem 'pg'
 end
-gem 'typhoeus', :git => 'git@github.com:ewoodh2o/typhoeus.git', :branch => 'utf8'
+gem 'typhoeus'
 
 # Use unicorn as the web server
 # gem 'unicorn'

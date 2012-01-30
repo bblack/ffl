@@ -1,5 +1,6 @@
 class RfaPeriod < ActiveRecord::Base
   belongs_to :league
+  validates :league_id, :uniqueness => true
   
   def contracts_eligible
     self.league.contracts.includes(:player).where("first_year + length - 1 <= ?", self.final_year)
