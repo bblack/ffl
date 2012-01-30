@@ -13,6 +13,7 @@ Ffl::Application.routes.draw do
   resources :teams
   resources :contracts
   resources :users#, :only => [:create]
+  resources :rfa_periods
 
   # Sample of named route:
   #   match 'products/:id/purchase' => 'catalog#purchase', :as => :purchase

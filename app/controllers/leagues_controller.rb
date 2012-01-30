@@ -11,7 +11,6 @@ class LeaguesController < ApplicationController
       add_flash :notice, true, "You are now browsing league '#{league.name}'"
     end
     
-    render 'teams/index'
   end
   
 end

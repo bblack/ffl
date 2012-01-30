@@ -29,6 +29,7 @@ class Player < ActiveRecord::Base
       return "/images/player_no_photo.png"
     end
   end
+  
 end
 
 class WrongPlayerPositionError < StandardError

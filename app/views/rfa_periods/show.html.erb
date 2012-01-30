@@ -1,0 +1,23 @@
+<h1>RFA Period</h1>
+Starting <%= @rfaperiod.open_date %><br/>
+Ending <%= @rfaperiod.close_date %><br/>
+For players with contracts expiring following <%= @rfaperiod.final_year %> season
+
+<h2>Eligible players</h2>
+<% @rfaperiod.league.teams.each do |team| %>
+  <span style="display:inline-block;">
+    <h3 style="margin-right:1em;"><%= team.name %></h3>
+    <table>
+      <% @rfaperiod.contracts_eligible.select { |c|  c.team_id == team.id }.each do |c| %>
+        <tr>
+          <td>
+            <%= c.player.first_name %> <%= c.player.last_name %>
+            <span style="font-variant:small-caps;">
+              <%= c.player.position.downcase %>, <%= c.player.nfl_team.downcase %>
+            </span>
+          </td>
+        </tr>
+      <% end %>
+    </table>
+  </span>
+<% end %>

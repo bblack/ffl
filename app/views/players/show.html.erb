@@ -1,7 +1,33 @@
+<% player = Player.find(params[:id]) %>
+<%= render :partial => "components/playercard", :locals => {:player_id => player.id}%><br/><br/>
 
-  <% player = Player.find(params[:id]) %>
-  <%= render :partial => "components/playercard", :locals => {:player_id => player.id}%><br/><br/>
+<% if session[:league_id] %>
+  <%= render :partial => 'components/contract_widget', :locals => { :league_id => session[:league_id], :player_id => player.id} %>
+<% end %>
 
-  <% if session[:league_id] %>
-    <%= render :partial => 'components/contract_widget', :locals => { :league_id => session[:league_id], :player_id => player.id} %>
-  <% end %>
+<% if session[:league_id] %>
+  <div style="border:1px solid silver;">
+    <% RfaPeriod.where(:league_id => session[:league_id]).each do |rfa| %>
+      <span style="font-weight:bold;">Bids for RFA lasting <%= rfa.open_date.strftime("%b %d %Y") %> to <%= rfa.close_date.strftime("%b %d %Y") %></span>
+      <table>
+        <tr>
+          <th>Team</th>
+          <th>Value</th>
+          <th>Date</th>
+        </tr>
+        <%= form_tag("/rfa_periods", :method => "POST") do %>
+          <tr>
+            <td>
+          </tr>
+        <% end %>
+        <% RfaBid.where(:rfa_period_id => rfa.id).each do |bid| %>
+          <tr>
+            <th><%= bid.team %></th>
+            <th><%= bid.value %></th>
+            <th><%= bid.created %></th>
+          </tr>
+        <% end %>
+      </table>
+    <% end %>
+  </div>
+<% end %>

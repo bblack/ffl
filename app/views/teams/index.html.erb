@@ -4,12 +4,19 @@
     <tr>
       <th>Team name</th>
       <th>Payroll</th>
+      <% league = League.find session[:league_id] %>
+      <% league.positions.each do |p| %>
+        <th><%= p %>s</th>
+      <% end %>
     </tr>
     <% teams = League.find(session[:league_id]).teams %>
     <% teams.each do |team| %>
       <tr>
         <td><a href="/teams/<%= team.id %>"><%= team.name %></a></td>
         <td><%= team.payroll %></td>
+        <% league.positions.each do |p| %>
+          <td><%= team.players.where(:position => p).count %></td>
+        <% end %>
       </tr>
     <% end %>
   </table>

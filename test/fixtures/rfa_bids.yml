@@ -1,0 +1,11 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  rfa_period_id: 1
+  team_id: 1
+  player_id: 1
+
+two:
+  rfa_period_id: 1
+  team_id: 1
+  player_id: 1
