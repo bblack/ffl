@@ -1,11 +1,3 @@
-GIT
-  remote: git@github.com:ewoodh2o/typhoeus.git
-  revision: 5ca3b752c199978cfd2e8fd93184391dc4280625
-  branch: utf8
-  specs:
-    typhoeus (0.2.4)
-      mime-types
-
 GEM
   remote: http://rubygems.org/
   specs:
@@ -91,6 +83,8 @@ GEM
     treetop (1.4.10)
       polyglot
       polyglot (>= 0.3.1)
+    typhoeus (0.3.3)
+      mime-types
     tzinfo (0.3.30)
 
 PLATFORMS
@@ -101,4 +95,4 @@ DEPENDENCIES
   rails (= 3.0.10)
   ruby-debug19
   sqlite3
-  typhoeus!
+  typhoeus
