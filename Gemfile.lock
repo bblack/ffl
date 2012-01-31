@@ -83,8 +83,6 @@ GEM
     treetop (1.4.10)
       polyglot
       polyglot (>= 0.3.1)
-    typhoeus (0.3.3)
-      mime-types
     tzinfo (0.3.30)
 
 PLATFORMS
@@ -95,4 +93,3 @@ DEPENDENCIES
   rails (= 3.0.10)
   ruby-debug19
   sqlite3
-  typhoeus

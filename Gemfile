@@ -11,7 +11,7 @@ end
 group :production do
   gem 'pg'
 end
-gem 'typhoeus'
+#gem 'typhoeus'
 
 # Use unicorn as the web server
 # gem 'unicorn'

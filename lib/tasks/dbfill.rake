@@ -2,17 +2,14 @@ namespace :db do
   
   desc "Fetch player info from myfantasyleague and fill/update db"
   task :fill => :environment do
-    request = Typhoeus::Request.new("http://football.myfantasyleague.com/2011/player_listing?POSITION=*&TEAM=*")
-    hydra = Typhoeus::Hydra.new
-    hydra.queue(request)
-    hydra.run
+    require 'net/http'
     
-    response = request.response
-    puts response.body
+    responsebody = Net::HTTP.get(URI.parse("http://football.myfantasyleague.com/2011/player_listing?POSITION=*&TEAM=*"))
+    puts responsebody
     
     #re = Regexp.new('<a href="player?P=(.*?)">(.*), .* ([^ ]*) ([^ ]*)</a>')
     re = Regexp.new('<a href="player\?P=(.*?)">(.*?), (.*) ([^ ]*) ([^ ]*)</a>')
-    matches = response.body.scan(re)
+    matches = responsebody.scan(re)
     puts "#{matches.count} players read from MFL"
     players_created_count = 0
     players_updated_count = 0
