@@ -13,4 +13,13 @@ class RfaBid < ActiveRecord::Base
     biggest_bid = RfaBid.where(:rfa_period_id => model.rfa_period_id, :player_id => model.player_id).maximum(:value)
     model.errors.add(att, "must exceed the greatest bid value which is #{biggest_bid}") if biggest_bid and value <= biggest_bid
   end
+  
+  validates_each :team_id do |model, att, value|
+    team = Team.includes(:league).find(value)
+    rfa_period = RfaPeriod.includes(:league).find(model.rfa_period_id)
+    if team.league.id != rfa_period.league.id
+      model.errors.add(att, "must belong to the same league that the RFA period does")
+    end
+  end
+  
 end
