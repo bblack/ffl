@@ -1,6 +1,7 @@
 class RfaBid < ActiveRecord::Base
   belongs_to :rfa_period
   belongs_to :player
+  belongs_to :team
   
   validates :value, :presence => true
   validates :value, :numericality => {:only_integer => true, :greater_than => 0}
