@@ -17,7 +17,7 @@ class PlayersController < ApplicationController
     criteria = params.slice('last_name', 'first_name', 'nfl_team', 'position')
     criteria[:position] ||= ['QB', 'RB', 'WR', 'TE', 'Def', 'PK']
     # Use the rest of the criteria later
-    @players = Player.where(:position => criteria[:position]).where("lower(last_name) like ?", "%#{criteria[:last_name]}%")
+    @players = Player.where(:position => criteria[:position]).where("lower(last_name) like ?", "%#{criteria[:last_name].downcase}%")
 
   end
   
