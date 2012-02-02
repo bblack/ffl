@@ -8,13 +8,22 @@ For players with contracts expiring following <%= @rfaperiod.final_year %> seaso
   <span style="display:inline-block; margin-right:1em;">
     <h3><%= team.name %></h3>
     <table>
+      <tr>
+        <th>Player</th>
+        <th>Top bid</th>
+      </tr>
       <% @rfaperiod.contracts_eligible.select { |c|  c.team_id == team.id }.each do |c| %>
         <tr>
           <td>
-            <%= c.player.first_name %> <%= c.player.last_name %>
-            <span style="font-variant:small-caps;">
-              <%= c.player.position.downcase %>, <%= c.player.nfl_team.downcase %>
-            </span>
+            <a href="/contracts/<%= c.id %>">
+              <%= c.player.first_name %> <%= c.player.last_name %>
+              <span style="font-variant:small-caps;">
+                <%= c.player.position.downcase %>, <%= c.player.nfl_team.downcase %>
+              </span>
+            </a>
+          </td>
+          <td>
+            <%= @bids.where(:player_id => c.player_id).maximum(:value) %>
           </td>
         </tr>
       <% end %>

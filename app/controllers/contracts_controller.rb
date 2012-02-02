@@ -32,4 +32,10 @@ class ContractsController < ApplicationController
     @contract ||= Contract.find(params[:id])
   end
   
+  def destroy
+    @contract = Contract.includes(:player, :team).find(params[:id]).delete
+    add_flash :warning, false, "Destroyed #{@contract.player.first_name} #{@contract.player.last_name}'s contract with #{@contract.team.name}"
+    redirect_to :back
+  end
+  
 end
