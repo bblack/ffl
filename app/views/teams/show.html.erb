@@ -36,7 +36,7 @@
       </td>
       <td>
         <%= form_tag("/contracts/#{c.id}", :method => "DELETE") do %>
-          <%= submit_tag("Drop", :confirm => "Are you sure you want to drop #{c.player.first_name} #{c.player.last_name}?") %>
+          <%= submit_tag("Drop", :confirm => "Are you sure you want to drop #{c.player.first_name} #{c.player.last_name}?", :style => {:backgroundColor => "red"}) %>
         <% end %>
       </td>
     </tr>

@@ -25,6 +25,14 @@ For players with contracts expiring following <%= @rfaperiod.final_year %> seaso
           <td>
             <%= @bids.where(:player_id => c.player_id).maximum(:value) %>
           </td>
+          <td>
+            <%= form_tag("/rfa_bids", :method => "POST") do %>
+              <%= hidden_field_tag(:rfa_period_id, @rfaperiod.id) %>
+              <%= hidden_field_tag(:player_id, c.player.id) %>
+              <%= text_field_tag(:value, '', :style => "width: 3em;") %>
+              <%= submit_tag("Bid") %>
+            <% end %>
+          </td>
         </tr>
       <% end %>
     </table>
