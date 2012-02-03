@@ -19,7 +19,7 @@ class ApplicationController < ActionController::Base
         # We're cool here
       elsif session[:user_id].blank?
         errors << "Gotta be logged in to do that, bro."
-      elsif not (User.find session[:user_id]).god_mode
+      elsif not @current_user.god_mode
         errors << "You need GOD MODE to do that, man."
       end
     end
