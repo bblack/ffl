@@ -4,7 +4,7 @@
 <% if @current_league %>
   <%= render :partial => 'components/contract_widget', :locals => { :league_id => @current_league.id, :player_id => player.id} %>
   
-  <% RfaPeriod.where(:league_id => @current_league.id).each do |rfa| %>
+  <% RfaPeriod.includes(:rfa_bids).where(:league_id => @current_league.id).each do |rfa| %>
     <h2>Bids for RFA lasting <%= rfa.open_date.strftime("%b %d %Y") %> to <%= rfa.close_date.strftime("%b %d %Y") %></h2>
     <table>
       <tr>
@@ -12,7 +12,7 @@
         <th>Value</th>
         <th>Date</th>
       </tr>
-      <% RfaBid.where(:rfa_period_id => rfa.id).each do |bid| %>
+      <% rfa.rfa_bids.where(:player_id => player.id).each do |bid| %>
         <tr>
           <td><%= bid.team.name %></td>
           <td><%= bid.value %></td>
