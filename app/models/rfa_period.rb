@@ -1,5 +1,6 @@
 class RfaPeriod < ActiveRecord::Base
   belongs_to :league
+  has_many :rfa_bids
   validates :league_id, :uniqueness => true
   
   def contracts_eligible
