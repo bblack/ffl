@@ -26,7 +26,7 @@
     <li><a href="/teams">teams</a></li>
     <% if @current_league %>
       <% @current_league.rfa_periods.each do |rfa| %>
-        <li><a href="/rfa_periods/#{rfa.id}" style="color:lightyellow;">RFA!!!</a></li>      
+        <li><a href="/rfa_periods/<%= rfa.id %>" style="color:lightyellow;">RFA!!!</a></li>      
       <% end %>
     <% end %>
   </ul>
