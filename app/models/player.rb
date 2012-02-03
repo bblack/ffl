@@ -23,6 +23,7 @@ class Player < ActiveRecord::Base
   
   def espn_img_url
     begin
+      raise StandardError if self.espn_id.nil?
       raise WrongPlayerPositionError if not Player.positions_with_photos.member? self.position
       return "http://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/#{self.espn_id}.png&w=100&h=150&scale=crop&background=0xcccccc&transparent=true"
     rescue
