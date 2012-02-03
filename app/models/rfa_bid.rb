@@ -22,4 +22,12 @@ class RfaBid < ActiveRecord::Base
     end
   end
   
+  validates_each :value, :on => :create do |model, att, value|
+    unless model.team.payroll_available.nil?
+      if value > model.team.payroll_available
+        model.errors.add(att, "must not exceed the team's available payroll total (#{model.team.payroll_available})")
+      end
+    end
+  end
+  
 end

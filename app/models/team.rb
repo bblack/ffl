@@ -10,4 +10,12 @@ class Team < ActiveRecord::Base
     ret
   end
   
+  def payroll_available
+    self.league.salary_cap.nil? ? nil : self.league.salary_cap - self.payroll 
+  end
+  
+  def under_cap
+    payroll_available.nil? or payroll_available > 0
+  end
+  
 end

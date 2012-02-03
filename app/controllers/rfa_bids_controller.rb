@@ -18,7 +18,7 @@ class RfaBidsController < ApplicationController
       :value => params[:value])
     if @bid.invalid?
       @bid.errors.each do |att, err|
-        add_flash :error, false, "#{att} - #{err}"
+        add_flash :error, false, "#{att} #{err}"
       end
     else
       add_flash :notice, false, "You bid #{@bid.value} on #{@bid.player.first_name} #{@bid.player.last_name}"
