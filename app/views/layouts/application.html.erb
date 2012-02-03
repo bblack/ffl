@@ -26,8 +26,8 @@
     <li><a href="/teams">teams</a></li>
   </ul>
   <span id="login_logout" style="float:right; white-space:nowrap; ">
-    <% if session[:user_id] %>
-      <span style="">Welcome, <%= User.find(session[:user_id]).name %>!</span>
+    <% if @current_user %>
+      <span style="">Welcome, <%= @current_user.name %>!</span>
       <a href="/application/logout">Logout</a>
     <% else %>
       <%= form_tag :controller => 'application', :action => 'login', :method => 'post' do %>
