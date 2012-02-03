@@ -15,7 +15,11 @@ class ApplicationController < ActionController::Base
     errors = []
     
     if !request.get?
-      if [['application', 'login'], ['users', 'create']].member? [request.path_parameters[:controller], request.path_parameters[:action]]
+      if [
+        ['application', 'login'],
+        ['users', 'create'],
+        ['rfa_bids', 'create']
+      ].member? [request.path_parameters[:controller], request.path_parameters[:action]]
         # We're cool here
       elsif session[:user_id].blank?
         errors << "Gotta be logged in to do that, bro."
