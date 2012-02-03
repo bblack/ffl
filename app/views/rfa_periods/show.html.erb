@@ -15,7 +15,7 @@ For players with contracts expiring following <%= @rfaperiod.final_year %> seaso
       <% @rfaperiod.contracts_eligible.select { |c|  c.team_id == team.id }.each do |c| %>
         <tr>
           <td>
-            <a href="/contracts/<%= c.id %>">
+            <a href="/players/<%= c.player.id %>">
               <%= c.player.first_name %> <%= c.player.last_name %>
               <span style="font-variant:small-caps;">
                 <%= c.player.position.downcase %>, <%= c.player.nfl_team.downcase %>

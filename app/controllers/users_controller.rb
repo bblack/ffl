@@ -10,7 +10,7 @@ class UsersController < ApplicationController
       
       if new_user.invalid?
         new_user.errors.each do |att, err|
-          add_flash :error, false, "#{att} - #{err}"
+          add_flash :error, false, "#{att} #{err}"
         end
       else
         add_flash :notice, false, "New user '#{new_user.name}' created. You can now log in with the password you supplied."
