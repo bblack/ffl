@@ -1,7 +1,6 @@
-<% league = League.find session[:league_id] rescue nil %>
-<% if league %>
-  League homepage for league #<%= league.id %>: <%= league.name %><br/><br/>
-  <% league.rfa_periods.each do |rfa| %>
+<% if @current_league %>
+  League homepage for league #<%= @current_league.id %>: <%= @current_league.name %><br/><br/>
+  <% @current_league.rfa_periods.each do |rfa| %>
     <span style="display:inline-block; border:1px solid goldenrod; background-color: lightyellow; padding:.5em;">
       <span style="font-weight:bold;">
         Hey, check it! There's an RFA period

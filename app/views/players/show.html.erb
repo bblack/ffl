@@ -1,12 +1,10 @@
 <% player = Player.find(params[:id]) %>
 <%= render :partial => "components/playercard", :locals => {:player_id => player.id}%><br/><br/>
 
-<% if session[:league_id] %>
-  <%= render :partial => 'components/contract_widget', :locals => { :league_id => session[:league_id], :player_id => player.id} %>
-<% end %>
-
-<% if session[:league_id] %>
-  <% RfaPeriod.where(:league_id => session[:league_id]).each do |rfa| %>
+<% if @current_league %>
+  <%= render :partial => 'components/contract_widget', :locals => { :league_id => @current_league.id, :player_id => player.id} %>
+  
+  <% RfaPeriod.where(:league_id => @current_league.id).each do |rfa| %>
     <h2>Bids for RFA lasting <%= rfa.open_date.strftime("%b %d %Y") %> to <%= rfa.close_date.strftime("%b %d %Y") %></h2>
     <table>
       <tr>

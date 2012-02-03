@@ -16,14 +16,19 @@
   <ul>
     <li><a href="/" style="color: white; font-weight: bold;">FFL</a></li>
     <li>
-      <% if session[:league_id] %>
-        <a href="/leagues" style="color: lightgreen;"><%= League.find(session[:league_id]).name %></a>
+      <% if @current_league %>
+        <a href="/leagues" style="color: lightgreen;"><%= @current_league.name %></a>
       <% else %>
         <a href="/leagues" style="color: salmon; font-style:italic;">No league selected</a>
       <% end %>
     </li>
     <li><a href="/players">players</a></li>
     <li><a href="/teams">teams</a></li>
+    <% if @current_league %>
+      <% @current_league.rfa_periods.each do |rfa| %>
+        <li><a href="/rfa_periods/#{rfa.id}" style="color:lightyellow;">RFA!!!</a></li>      
+      <% end %>
+    <% end %>
   </ul>
   <span id="login_logout" style="float:right; white-space:nowrap; ">
     <% if @current_user %>

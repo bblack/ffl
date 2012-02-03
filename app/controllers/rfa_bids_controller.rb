@@ -1,7 +1,7 @@
 class RfaBidsController < ApplicationController
   
   def create
-    users_teams = Team.where(:league_id => session[:league_id], :owner_id => @current_user.id)
+    users_teams = Team.where(:league_id => @current_league.id, :owner_id => @current_user.id)
     if users_teams.count == 0
       add_flash :error, false, "You don't have a team in this league. Tell Brian about this."
       redirect_to :back

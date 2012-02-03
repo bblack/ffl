@@ -11,6 +11,8 @@ class LeaguesController < ApplicationController
       add_flash :notice, true, "You are now browsing league '#{league.name}'"
     end
     
+    set_current_league()
+    
   end
   
 end
