@@ -1,7 +1,7 @@
 <% if @current_league %>
-  League homepage for league #<%= @current_league.id %>: <%= @current_league.name %><br/><br/>
+  <h1><%= @current_league.name %></h1>
   <% @current_league.rfa_periods.each do |rfa| %>
-    <span style="display:inline-block; border:1px solid goldenrod; background-color: lightyellow; padding:.5em;">
+    <span class="noticebox">
       <span style="font-weight:bold;">
         Hey, check it! There's an RFA period
       </span>
@@ -10,4 +10,18 @@
       for players with contracts expiring at the end of the <%= rfa.final_year %> season. <a href="/rfa_periods/<%= rfa.id %>">Take a look.</a>
     </span>
   <% end %>
+  <span class="noticebox">
+    <span style="font-weight:bold;">
+      Wow, look how nice I am.
+    </span>
+    I even made a nice little <a href="/contracts">spreadsheet</a> for you with all the player contracts.
+  </span>
+  <h2>Teams</h2>
+  <table>
+    <% @current_league.teams.each do |team| %>
+      <tr>
+        <td><%= team.name %>, <%= team.owner ? team.owner.name : "Unowned" %></td>
+      </tr>
+    <% end %>
+  </table>
 <% end %>
