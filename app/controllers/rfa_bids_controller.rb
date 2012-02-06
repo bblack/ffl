@@ -1,7 +1,12 @@
 class RfaBidsController < ApplicationController
+  before_filter :set_current_rfa_period
+  
+  def set_current_rfa_period
+    @rfa_period = params[:rfa_period_id] ? RfaPeriod.find(params[:rfa_period_id]) : nil
+  end
   
   def create
-    users_teams = Team.where(:league_id => @current_league.id, :owner_id => @current_user.id)
+    users_teams = Team.where(:league_id => @rfa_period.league_id, :owner_id => @current_user.id)
     if users_teams.count == 0
       add_flash :error, false, "You don't have a team in this league. Tell Brian about this."
       redirect_to :back
@@ -12,7 +17,7 @@ class RfaBidsController < ApplicationController
     team = users_teams.first
     
     @bid = RfaBid.includes(:player).create(
-      :rfa_period_id => params[:rfa_period_id],
+      :rfa_period_id => @rfa_period.id,
       :player_id => params[:player_id],
       :team_id => team.id,
       :value => params[:value])

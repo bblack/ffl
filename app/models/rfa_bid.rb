@@ -24,8 +24,10 @@ class RfaBid < ActiveRecord::Base
   
   validates_each :value, :on => :create do |model, att, value|
     unless model.team.payroll_available.nil?
-      if value > model.team.payroll_available
-        model.errors.add(att, "must not exceed the team's available payroll total (#{model.team.payroll_available})")
+      expiring_contracts = model.rfa_period.contracts_eligible.where(:team_id => model.team.id)
+      expiring_contracts_value = (expiring_contracts.collect { |c| c.value }).inject(:+)
+      if value > model.team.payroll_available + expiring_contracts_value
+        model.errors.add(att, "must not exceed the team's available payroll plus payroll in expiring contracts (#{model.team.payroll_available + expiring_contracts_value})")
       end
     end
   end

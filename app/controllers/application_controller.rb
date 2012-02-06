@@ -3,6 +3,7 @@ class ApplicationController < ActionController::Base
   before_filter :set_current_user
   before_filter :set_current_league
   before_filter :reject_posts_by_nongods
+  before_filter :reject_posts_unless_logged_in
   
   def set_current_user
     if session[:user_id].nil?
@@ -20,6 +21,26 @@ class ApplicationController < ActionController::Base
     end
   end
   
+  def reject_posts_unless_logged_in
+    errors = []
+    
+    if not request.get?
+      if [
+        ['application', 'login'],
+        ['users', 'create']
+      ].member? [request.path_parameters[:controller], request.path_parameters[:action]]
+        # We're cool here
+      elsif @current_user.nil?
+        errors << "Gotta be logged in to do that, bro"
+      end
+    end
+    
+    if errors.any?
+      errors.each { |e| add_flash :error, false, e }
+      redirect_to :back
+    end
+  end
+  
   def reject_posts_by_nongods
     errors = []
     
@@ -30,18 +51,15 @@ class ApplicationController < ActionController::Base
         ['rfa_bids', 'create']
       ].member? [request.path_parameters[:controller], request.path_parameters[:action]]
         # We're cool here
-      elsif session[:user_id].blank?
-        errors << "Gotta be logged in to do that, bro."
       elsif not @current_user.god_mode
         errors << "You need GOD MODE to do that, man."
       end
     end
 
-    if errors.count > 0
+    if errors.any?
       errors.each { |e| add_flash :error, false, e }
       redirect_to :back
     end
-    
   end 
   
   def add_flash(category, now, msg)
