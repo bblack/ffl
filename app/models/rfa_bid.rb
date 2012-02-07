@@ -32,4 +32,9 @@ class RfaBid < ActiveRecord::Base
     end
   end
   
+  validates_each :rfa_period_id do |model, att, value|
+    rfa = RfaPeriod.find value
+    model.errors.add(att, " must be a currently open RFA period") if not rfa.open?
+  end
+  
 end
