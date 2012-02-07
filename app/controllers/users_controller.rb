@@ -3,7 +3,7 @@ class UsersController < ApplicationController
   def create
     begin
       new_user = User.create(
-        :name => params[:name],
+        :name => params[:name].downcase,
         :email => params[:email],
         :pw_hash => Digest::MD5.hexdigest(params[:password])
       )

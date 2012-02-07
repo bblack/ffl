@@ -77,7 +77,7 @@ class ApplicationController < ActionController::Base
   end
   
   def login
-    users = User.where(:name => params[:name], :pw_hash => Digest::MD5.hexdigest(params[:password]))
+    users = User.where(:name => params[:name].downcase, :pw_hash => Digest::MD5.hexdigest(params[:password]))
     if users.count == 0
       add_flash :error, false, "User '#{params[:name]}' doesn't exist, or password is incorrect."
     elsif users.count > 1
