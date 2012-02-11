@@ -23,7 +23,7 @@ class ApplicationController < ActionController::Base
   end
   
   def set_current_team
-    teams = Team.where(:owner_id => @current_user.id, :league_id => @current_league.id)
+    teams = Team.where(:owner_id => (@current_user.id rescue nil), :league_id => (@current_league.id rescue nil))
     @current_team = nil if teams.empty? or teams.many?
     @current_team = teams.first #if teams.count == 1
   end
