@@ -8,9 +8,18 @@ class RfaPeriod < ActiveRecord::Base
   end
   
   def open?
+    (self.open_date.nil? and self.close_date.nil?) or
     (self.open_date.nil? and Time.now < self.close_date) or
     (self.open_date < Time.now and self.close_date.nil?) or
     (self.open_date < Time.now and Time.now < self.close_date)
+  end
+  
+  def started?
+    self.open_date.nil? or self.open_date < Time.now
+  end
+  
+  def ended?
+    !self.close_date.nil? and self.close_date < Time.now
   end
   
 end

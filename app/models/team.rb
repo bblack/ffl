@@ -18,4 +18,17 @@ class Team < ActiveRecord::Base
     payroll_available.nil? or payroll_available > 0
   end
   
+  def max_rfa_bid(rfa_period_id)
+    rfa_period = RfaPeriod.find rfa_period_id
+    raise StandardError if rfa_period.league_id != self.league_id
+    
+    if payroll_available.nil?
+      return nil
+    else
+      expiring_contracts = rfa_period.contracts_eligible.where(:team_id => self.id)
+      expiring_contracts_value = (expiring_contracts.collect { |c| c.value }).inject(:+)
+      return self.payroll_available + expiring_contracts_value
+    end
+  end
+  
 end

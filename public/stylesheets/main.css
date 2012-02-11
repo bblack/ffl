@@ -71,9 +71,11 @@ td, th {
 }
 
 .noticebox {
-  display:inline-block;
+  display:block;
+  width: auto;
   border:1px solid goldenrod;
   background-color: lightyellow;
   padding:.5em;
   margin-bottom:1em;
+  margin-top:1em;
 }
