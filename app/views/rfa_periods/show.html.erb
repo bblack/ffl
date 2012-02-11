@@ -3,12 +3,14 @@ Starting <%= @rfaperiod.open_date %><br/>
 Ending <%= @rfaperiod.close_date %><br/>
 For players with contracts expiring following <%= @rfaperiod.final_year %> season
 
-<span class="noticebox">
-  <span style="font-weight:bold;">
-    Just so you know,
+<% if @current_team %>
+  <span class="noticebox">
+    <span style="font-weight:bold;">
+      Just so you know,
+    </span>
+    your team, <%= @current_team.name %>, is allowed to bid up to <%= @current_team.max_rfa_bid(@rfaperiod.id) %>.
   </span>
-  your team, <%= @current_team.name %>, is allowed to bid up to <%= @current_team.max_rfa_bid(@rfaperiod.id) %>.
-</span>
+<% end %>
 
 <h2>Eligible players</h2>
 <% @rfaperiod.league.teams.each do |team| %>
