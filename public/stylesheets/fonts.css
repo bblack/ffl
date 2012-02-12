@@ -1,0 +1,24 @@
+@font-face {
+  font-family: Franklin Gothic Demi Cond;
+  src: url('/fonts/Franklin Gothic Demi Cond.ttf');
+}
+
+@font-face {
+  font-family: Franklin Gothic Medium Cond;
+  src: url('/fonts/Franklin Gothic Medium Cond.ttf');
+}
+
+@font-face {
+  font-family: Franklin Gothic Medium;
+  src: url('/fonts/Franklin Gothic Medium.ttf');
+}
+
+@font-face {
+  font-family: Zurich Condensed BT;
+  src: url('/fonts/Zurich Condensed BT.ttf');
+}
+
+@font-face {
+  font-family: Zurich Bold Condensed BT;
+  src: url('/fonts/Zurich Bold Condensed BT.ttf');
+}

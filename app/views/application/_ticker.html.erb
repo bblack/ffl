@@ -1,14 +1,16 @@
+<link href='http://fonts.googleapis.com/css?family=Armata' rel='stylesheet' type='text/css'>
 <style type="text/css">
 #ticker {
   background-color:black;
   color: white;
   overflow: hidden;
   height: 1em;
-  padding: .5em;
-  font-size:150%;
+  padding: .25em 0 .5em 0;
+  //font-family: 'Armata', sans-serif;
+  font-family: 'Franklin Gothic Medium';
   text-transform:none;
-  font-weight: bold;
-  font-size:12pt;
+  font-weight: normal;
+  font-size:14pt;
   position:fixed;
   bottom:0px;
   width:100%;
@@ -19,6 +21,9 @@
   overflow:visible;
   white-space: nowrap;
 }
+.espnyellow {
+  color: #fdc674;
+}
 </style>
 
 <div id="ticker"></div>
@@ -28,10 +33,10 @@
     $("#ticker").ticker({
       dataUrl: '/rfa_bids?rfa_period_id=1',
       dataToHtml: function(data) {
-        var out = '<span style="color: #fdc674;">Latest bids:</span> ';
+        var out = '<span class="espnyellow">Latest bids:</span> ';
         $.each(data, $.proxy(function(index, item){
           var bid = item.rfa_bid;
-          out += bid.team.name + ' bid ' + bid.value.toString() + ' on ' + bid.player.first_name + ' ' + bid.player.last_name + '. '; 
+          out += '<span class="espnyellow" style="margin-left: 1em;">' + (index+1).toString() + '. </span>' + bid.team.name + ' bid ' + bid.value.toString() + ' on ' + bid.player.first_name + ' ' + bid.player.last_name + ' on ' + Date.parse(bid.created_at.replace(/Z/g, '')).toString('MMM d'); 
         }, this));
         return out;
       }

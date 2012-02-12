@@ -24,7 +24,6 @@ $.widget('ffl.ticker', {
     img_right.css('right', 0);
     img_right.css('height', this.element.innerHeight());
     this.element.append(img_right);
-    debugger;
     
     img_left = $("<img src='/images/ticker-left.png' style='position:absolute;' />");
     img_left.css('top', 0);
@@ -43,7 +42,10 @@ $.widget('ffl.ticker', {
       $.ajax({
         url: this.options.dataUrl,
         success: $.proxy(function(data){
-          this.span1.html(this.options.dataToHtml(data));
+          var tickerhtml = '';
+          try { tickerhtml = this.options.dataToHtml(data) }
+          catch (e) { tickerhtml = '<span style="color:#f60;">Error parsing data!</span>' }
+          this.span1.html(tickerhtml);
         }, this)
       });
     }
