@@ -18,7 +18,7 @@ class ApplicationController < ActionController::Base
     if session[:league_id].nil?
       @current_league = nil
     else
-      @current_league = League.find(session[:league_id])
+      @current_league = League.includes(:rfa_periods).find(session[:league_id])
     end
   end
   

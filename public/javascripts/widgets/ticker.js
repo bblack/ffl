@@ -46,6 +46,9 @@ $.widget('ffl.ticker', {
           try { tickerhtml = this.options.dataToHtml(data) }
           catch (e) { tickerhtml = '<span style="color:#f60;">Error parsing data!</span>' }
           this.span1.html(tickerhtml);
+        }, this),
+        error: $.proxy(function(data){
+          this.span1.html('<span style="color:#f60;">Error fetching data!</span>')
         }, this)
       });
     }
