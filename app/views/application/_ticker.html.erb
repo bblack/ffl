@@ -24,7 +24,7 @@
 }
 </style>
 
-<% if (@current_user.name rescue nil) == 'brian' and (@current_league.rfa_periods.any? rescue false) %>
+<% if (@current_league.rfa_periods.any? rescue false) %>
   <div id="ticker"></div>
   <script type='text/javascript'>
     $(document).ready(function(){
