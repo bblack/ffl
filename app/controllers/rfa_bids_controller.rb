@@ -5,6 +5,11 @@ class RfaBidsController < ApplicationController
     @rfa_period = params[:rfa_period_id] ? RfaPeriod.find(params[:rfa_period_id]) : nil
   end
   
+  def index
+    bids = RfaBid.includes(:team).order("created_at DESC").limit(10).where(:rfa_period_id => params[:rfa_period_id])
+    render :json => bids.to_json(:include => [:team, :player])
+  end
+  
   def create
     users_teams = Team.where(:league_id => @rfa_period.league_id, :owner_id => @current_user.id)
     if users_teams.count == 0

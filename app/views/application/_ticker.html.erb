@@ -1,0 +1,37 @@
+<style type="text/css">
+#ticker {
+  background-color:black;
+  color: white;
+  overflow: hidden;
+  height: 1em;
+  padding: 1em;
+  font-size:150%;
+  text-transform:none;
+  font-weight: bold;
+  font-size:12pt;
+  margin-bottom: 1px;
+}
+.tickerspan {
+  position:relative;
+  overflow:visible;
+  white-space: nowrap;
+}
+</style>
+
+<div id="ticker"></div>
+
+<script type='text/javascript'>
+  $(document).ready(function(){
+    $("#ticker").ticker({
+      dataUrl: '/rfa_bids?rfa_period_id=1',
+      dataToHtml: function(data) {
+        var out = '<span style="color: #fdc674;">Latest bids:</span> ';
+        $.each(data, $.proxy(function(index, item){
+          var bid = item.rfa_bid;
+          out += bid.team.name + ' bid ' + bid.value.toString() + ' on ' + bid.player.first_name + ' ' + bid.player.last_name + '. '; 
+        }, this));
+        return out;
+      }
+    });
+  });
+</script>

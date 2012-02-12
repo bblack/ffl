@@ -6,8 +6,9 @@
   <%= javascript_include_tag :all %>
   <%= csrf_meta_tag %>
   <link type="text/css" href="/css/smoothness/jquery-ui-1.8.16.custom.css" rel="stylesheet" />	
-  		<script type="text/javascript" src="/js/jquery-1.6.2.min.js"></script>
-  		<script type="text/javascript" src="/js/jquery-ui-1.8.16.custom.min.js"></script>
+	<script type="text/javascript" src="/js/jquery-1.6.2.min.js"></script>
+	<script type="text/javascript" src="/js/jquery-ui-1.8.16.custom.min.js"></script>
+  <%= javascript_src_tag 'widgets/ticker', {} %>
   
 </head>
 <body style="margin:0px;">
@@ -46,6 +47,7 @@
     <% end %>
   </span>
 </div>
+<%= render :partial => 'application/ticker' %>
 <% [:error, :warning, :notice].each do |cat| %>
   <% next unless flash[cat] %>
   <% flash[cat].each do |msg| %>
