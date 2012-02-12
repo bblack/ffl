@@ -1,11 +1,13 @@
-<h1><%= @team.name %></h1>
-<span style="display:block;">
+<h1>
+<%= @team.name %>
+<span class="subtitle">
   <% if @team.owner %>
-    Owner: <%= @team.owner.name %>
+    <%= @team.owner.name %>
   <% else %>
-    Unowned
+    (Unowned)
   <% end %>
 </span>
+</h1>
 
 <table style="display:inline-table;">
   <tr><th style="font-size:9pt; text-transform:uppercase;">Payroll</th></tr>

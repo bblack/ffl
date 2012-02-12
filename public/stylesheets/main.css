@@ -2,6 +2,24 @@ body {
   font-family: helvetica, sans-serif;
 }
 
+h1, h2, h3, h4, h5, h6 {
+  text-transform:uppercase;
+  font-family: Franklin Gothic Demi Cond;
+}
+
+/* For subtitling within a h1, h2, etc. element */
+.subtitle {
+  font-family: Franklin Gothic Medium Cond;
+  display:block;
+  font-size: 75%;
+  margin-top:-.25em;
+  color:gray;
+}
+
+a {
+  text-decoration: none;
+}
+
 table {
   border-collapse: collapse;
   margin-bottom: 1em;
@@ -10,6 +28,10 @@ table {
 td, th {
   border: 1px solid silver;
   padding: .25em;
+}
+
+th {
+  font-family: Franklin Gothic Demi Cond;
 }
 
 #header {
