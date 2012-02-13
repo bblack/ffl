@@ -3,16 +3,17 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
+  font-family: Franklin Gothic Demi Cond, sans-serif;
   text-transform:uppercase;
-  font-family: Franklin Gothic Demi Cond;
+  line-height:80%;
 }
 
 /* For subtitling within a h1, h2, etc. element */
 .subtitle {
-  font-family: Franklin Gothic Medium Cond;
   display:block;
+  font-family: Franklin Gothic Medium Cond, sans-serif;
+  line-height: 80%; /* Doesn't seem to inherit from h1 in chrome */
   font-size: 75%;
-  margin-top:-.25em;
   color:gray;
 }
 
@@ -31,7 +32,7 @@ td, th {
 }
 
 th {
-  font-family: Franklin Gothic Demi Cond;
+  font-family: Franklin Gothic Demi Cond, sans-serif;
 }
 
 #header {
