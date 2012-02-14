@@ -1,9 +1,9 @@
 <h1>RFA Period
 <span class="subtitle">
-  <%= @rfaperiod.open_date %> to <%= @rfaperiod.close_date %>
+  <%= DateRange.new(@rfaperiod.open_date, @rfaperiod.close_date) %><br/>
+  For contracts expiring following <%= @rfaperiod.final_year %> season
 </span>
 </h1>
-For players with contracts expiring following <%= @rfaperiod.final_year %> season
 
 <% if @current_team %>
   <span class="noticebox">
