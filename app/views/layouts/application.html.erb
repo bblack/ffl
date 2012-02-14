@@ -46,7 +46,6 @@
     <% end %>
   </span>
 </div>
-<%= render :partial => 'application/ticker' %>
 <% [:error, :warning, :notice].each do |cat| %>
   <% next unless flash[cat] %>
   <% flash[cat].each do |msg| %>
