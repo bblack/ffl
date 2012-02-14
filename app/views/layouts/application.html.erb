@@ -2,15 +2,12 @@
 <html>
 <head>
   <title>ffl</title>
-  <%= stylesheet_link_tag :all %>
-  <%= javascript_include_tag :all %>
-  <%= csrf_meta_tag %>
-  <link type="text/css" href="/css/smoothness/jquery-ui-1.8.16.custom.css" rel="stylesheet" />
   <link href='http://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
   <link href='http://fonts.googleapis.com/css?family=Armata' rel='stylesheet' type='text/css'>
-	<script type="text/javascript" src="/js/jquery-1.6.2.min.js"></script>
-	<script type="text/javascript" src="/js/jquery-ui-1.8.16.custom.min.js"></script>
-  <%= javascript_src_tag 'widgets/ticker', {} %>
+  <%= stylesheet_link_tag :all, :recursive => true %>
+  <%= javascript_include_tag :all, :recursive => false %>
+  <%= javascript_include_tag 'widgets/ticker', {} %>
+  <%= csrf_meta_tag %>
   
 </head>
 <body style="margin:0px;">
