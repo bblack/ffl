@@ -14,7 +14,7 @@ h1, h2, h3, h4, h5, h6 {
   font-family: Franklin Gothic Medium Cond, sans-serif;
   line-height: 80%; /* Doesn't seem to inherit from h1 in chrome */
   font-size: 75%;
-  color:gray;
+  color:silver;
 }
 
 a {
