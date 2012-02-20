@@ -23,9 +23,10 @@ class ApplicationController < ActionController::Base
   end
   
   def set_current_team
-    teams = Team.where(:owner_id => (@current_user.id rescue nil), :league_id => (@current_league.id rescue nil))
-    @current_team = nil if teams.empty? or teams.many?
-    @current_team = teams.first #if teams.count == 1
+    return if @current_user.nil? or @current_league.nil?
+    teams = Team.where(:owner_id => @current_user.id, :league_id => @current_league.id)
+    return if teams.count != 1
+    @current_team = teams.first
   end
   
   def reject_posts_unless_logged_in
