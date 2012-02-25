@@ -5,6 +5,23 @@
 </span>
 </h1>
 
+<span class="noticebox">
+  <% if @rfaperiod.open? %>
+    This RFA period is <span style="color:green;">open</span>.
+    <% if @rfaperiod.close_date %>
+      <%
+      seconds_left = @rfaperiod.close_date - Time.now
+      time_left_days = (seconds_left / (60*60*24)).to_i
+      time_left_hours = ((seconds_left - time_left_days*60*60*24) / (60*60)).to_i
+      time_left_minutes = ((seconds_left - time_left_days*60*60*24 - time_left_hours*60*60) / 60).to_i
+      %>
+      It ends in <%= time_left_days %> days, <%= time_left_hours %> hours, <%= time_left_minutes %> minutes.
+    <% end %>
+  <% else %>
+    This RFA period is <span style="color:red;">closed</span>.
+  <% end %>
+</span>
+
 <% if @current_team %>
   <span class="noticebox">
     <span style="font-weight:bold;">
