@@ -40,6 +40,8 @@
         <th>Player</th>
         <% if brian? %><th>PV</th><% end %>
         <th>Top bid</th>
+        <% if @rfaperiod.open? %><th>Action</th><% end %>
+        <% if @rfaperiod.rfa_decision_period.id %><th>Keep?</th><% end %>
       </tr>
       <% @rfaperiod.contracts_eligible.select { |c|  c.team_id == team.id }.each do |c| %>
         <tr>
@@ -59,14 +61,22 @@
               <span style="font-size:50%;"><%= max_bid.team.name %></span>
             <% end %>
           </td>
-          <td>
-            <%= form_tag("/rfa_bids", :method => "POST") do %>
-              <%= hidden_field_tag(:rfa_period_id, @rfaperiod.id) %>
-              <%= hidden_field_tag(:player_id, c.player.id) %>
-              <%= text_field_tag(:value, '', :style => "width: 3em;") %>
-              <%= submit_tag("Bid") %>
-            <% end %>
-          </td>
+          <% if @rfaperiod.open? %>
+            <td>
+              <%= form_tag("/rfa_bids", :method => "POST") do %>
+                <%= hidden_field_tag(:rfa_period_id, @rfaperiod.id) %>
+                <%= hidden_field_tag(:player_id, c.player.id) %>
+                <%= text_field_tag(:value, '', :style => "width: 3em;") %>
+                <%= submit_tag("Bid") %>
+              <% end %>
+            </td>
+          <% end %>
+          <% if @rfaperiod.rfa_decision_period.id %>
+            <% decision = @rfaperiod.rfa_decision_period.rfa_decisions.where(:player_id => c.player_id, :team_id => c.team_id).first %>
+            <% if decision and decision.keep == true %><td style='background-color:lightgreen;'>Keep</td><% end %>
+            <% if decision and decision.keep == false %><td style='background-color:salmon;'>Drop</td><% end %>
+            <% if decision.nil? or decision.keep.nil? %><td></td><% end %>
+          <% end %>
         </tr>
       <% end %>
     </table>

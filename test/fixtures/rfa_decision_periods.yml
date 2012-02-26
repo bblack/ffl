@@ -1,0 +1,11 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  rfa_period_id: 1
+  open_date: 2012-02-26 13:52:05
+  close_date: 2012-02-26 13:52:05
+
+two:
+  rfa_period_id: 1
+  open_date: 2012-02-26 13:52:05
+  close_date: 2012-02-26 13:52:05

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120203184711) do
+ActiveRecord::Schema.define(:version => 20120226191549) do
 
   create_table "contracts", :force => true do |t|
     t.integer  "team_id"
@@ -48,6 +48,23 @@ ActiveRecord::Schema.define(:version => 20120203184711) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "value"
+  end
+
+  create_table "rfa_decision_periods", :force => true do |t|
+    t.integer  "rfa_period_id"
+    t.datetime "open_date"
+    t.datetime "close_date"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "rfa_decisions", :force => true do |t|
+    t.integer  "rfa_decision_period_id"
+    t.integer  "player_id"
+    t.integer  "team_id"
+    t.boolean  "keep"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "rfa_periods", :force => true do |t|
