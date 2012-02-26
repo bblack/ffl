@@ -38,6 +38,7 @@
     <table>
       <tr>
         <th>Player</th>
+        <% if brian? %><th>PV</th><% end %>
         <th>Top bid</th>
       </tr>
       <% @rfaperiod.contracts_eligible.select { |c|  c.team_id == team.id }.each do |c| %>
@@ -50,6 +51,7 @@
               </span>
             </a>
           </td>
+          <% if brian? %><td><%= c.value %></td><% end %>
           <td>
             <% max_bid = @bids.where(:player_id => c.player_id).order("value DESC").limit(1).first %>
             <% if max_bid %>
