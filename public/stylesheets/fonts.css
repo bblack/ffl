@@ -1,10 +1,12 @@
 @font-face {
   font-family: Franklin Gothic Demi Cond;
+  font-weight: bold;
   src: local('Franklin Gothic Demi Cond'), url('/fonts/Franklin Gothic Demi Cond.ttf');
 }
 
 @font-face {
   font-family: Franklin Gothic Medium Cond;
+  font-weight: normal;
   src: local('Franklin Gothic Medium Cond'), url('/fonts/Franklin Gothic Medium Cond.ttf');
 }
 
