@@ -85,7 +85,7 @@
             <% decision = @rfaperiod.rfa_decision_period.rfa_decisions.where(:player_id => c.player_id, :team_id => c.team_id).first %>
             <% keep = decision.keep rescue nil %>
             <td style='background-color: <%= {true => 'lightgreen', false => 'salmon', nil => 'lightyellow'}[keep] %>;'>
-              <%= render :partial => 'components/rfa_decider', :locals => { :contract => c } %>
+              <%= render :partial => 'components/rfa_decider', :locals => { :contract => c, :team => @current_team } %>
               <%= decision.keepstring rescue 'undecided' %>
             </td>
           <% end %>

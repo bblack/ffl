@@ -2,7 +2,6 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
   before_filter :set_current_user
   before_filter :set_current_league
-  before_filter :set_current_team
   before_filter :reject_posts_by_nongods
   before_filter :reject_posts_unless_logged_in
   
@@ -20,13 +19,6 @@ class ApplicationController < ActionController::Base
     else
       @current_league = League.includes(:rfa_periods).find(session[:league_id])
     end
-  end
-  
-  def set_current_team
-    return if @current_user.nil? or @current_league.nil?
-    teams = Team.where(:owner_id => @current_user.id, :league_id => @current_league.id)
-    return if teams.count != 1
-    @current_team = teams.first
   end
   
   def reject_posts_unless_logged_in
