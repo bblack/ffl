@@ -1,0 +1,25 @@
+<% if @current_team and contract.team_id == @current_team.id %>
+  <span >
+    <%= form_tag("/rfa_decisions", :method => "POST", :style => 'display:inline;') do %>
+      <%= hidden_field_tag(:rfa_period_id, @rfaperiod.id) %>
+      <%= hidden_field_tag(:player_id, contract.player.id) %>
+      <%= hidden_field_tag(:team_id, @current_team.id) %>
+      <%= hidden_field_tag(:keep, 'true') %>
+      <%= submit_tag("K", :class => 'rfadecider', :style => 'color: lightgreen;') %>
+    <% end %>
+    <%= form_tag("/rfa_decisions", :method => "POST", :style => 'display:inline;') do %>
+      <%= hidden_field_tag(:rfa_period_id, @rfaperiod.id) %>
+      <%= hidden_field_tag(:player_id, contract.player.id) %>
+      <%= hidden_field_tag(:team_id, @current_team.id) %>
+      <%= hidden_field_tag(:keep, 'false') %>
+      <%= submit_tag("D", :class => 'rfadecider', :style => 'color: salmon;') %>
+    <% end %>
+    <%= form_tag("/rfa_decisions", :method => "POST", :style => 'display:inline;') do %>
+      <%= hidden_field_tag(:rfa_period_id, @rfaperiod.id) %>
+      <%= hidden_field_tag(:player_id, contract.player.id) %>
+      <%= hidden_field_tag(:team_id, @current_team.id) %>
+      <%= hidden_field_tag(:keep, '') %>
+      <%= submit_tag("U", :class => 'rfadecider', :style => 'color: lightyellow;') %>
+    <% end %>
+  </span>
+<% end %>

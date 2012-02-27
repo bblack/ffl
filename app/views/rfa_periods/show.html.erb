@@ -22,6 +22,16 @@
   <% end %>
 </span>
 
+<span class="noticebox">
+  <% if @rfaperiod.rfa_decision_period %>
+    Owners may select whether to keep their RFAs from
+    <strong><%= @rfaperiod.rfa_decision_period.open_date || "the beginning of time" %></strong> until
+    <strong><%= @rfaperiod.rfa_decision_period.close_date || "the end of time" %></strong>.
+  <% else %>
+    A time period has not yet been designated for owners to select whether to keep their RFAs.
+  <% end %>
+</span>
+
 <% if @current_team %>
   <span class="noticebox">
     <span style="font-weight:bold;">
@@ -41,7 +51,7 @@
         <% if brian? %><th>PV</th><% end %>
         <th>Top bid</th>
         <% if @rfaperiod.open? %><th>Action</th><% end %>
-        <% if @rfaperiod.rfa_decision_period.id %><th>Keep?</th><% end %>
+        <% if @rfaperiod.rfa_decision_period %><th>Keep?</th><% end %>
       </tr>
       <% @rfaperiod.contracts_eligible.select { |c|  c.team_id == team.id }.each do |c| %>
         <tr>
@@ -71,11 +81,13 @@
               <% end %>
             </td>
           <% end %>
-          <% if @rfaperiod.rfa_decision_period.id %>
+          <% if @rfaperiod.rfa_decision_period %>
             <% decision = @rfaperiod.rfa_decision_period.rfa_decisions.where(:player_id => c.player_id, :team_id => c.team_id).first %>
-            <% if decision and decision.keep == true %><td style='background-color:lightgreen;'>Keep</td><% end %>
-            <% if decision and decision.keep == false %><td style='background-color:salmon;'>Drop</td><% end %>
-            <% if decision.nil? or decision.keep.nil? %><td></td><% end %>
+            <% keep = decision.keep rescue nil %>
+            <td style='background-color: <%= {true => 'lightgreen', false => 'salmon', nil => 'lightyellow'}[keep] %>;'>
+              <%= render :partial => 'components/rfa_decider', :locals => { :contract => c } %>
+              <%= decision.keepstring rescue 'undecided' %>
+            </td>
           <% end %>
         </tr>
       <% end %>

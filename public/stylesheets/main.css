@@ -102,3 +102,10 @@ th {
   margin-bottom:1em;
   margin-top:1em;
 }
+
+.rfadecider {
+  background-color: black;
+  border: none;
+  margin: 0px;
+  cursor: pointer;
+}

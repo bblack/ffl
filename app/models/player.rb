@@ -1,6 +1,10 @@
 class Player < ActiveRecord::Base
   has_many :contracts
   
+  def full_name
+    "#{self.first_name} #{self.last_name}"
+  end
+
   def self.positions_with_photos
     ['QB', 'RB', 'WR', 'TE', 'PK']
   end
