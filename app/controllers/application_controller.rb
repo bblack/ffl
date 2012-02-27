@@ -48,7 +48,8 @@ class ApplicationController < ActionController::Base
       if [
         ['application', 'login'],
         ['users', 'create'],
-        ['rfa_bids', 'create']
+        ['rfa_bids', 'create'],
+        ['rfa_decisions', 'create']
       ].member? [request.path_parameters[:controller], request.path_parameters[:action]]
         # We're cool here
       elsif not @current_user.god_mode
