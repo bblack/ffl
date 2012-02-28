@@ -4,8 +4,8 @@ class RfaPeriodsController < ApplicationController
   end
 
   def show
-    @rfaperiod = RfaPeriod.includes(:rfa_bids, :rfa_decision_period => [:rfa_decisions]).find(params[:id])
-    @bids = @rfaperiod.rfa_bids.includes(:team).where(:rfa_period_id => @rfaperiod.id)
+    @rfaperiod = RfaPeriod.includes(:rfa_bids => [:team], :rfa_decision_period => [:rfa_decisions]).find(params[:id])
+    @bids = @rfaperiod.rfa_bids
 
     if @current_user
       teams = Team.where(:owner_id => @current_user.id, :league_id => @rfaperiod.league_id)

@@ -65,7 +65,7 @@
           </td>
           <% if brian? %><td><%= c.value %></td><% end %>
           <td>
-            <% max_bid = @bids.where(:player_id => c.player_id).order("value DESC").limit(1).first %>
+            <% max_bid = @bids.select{|b| b.player_id == c.player_id}.sort{|x,y| y.value <=> x.value}.first %>
             <% if max_bid %>
               <%= max_bid.value %>
               <span style="font-size:50%;"><%= max_bid.team.name %></span>
@@ -82,7 +82,7 @@
             </td>
           <% end %>
           <% if @rfaperiod.rfa_decision_period %>
-            <% decision = @rfaperiod.rfa_decision_period.rfa_decisions.where(:player_id => c.player_id, :team_id => c.team_id).first %>
+            <% decision = @rfaperiod.rfa_decision_period.rfa_decisions.select{|d| d.player_id == c.player_id and d.team_id == c.team_id}.first %>
             <% keep = decision.keep rescue nil %>
             <td style='background-color: <%= {true => 'lightgreen', false => 'salmon', nil => 'lightyellow'}[keep] %>;'>
               <%= render :partial => 'components/rfa_decider', :locals => { :contract => c, :team => @current_team } %>
