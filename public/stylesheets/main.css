@@ -71,8 +71,7 @@ th {
   font-weight: bold;
   color: white;
   background-color: goldenrod;
-  background-image: url('/images/notice-bg.png');
-  background-repeat: repeat-y;  
+  background-image: url('/images/stripes2.png');
 }
 
 .error {
@@ -81,8 +80,7 @@ th {
   font-weight: bold;
   color: white;
   background-color: firebrick;
-  background-image: url('/images/notice-bg.png');  
-  background-repeat: repeat-y;    
+  background-image: url('/images/stripes2.png');
 }
 
 .notice {
@@ -91,8 +89,7 @@ th {
   font-weight: bold;
   color: white;
   background-color: green;
-  background-image: url('/images/notice-bg.png');
-  background-repeat: repeat-y;  
+  background-image: url('/images/stripes2.png');
 }
 
 .noticebox {
