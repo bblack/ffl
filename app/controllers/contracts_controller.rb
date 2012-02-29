@@ -27,7 +27,7 @@ class ContractsController < ApplicationController
       :player_id => params[:player_id],
       :first_year => params[:first_year].presence || Date.today.year,
       :value => params[:value],
-      :length => params[:length].presence || [(params[:value].to_f/15).round, 1].max # HACK
+      :length => params[:length].presence || [(params[:value].to_f/15).ceil, 1].max # HACK
     )
     
     if @contract.valid?
