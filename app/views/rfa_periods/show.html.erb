@@ -9,26 +9,10 @@
   <% if @rfaperiod.open? %>
     This RFA period is <span style="color:green;">open</span>.
     <% if @rfaperiod.close_date %>
-      <%
-      seconds_left = @rfaperiod.close_date - Time.now
-      time_left_days = (seconds_left / (60*60*24)).to_i
-      time_left_hours = ((seconds_left - time_left_days*60*60*24) / (60*60)).to_i
-      time_left_minutes = ((seconds_left - time_left_days*60*60*24 - time_left_hours*60*60) / 60).to_i
-      %>
-      It ends in <%= time_left_days %> days, <%= time_left_hours %> hours, <%= time_left_minutes %> minutes.
+      It ends in <%= timespan_string(@rfaperiod.close_date - Time.now) %>
     <% end %>
   <% else %>
     This RFA period is <span style="color:red;">closed</span>.
-  <% end %>
-</span>
-
-<span class="noticebox">
-  <% if @rfaperiod.rfa_decision_period %>
-    Owners may select whether to keep their RFAs from
-    <strong><%= @rfaperiod.rfa_decision_period.open_date || "the beginning of time" %></strong> until
-    <strong><%= @rfaperiod.rfa_decision_period.close_date || "the end of time" %></strong>.
-  <% else %>
-    A time period has not yet been designated for owners to select whether to keep their RFAs.
   <% end %>
 </span>
 
@@ -40,6 +24,24 @@
     your team, <%= @current_team.name %>, is allowed to bid up to <%= @current_team.max_rfa_bid(@rfaperiod.id) %>.
   </span>
 <% end %>
+
+<span class="noticebox">
+  <% if @rfaperiod.rfa_decision_period %>
+    Owners may select whether to keep their RFAs from
+    <strong><%= @rfaperiod.rfa_decision_period.open_date || "the beginning of time" %></strong> until
+    <strong><%= @rfaperiod.rfa_decision_period.close_date || "the end of time" %></strong>.
+    <% if @rfaperiod.rfa_decision_period.open? %>
+      The RFA decision period is <span style="color:green;">open</span>.
+      <% if @rfaperiod.rfa_decision_period.close_date %>
+        You have <%= timespan_string(@rfaperiod.rfa_decision_period.close_date - Time.now) %> left.
+      <% end %>
+    <% else %>
+      The RFA decision period is <span style='color:red;'>closed</span>.
+    <% end %>
+  <% else %>
+    A time period has not yet been designated for owners to select whether to keep their RFAs.
+  <% end %>
+</span>
 
 <h2>Eligible players</h2>
 <% @rfaperiod.league.teams.each do |team| %>
