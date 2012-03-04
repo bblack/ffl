@@ -19,5 +19,9 @@ class RfaPeriod < ActiveRecord::Base
   def ended?
     !self.close_date.nil? and self.close_date < Time.now
   end
+
+  def top_bid_for(player_id)
+    self.rfa_bids.select{|b| b.player_id == player_id}.sort{|x,y| y.value <=> x.value}.first
+  end
   
 end

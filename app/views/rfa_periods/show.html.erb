@@ -16,7 +16,7 @@
   <% end %>
 </span>
 
-<% if @current_team %>
+<% if @rfaperiod.open? and @current_team %>
   <span class="noticebox">
     <span style="font-weight:bold;">
       Just so you know,
@@ -43,10 +43,29 @@
   <% end %>
 </span>
 
+<% if (@rfaperiod.rfa_decision_period.open? rescue false) %>
+  <span class="noticebox">
+    <% tentative_payroll = @rfaperiod.rfa_decision_period.tentative_payroll_for_team(@current_team.id) %>
+    <strong>Your tentative payroll is <%= tentative_payroll %></strong> right now.
+    This is the sum of minimum necessary contracts for RFAs you've decided to keep, plus all non-RFA contracts on your team.
+    <% if tentative_payroll > @rfaperiod.league.salary_cap %>
+      This is <span style="color:red;">
+        <%= tentative_payroll - @rfaperiod.league.salary_cap %> over
+      </span>
+      the league salary cap of <%= @rfaperiod.league.salary_cap %>.
+    <% else %>
+      This is <span style="color:green;">
+      <%= - tentative_payroll + @rfaperiod.league.salary_cap %> under
+      </span>
+      the league salary cap of <%= @rfaperiod.league.salary_cap %>.
+    <% end %>
+  </span>
+<% end %> 
+
 <h2>Eligible players</h2>
 <% @rfaperiod.league.teams.each do |team| %>
   <span style="display:inline-block; margin-right:1em;">
-    <h3><%= team.name %></h3>
+    <h3><a href="/teams/<%=team.id%>"><%= team.name %></a></h3>
     <table>
       <tr>
         <th>Player</th>
@@ -67,7 +86,7 @@
           </td>
           <% if brian? %><td><%= c.value %></td><% end %>
           <td>
-            <% max_bid = @bids.select{|b| b.player_id == c.player_id}.sort{|x,y| y.value <=> x.value}.first %>
+            <% max_bid = @rfaperiod.top_bid_for(c.player_id) %>
             <% if max_bid %>
               <%= max_bid.value %>
               <span style="font-size:50%;"><%= max_bid.team.name %></span>
