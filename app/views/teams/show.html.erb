@@ -30,7 +30,7 @@
     <th>First year</th>
     <th>Length</th>
   </tr>
-  <% @team.contracts.each do |c| %>
+  <% @team.contracts.sort { |x,y| (@team.league.positions.index(x.player.position) <=> @team.league.positions.index(y.player.position)) || 0 }.each do |c| %>
     <tr>
       <td>
         <a href="/players/<%= c.player.id %>">

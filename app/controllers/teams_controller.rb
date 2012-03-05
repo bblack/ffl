@@ -1,7 +1,7 @@
 class TeamsController < ApplicationController
 
   def show
-    @team = Team.find(params[:id])
+    @team = Team.includes(:league, :contracts => [:player]).find(params[:id])
   end
 
 end
