@@ -1,5 +1,9 @@
 module ApplicationHelper
 
+  def god?
+    @current_user and @current_user.god_mode
+  end
+
   def brian?
     @current_user and (@current_user.name == 'brian' or @current_user.god_mode)
   end

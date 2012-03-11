@@ -1,4 +1,6 @@
 class ApplicationController < ActionController::Base
+  include ApplicationHelper
+
   protect_from_forgery
   before_filter :set_current_user
   before_filter :set_current_league
@@ -52,7 +54,7 @@ class ApplicationController < ActionController::Base
         ['rfa_decisions', 'create']
       ].member? [request.path_parameters[:controller], request.path_parameters[:action]]
         # We're cool here
-      elsif not @current_user.god_mode
+      elsif not god?
         errors << "You need GOD MODE to do that, man."
       end
     end
