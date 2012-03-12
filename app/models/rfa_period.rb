@@ -29,7 +29,7 @@ class RfaPeriod < ActiveRecord::Base
           :length => self.league.contract_length_for_value(new_contract_value)
           )
 
-        if decision.nil? or (decision.keep != false)
+        if decision and decision.keep
           new_contract.team_id = c.team_id
           new_contract.save! unless dryrun
           new_contracts << new_contract
