@@ -6,7 +6,7 @@ class Team < ActiveRecord::Base
   
   def payroll
     ret = 0
-    contracts.each { |c| ret += c.value }
+    contracts.where(:nixed_at => nil).each { |c| ret += c.value }
     ret
   end
   

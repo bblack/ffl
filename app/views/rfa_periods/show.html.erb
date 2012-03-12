@@ -5,6 +5,12 @@
 </span>
 </h1>
 
+<% if god? %>
+  <%= form_tag("/rfa_periods/#{@rfaperiod.id}/bigredbutton", :method => "POST") do %>
+    <%= submit_tag('BIG RED BUTAN', {:style => 'cursor:pointer; background-image:url("/images/bigredbutton.png"); background-position:center; background-color:transparent; color:#700; text-shadow:0px 1px 0px #e00; border:none; width:122px; height:122px;'}) %>
+  <% end %>
+<% end %>
+
 <span class="noticebox">
   <% if @rfaperiod.open? %>
     This RFA period is <span style="color:green;">open</span>.
@@ -43,7 +49,7 @@
   <% end %>
 </span>
 
-<% if (@rfaperiod.rfa_decision_period.open? rescue false) %>
+<% if (@rfaperiod.rfa_decision_period.open? rescue false) and @current_team %>
   <span class="noticebox">
     <% tentative_payroll = @rfaperiod.rfa_decision_period.tentative_payroll_for_team(@current_team.id) %>
     <strong>Your tentative payroll is <%= tentative_payroll %></strong> right now.

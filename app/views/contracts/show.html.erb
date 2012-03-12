@@ -1,5 +1,12 @@
 
 <h1>Contract #<%= @contract.id %></h1>
+<span class="noticebox">
+  <% if @contract.nixed_at %>
+    This contract was <span style='color:red;'>nixed</span> at <%= @contract.nixed_at %>: "<%= @contract.nix_message %>"
+  <% else %>
+    This contract is <span style='color:green;'>currently active</span>.
+  <% end %>
+</span>
 <a href="/players/<%= @contract.player.id %>" style="text-decoration: none;">
 <%= render :partial => "components/playercard", :locals => {:player_id => @contract.player.id} %>
 </a><br/>

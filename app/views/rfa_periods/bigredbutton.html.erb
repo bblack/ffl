@@ -1,0 +1,23 @@
+This <%= @bigredbutton_results[:dryrun] ? 'was' : 'WAS NOT' %> a dry run.
+
+<table>
+  <tr>
+    <th>Action</th>
+    <th>Player</th>
+    <th>Owner</th>
+    <th>Value</th>
+    <th>Length</th>
+  </tr>
+  <% [:nixed_contracts, :new_contracts].each do |status| %>
+    <% @bigredbutton_results[status].each do |c| %>
+      <tr>
+        <td><%= status %></td>
+        <td><%= c.player.full_name %></td>
+        <td><%= c.team.name %></td>
+        <td><%= c.value %></td>
+        <td><%= c.length %></td>
+        <td><%= c.nixed_at %></td>
+      </tr>
+    <% end %>
+  <% end %>
+</table>

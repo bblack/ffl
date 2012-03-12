@@ -2,7 +2,7 @@ class ContractsController < ApplicationController
   
   def index
     render :text => "No league selected" if @current_league.nil?
-    contracts = @current_league.contracts.includes(:player, :team)
+    contracts = @current_league.contracts.includes(:player, :team).where(:nixed_at => nil)
     retval = "Player,Position,Team,Owner,Contract value,Contract start,Contract length,Contract end"
     retval += "\r\n"
     contracts.each do |c|
@@ -27,7 +27,7 @@ class ContractsController < ApplicationController
       :player_id => params[:player_id],
       :first_year => params[:first_year].presence || Date.today.year,
       :value => params[:value],
-      :length => params[:length].presence || [(params[:value].to_f/15).ceil, 1].max # HACK
+      :length => params[:length].presence || @current_league.contract_length_for_value(params[:value])
     )
     
     if @contract.valid?
@@ -54,8 +54,9 @@ class ContractsController < ApplicationController
   end
   
   def destroy
-    @contract = Contract.includes(:player, :team).find(params[:id]).delete
-    add_flash :warning, false, "Destroyed #{@contract.player.first_name} #{@contract.player.last_name}'s contract with #{@contract.team.name}"
+    @contract = Contract.includes(:player, :team).find(params[:id]).nix
+    @contract.save!
+    add_flash :warning, false, "Nixed #{@contract.player.full_name}'s contract with #{@contract.team.name}"
     redirect_to :back
   end
   

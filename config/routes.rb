@@ -14,6 +14,7 @@ Ffl::Application.routes.draw do
   resources :contracts
   resources :users#, :only => [:create]
   resources :rfa_periods
+  match 'rfa_periods/:id/bigredbutton' => 'rfa_periods#bigredbutton', :via => [:post]
   resources :rfa_bids
   resources :rfa_decisions
 
