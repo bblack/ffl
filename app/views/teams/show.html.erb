@@ -55,3 +55,26 @@
     </tr>
   <% end %>
 </table>
+
+<% if @team.espn? %>
+  <span class="noticebox">
+    This team reflects an ESPN team
+    <a href="<%= @team.espn_url %>">here</a>.
+  </span>
+  <% espn_diff = @team.compare_to_espn %>
+
+  <table style="display:inline-table;">
+    <tr><th>Only on ESPN</th></tr>
+  <% espn_diff[:espn].each do |p| %>
+    <tr><td><%= p %></td></tr>
+  <% end %>
+  </table>
+  
+  <table style="display:inline-table;">
+    <tr><th>Only on FFL</th></tr>
+  <% espn_diff[:db].each do |p| %>
+    <tr><td><%= p %></td></tr>
+  <% end %>
+  </table>
+
+<% end %>

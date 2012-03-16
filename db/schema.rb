@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120312012110) do
+ActiveRecord::Schema.define(:version => 20120313035620) do
 
   create_table "contracts", :force => true do |t|
     t.integer  "team_id"
@@ -30,6 +30,7 @@ ActiveRecord::Schema.define(:version => 20120312012110) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "salary_cap"
+    t.string   "espn_id"
   end
 
   create_table "players", :force => true do |t|
@@ -85,6 +86,7 @@ ActiveRecord::Schema.define(:version => 20120312012110) do
     t.datetime "updated_at"
     t.integer  "league_id"
     t.integer  "owner_id"
+    t.string   "espn_id"
   end
 
   create_table "users", :force => true do |t|
