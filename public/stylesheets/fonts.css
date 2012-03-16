@@ -24,3 +24,14 @@
   font-family: Zurich Bold Condensed BT;
   src: local('Zurich Bold Condensed BT'), url('/fonts/Zurich Bold Condensed BT.ttf');
 }
+
+@font-face {
+  font-family: League Gothic;
+  src: local('League Gothic'), url('/fonts/League_Gothic-webfont.woff');
+}
+
+@font-face {
+  font-family: League Gothic;
+  font-weight: bold;
+  src: local('League Gothic'), url('/fonts/League_Gothic-webfont.woff');
+}
