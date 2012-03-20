@@ -15,6 +15,7 @@ class RfaPeriodsController < ApplicationController
     def set_members
       @rfaperiod = RfaPeriod.includes(:league, :rfa_bids => [:team], :rfa_decision_period => [:rfa_decisions]).find(params[:id])
       @bids = @rfaperiod.rfa_bids
+      change_current_league(@rfaperiod.league_id)
 
       if @current_user
         teams = Team.includes(:contracts).where(:owner_id => @current_user.id, :league_id => @rfaperiod.league_id)

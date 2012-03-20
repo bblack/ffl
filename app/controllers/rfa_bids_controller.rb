@@ -3,6 +3,7 @@ class RfaBidsController < ApplicationController
   
   def set_current_rfa_period
     @rfa_period = params[:rfa_period_id] ? RfaPeriod.find(params[:rfa_period_id]) : nil
+    change_current_league(@rfa_period.league_id)
   end
   
   def index

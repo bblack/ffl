@@ -51,6 +51,7 @@ class ContractsController < ApplicationController
   
   def show
     @contract ||= Contract.find(params[:id])
+    change_current_league(@contract.team.league_id)
   end
   
   def destroy

@@ -7,6 +7,8 @@ class RfaDecisionsController < ApplicationController
     elsif params[:rfa_period_id]
       @rfa_decision_period = RfaPeriod.find(params[:rfa_period_id]).rfa_decision_period
     end
+
+    change_current_league(@rfa_decision_period.rfa_period.league_id)
   end
 
   def create

@@ -22,6 +22,20 @@ class ApplicationController < ActionController::Base
       @current_league = League.includes(:rfa_periods).find(session[:league_id])
     end
   end
+
+  def change_current_league(new_league_id)
+    league = League.where(:id => new_league_id).first
+
+    if league.nil?
+      session[:league_id] = nil
+      add_flash :warning, true, "You are not browsing a league anymore"
+    else
+      session[:league_id] = league.id
+      add_flash :notice, true, "You are now browsing league '#{league.name}'"
+    end
+    
+    set_current_league()
+  end
   
   def reject_posts_unless_logged_in
     errors = []
