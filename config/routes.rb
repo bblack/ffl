@@ -11,6 +11,7 @@ Ffl::Application.routes.draw do
   resources :players
   resources :leagues
   resources :teams
+  match 'teams/:id/espn_compare' => 'teams#espn_compare', :via => [:get]
   resources :contracts
   resources :users#, :only => [:create]
   resources :rfa_periods
