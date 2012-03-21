@@ -19,14 +19,12 @@
       <% else %>
         <a href="/leagues" style="color: salmon; font-style:italic;">No league &blacktriangledown;</a>
       <% end %>
-      <% if @current_user %>
         <div id='user-team-selector' >
           <a href="/leagues/-1" style="font-style:italic;">No league</a>
-          <% @current_user.leagues.each do |l| %>
+          <% (@current_user.leagues rescue []).each do |l| %>
             <a href="/leagues/<%= l.id %>"><%= l.name %></a>
           <% end %>
         </div>
-      <% end %>
     </li>
     <li><a href="/players">players</a></li>
     <% if @current_league %>

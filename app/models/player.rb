@@ -20,7 +20,7 @@ class Player < ActiveRecord::Base
     playerids = []
     matches.each {|m| playerids << m[0] if not playerids.member? m[0]}
     if playerids.count != 1
-      Rails.logger.error "Player #{self.id} (#{self.first_name} #{self.last_name}) returned #{playerids.count} ids from ESPN"
+      raise StandardError.new("Player #{self.id} (#{self.first_name} #{self.last_name}) returned #{playerids.count} ids from ESPN")
     end
     playerids[0]
   end
