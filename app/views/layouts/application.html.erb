@@ -13,11 +13,19 @@
 <div id="header">
   <ul>
     <li><a href="/" style="color: white; font-weight: bold;">FFL</a></li>
-    <li>
+    <li id='navbar-league-li'>
       <% if @current_league %>
-        <a href="/leagues" style="color: lightgreen;"><%= @current_league.name %></a>
+        <a href="/leagues" style="color: lightgreen; display:block;"><%= @current_league.name %> &blacktriangledown;</a>
       <% else %>
-        <a href="/leagues" style="color: salmon; font-style:italic;">No league selected</a>
+        <a href="/leagues" style="color: salmon; font-style:italic;">No league &blacktriangledown;</a>
+      <% end %>
+      <% if @current_user %>
+        <div id='user-team-selector' >
+          <a href="/leagues/-1" style="font-style:italic;">No league</a>
+          <% @current_user.leagues.each do |l| %>
+            <a href="/leagues/<%= l.id %>"><%= l.name %></a>
+          <% end %>
+        </div>
       <% end %>
     </li>
     <li><a href="/players">players</a></li>

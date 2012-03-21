@@ -3,3 +3,13 @@
 function fieldValueChanged(field) {
   field.style.backgroundColor = 'pink';
 }
+
+$(document).ready(function(){
+  $("#navbar-league-li").mouseenter(function(){
+    $("#user-team-selector").css('display', 'table');
+  });
+
+  $("#navbar-league-li").mouseleave(function(event){
+    $("#user-team-selector").css('display', 'none');
+  });
+});

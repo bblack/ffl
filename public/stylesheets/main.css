@@ -62,6 +62,23 @@ th {
   display: inline-block;
 }
 
+#user-team-selector {
+  display: none;
+  position: absolute;
+  margin-left: -.5em;
+  background-color: #303030;
+  box-shadow: 0px 0px 8px black;
+}
+
+#user-team-selector a {
+  display: block;
+  padding: .5em 2em .5em .5em;
+}
+
+#user-team-selector a:hover {
+  background-color:#505050;
+}
+
 .warning {
   padding: 1em;
   margin-bottom: 1px;
@@ -85,7 +102,7 @@ th {
   margin-bottom: 1px;
   font-weight: bold;
   color: white;
-  background-color: green;
+  background-color: limegreen;
   background-image: url('/images/stripes2.png');
 }
 
