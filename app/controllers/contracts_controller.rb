@@ -55,7 +55,8 @@ class ContractsController < ApplicationController
   end
   
   def destroy
-    @contract = Contract.includes(:player, :team).find(params[:id]).nix
+    @contract = Contract.includes(:player, :team).find(params[:id])
+    @contract.nix(params[:msg])
     @contract.save!
     add_flash :warning, false, "Nixed #{@contract.player.full_name}'s contract with #{@contract.team.name}"
     redirect_to :back

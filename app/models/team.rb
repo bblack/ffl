@@ -54,7 +54,7 @@ class Team < ActiveRecord::Base
         'full_name' => el.inner_text
         } if el.inner_text.present?
     end
-    players_in_db = Set.new(self.players.collect{|p| {'espn_id' => p.espn_id.to_s, 'full_name' => p.full_name}})
+    players_in_db = Set.new(self.contracts.includes(:player).where(:nixed_at => nil).collect{|c| {'espn_id' => c.player.espn_id.to_s, 'full_name' => c.player.full_name}})
     players_only_on_espn = players_on_espn.select{|p| players_in_db.none? {|q| q['espn_id'] == p['espn_id'] }}
     players_only_in_db = players_in_db.select{|p| players_on_espn.none? {|q| q['espn_id'] == p['espn_id'] }}
 
