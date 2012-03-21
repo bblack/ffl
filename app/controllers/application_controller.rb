@@ -29,7 +29,7 @@ class ApplicationController < ActionController::Base
     if league.nil?
       session[:league_id] = nil
       add_flash :warning, true, "You are not browsing a league anymore"
-    else
+    elsif session[:league_id] != league.id
       session[:league_id] = league.id
       add_flash :notice, true, "You are now browsing league '#{league.name}'"
     end
