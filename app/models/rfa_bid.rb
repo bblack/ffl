@@ -35,5 +35,11 @@ class RfaBid < ActiveRecord::Base
     rfa = RfaPeriod.find value
     model.errors.add(att, " must be a currently open RFA period") if not rfa.open?
   end
+
+  validates_each :team_id do |model, att, value|
+    if self.rfa_period.league.get_contract_for_player(model.player_id).team_id == value
+      model.errors.add(att, " must not be the same team who currently owns the player")
+    end
+  end
   
 end
