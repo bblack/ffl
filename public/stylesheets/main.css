@@ -8,12 +8,17 @@ h1, h2, h3, h4, h5, h6 {
 
 /* For subtitling within a h1, h2, etc. element */
 .subtitle {
-  display:block;
-  font-weight: normal;
+  display:inline-block;
+  padding-left: .5em;
   font-size: 50%;
+  height: 2em;
+  position: relative;
+  top: -.25em;
+  vertical-align: middle;
+  text-transform: uppercase;
+  font-weight: normal;
   color:silver;
-  margin-top: -4px;
-  line-height: 90%;
+  border-left: 1px solid silver;
 }
 
 a {
