@@ -16,12 +16,4 @@
     </span>
     I even made a nice little <a href="/contracts">spreadsheet</a> for you with all the player contracts.
   </span>
-  <h2>Teams</h2>
-  <table>
-    <% @current_league.teams.each do |team| %>
-      <tr>
-        <td><%= team.name %>, <%= team.owner ? team.owner.name : "Unowned" %></td>
-      </tr>
-    <% end %>
-  </table>
 <% end %>
