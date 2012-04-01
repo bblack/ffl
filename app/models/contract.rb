@@ -15,7 +15,7 @@ class Contract < ActiveRecord::Base
   end
 
   def one_contract_per_player_per_league
-    team_ids_on_league = Team.where :league_id => self.team.league.id
+    team_ids_on_league = Team.where(:league_id => self.team.league.id) rescue [] # Hack for team_id == deleted team
     existing_contracts = Contract.where :player_id => self.player.id, :team_id => team_ids_on_league, :nixed_at => nil
     existing_contracts.each do |contract|
       if contract.id != self.id

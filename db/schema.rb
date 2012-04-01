@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120313035620) do
+ActiveRecord::Schema.define(:version => 20120329015855) do
 
   create_table "contracts", :force => true do |t|
     t.integer  "team_id"
@@ -23,6 +23,8 @@ ActiveRecord::Schema.define(:version => 20120313035620) do
     t.datetime "updated_at"
     t.datetime "nixed_at"
     t.string   "nix_message"
+    t.datetime "started_at"
+    t.text     "started_msg"
   end
 
   create_table "leagues", :force => true do |t|
