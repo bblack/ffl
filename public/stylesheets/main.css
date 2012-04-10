@@ -6,6 +6,14 @@ h1, h2, h3, h4, h5, h6 {
   
 }
 
+input[type="submit"] {
+  border: 1px solid gray;
+  background-image: -webkit-linear-gradient(white,silver);
+  border-radius: .25em;
+  padding: .5em;
+  cursor: pointer;
+}
+
 /* For subtitling within a h1, h2, etc. element */
 .subtitle {
   display:inline-block;
