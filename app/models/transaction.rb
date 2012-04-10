@@ -2,10 +2,13 @@ class Transaction < ActiveRecord::Base
   has_many :moves
   has_many :comments
   belongs_to :user
+  validate :cant_complete_if_already_completed
   validates_associated :moves
 
   def complete!
     transaction do
+      prev_completed_on = (Transaction.find(id).completed_on rescue nil)
+      raise StandardError.new "Can't complete the transaction since it's already been completed" if prev_completed_on
       moves.each do |move|
         if move.old_contract_id
           move.old_contract.nix("Nixed with the completion of transaction ##{self.id}")
