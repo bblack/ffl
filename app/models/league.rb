@@ -2,10 +2,14 @@ class League < ActiveRecord::Base
   has_many :teams
   has_many :contracts, :through => :teams
   has_many :rfa_periods
+
+  def active_contracts
+    contracts.where(:nixed_at => nil).where("started_at is not null")
+  end
   
   def get_contract_for_player(player_id)
     team_ids = self.teams.collect { |t| t.id }
-    contracts = Contract.where(:player_id => player_id, :team_id => team_ids, :nixed_at => nil)
+    contracts = active_contracts.where(:player_id => player_id)
     raise "Huh, there's more than one contract in this league for player no. #{player_id}" if contracts.count > 1
     return contracts.first
   end

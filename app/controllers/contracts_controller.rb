@@ -2,7 +2,7 @@ class ContractsController < ApplicationController
   
   def index
     render :text => "No league selected" if @current_league.nil?
-    contracts = @current_league.contracts.includes(:player, :team).where(:nixed_at => nil)
+    contracts = @current_league.active_contracts.includes(:player, :team)
     retval = "Player,Position,Team,Owner,Contract value,Contract start,Contract length,Contract end"
     retval += "\r\n"
     contracts.each do |c|

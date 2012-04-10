@@ -21,14 +21,14 @@ class RfaDecisionPeriod < ActiveRecord::Base
     team = Team.find(team_id)
 
     nonrfas = 0
-    team.contracts.where(:nixed_at => nil).each do |c|
+    team.active_contracts.each do |c|
       unless self.rfa_period.contracts_eligible.any? { |ce| ce.player_id == c.player_id }
         nonrfas += c.value 
       end
     end
     
     rfakeeps = 0
-    team.contracts.where(:nixed_at => nil).each do |c|
+    team.active_contracts.each do |c|
       if self.rfa_decisions.any? { |d| d.player_id == c.player_id and d.keep }
         top_bid = self.rfa_period.top_bid_for(c.player_id)
         rfakeeps += top_bid.nil? ? 1 : top_bid.value

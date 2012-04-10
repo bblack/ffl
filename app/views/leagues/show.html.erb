@@ -16,4 +16,7 @@
     </span>
     I even made a nice little <a href="/contracts">spreadsheet</a> for you with all the player contracts.
   </span>
+  <%= form_tag(transactions_path, :method => "POST") do %>
+    <%= submit_tag("Start working on a new transaction") %>
+  <% end %>
 <% end %>

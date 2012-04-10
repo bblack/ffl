@@ -2,13 +2,17 @@ require 'open-uri'
 
 class Team < ActiveRecord::Base
   has_many :contracts
-  has_many :players, :through => :contracts # but should exclude nixed contracts!
+  #has_many :players, :through => :contracts # but should exclude nixed contracts!
   belongs_to :league
   belongs_to :owner, :class_name => 'User', :foreign_key => 'owner_id'
+
+  def active_contracts
+    contracts.includes(:player).where(:nixed_at => nil).where("started_at is not null")
+  end
   
   def payroll
     ret = 0
-    contracts.where(:nixed_at => nil).each { |c| ret += c.value }
+    active_contracts.each { |c| ret += c.value }
     ret
   end
   
@@ -54,7 +58,7 @@ class Team < ActiveRecord::Base
         'full_name' => el.inner_text
         } if el.inner_text.present?
     end
-    players_in_db = Set.new(self.contracts.includes(:player).where(:nixed_at => nil).collect{|c| {'espn_id' => c.player.espn_id.to_s, 'full_name' => c.player.full_name}})
+    players_in_db = Set.new(self.active_contracts.includes(:player).collect{|c| {'espn_id' => c.player.espn_id.to_s, 'full_name' => c.player.full_name}})
     players_only_on_espn = players_on_espn.select{|p| players_in_db.none? {|q| q['espn_id'] == p['espn_id'] }}
     players_only_in_db = players_in_db.select{|p| players_on_espn.none? {|q| q['espn_id'] == p['espn_id'] }}
 

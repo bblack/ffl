@@ -14,7 +14,7 @@
         <td><a href="/teams/<%= team.id %>"><%= team.name %></a></td>
         <td><%= team.payroll %></td>
         <% @current_league.positions.each do |p| %>
-          <td><%= team.players.where(:position => p).count %></td>
+          <td><%= team.active_contracts.select{|c| c.player.position == p}.count %></td>
         <% end %>
       </tr>
     <% end %>

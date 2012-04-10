@@ -6,21 +6,42 @@ class Contract < ActiveRecord::Base
   validate :one_contract_per_player_per_league
   validates :player_id, :first_year, :value, :length, :presence => true
   validates_each :value do |model, att, value|
-    model.errors.add(att, 'must be positive') if value <= 0
+    model.errors.add(att, 'must be positive') if (value <= 0) rescue false
   end
+  validate :cant_re_nix_or_re_start
   
+  def active?
+    !self.started_at.nil? and self.nixed_at.nil?
+  end
+
+  def cant_re_nix_or_re_start
+    if self.id
+      contract_in_db = Contract.find self.id
+      unless [nil, self.nixed_at].member?(contract_in_db.nixed_at)
+        errors.add(:nixed_at, "can't be changed after it's nixed")
+      end
+      unless [nil, self.started_at].member?(contract_in_db.started_at)
+        errors.add(:started_at, "can't be changed after it's started")
+      end
+    end
+  end
+
+  def start(msg=nil)
+    self.started_at = Time.now
+    self.started_msg = msg
+  end
+
   def nix(msg=nil)
     self.nixed_at = Time.now
     self.nix_message = msg
   end
 
   def one_contract_per_player_per_league
-    team_ids_on_league = Team.where(:league_id => self.team.league.id) rescue [] # Hack for team_id == deleted team
-    existing_contracts = Contract.where :player_id => self.player.id, :team_id => team_ids_on_league, :nixed_at => nil
-    existing_contracts.each do |contract|
-      if contract.id != self.id
-        errors.add(:player_id, "cannot be the same as another contract in the same league")
-      end
+    league_active_contracts = self.team.league.active_contracts
+      .where(:player_id => self.player_id)
+      .where("contracts.id != ?", self.id)
+    if self.active? and league_active_contracts.any?
+      errors.add(:player_id, "cannot be the same as another contract in the same league")
     end
   end
   

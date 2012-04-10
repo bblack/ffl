@@ -30,7 +30,7 @@
     <th>First year</th>
     <th>Length</th>
   </tr>
-  <% @team.contracts.where(:nixed_at => nil).sort { |x,y| (@team.league.positions.index(x.player.position) <=> @team.league.positions.index(y.player.position)) || 0 }.each do |c| %>
+  <% @team.active_contracts.sort { |x,y| (@team.league.positions.index(x.player.position) <=> @team.league.positions.index(y.player.position)) || 0 }.each do |c| %>
     <tr>
       <td>
         <a href="/players/<%= c.player.id %>">
@@ -47,12 +47,14 @@
       <td>
         <%= c.length %>
       </td>
+      <% if brian? %>
       <td>
         <%= form_tag("/contracts/#{c.id}", :method => "DELETE") do %>
           <%= text_field_tag(:msg) %>
           <%= submit_tag("Comment and nix", :confirm => "Are you sure you want to drop #{c.player.first_name} #{c.player.last_name}?") %>
         <% end %>
       </td>
+      <% end %>
     </tr>
   <% end %>
 </table>

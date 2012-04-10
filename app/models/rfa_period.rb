@@ -58,6 +58,7 @@ class RfaPeriod < ActiveRecord::Base
   def contracts_eligible
     self.league.contracts.includes(:player)
       .where("first_year + length - 1 <= ?", self.final_year)
+      .where("started_at is not null")
       .where((self.close_date ? "nixed_at IS NULL OR nixed_at >= ?" : "nixed_at IS NULL" ), self.close_date) # For showing old RFA periods accurately. Pay attention to the conditional/sql string substitution
   end
   

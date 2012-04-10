@@ -18,6 +18,9 @@ Ffl::Application.routes.draw do
   match 'rfa_periods/:id/bigredbutton' => 'rfa_periods#bigredbutton', :via => [:post]
   resources :rfa_bids
   resources :rfa_decisions
+  resources :transactions
+  match 'transactions/:id/complete' => 'transactions#complete', :via => [:post]
+  resources :moves
 
   # Sample of named route:
   #   match 'products/:id/purchase' => 'catalog#purchase', :as => :purchase

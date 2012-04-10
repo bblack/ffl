@@ -1,0 +1,11 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  transaction_id: 1
+  old_contract_id: 1
+  new_contract_id: 1
+
+two:
+  transaction_id: 1
+  old_contract_id: 1
+  new_contract_id: 1
