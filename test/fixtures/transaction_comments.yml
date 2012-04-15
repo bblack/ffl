@@ -1,9 +1,9 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
 one:
-  comment: MyText
   transaction_id: 1
+  text: MyText
 
 two:
-  comment: MyText
   transaction_id: 1
+  text: MyText

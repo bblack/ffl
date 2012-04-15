@@ -1,6 +1,6 @@
 class Transaction < ActiveRecord::Base
   has_many :moves
-  has_many :comments
+  has_many :comments, :class_name => 'TransactionComment', :foreign_key => 'transaction_id'
   belongs_to :user
   belongs_to :league
   validates_associated :moves

@@ -28,6 +28,9 @@
           <% t.moves.each do |m| %>
             <%= description_for(m) %><br/>
           <% end %>
+          <% t.comments.each do |c| %>
+            <div style='color:silver; font-style:italic;'>* <%= c.text %></div>
+          <% end %>
         </td>
       </tr>
     <% end %>
