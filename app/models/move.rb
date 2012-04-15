@@ -10,7 +10,17 @@ class Move < ActiveRecord::Base
   validate :old_and_new_must_have_same_league
   validate :no_other_move_may_have_same_player
   validate :cant_save_after_transaction_completed
+  validate :contracts_belong_to_league
   before_destroy :cant_destroy_after_transaction_completed
+
+  def contracts_belong_to_league
+    if new_contract_id and new_contract.team.league_id != transaction.league_id
+      errors.add(:new_contract, "must belong to the same league as the transaction")
+    end
+    if old_contract_id and old_contract.team.league_id != transaction.league_id
+      errors.add(:old_contract, "must belong to the same league as the transaction")
+    end
+  end
 
   def cant_destroy_after_transaction_completed
     raise StandardError.new("Can't destroy move after its transaction is complete") if self.transaction.completed?

@@ -1,11 +1,14 @@
 class TransactionsController < ApplicationController
 
   def index
-    @transactions = Transaction.where(:user_id => @current_user.id, :completed_on => nil)
+    @transactions = Transaction.where(
+      :user_id => @current_user.id,
+      :league_id => @current_league.id,
+      :completed_on => nil)
   end
 
   def create
-    new_transaction = Transaction.create(:user_id => @current_user.id)
+    new_transaction = Transaction.create(:user_id => @current_user.id, :league_id => @current_league.id)
     add_flash(:notice, false, "Transaction ##{new_transaction.id} is created and ready for you to work on.")
     redirect_to transaction_path(new_transaction.id)
   end

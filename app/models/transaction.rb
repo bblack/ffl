@@ -2,7 +2,7 @@ class Transaction < ActiveRecord::Base
   has_many :moves
   has_many :comments
   belongs_to :user
-  validate :cant_complete_if_already_completed
+  belongs_to :league
   validates_associated :moves
 
   def complete!
