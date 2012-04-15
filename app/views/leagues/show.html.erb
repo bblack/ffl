@@ -16,7 +16,25 @@
     </span>
     I even made a nice little <a href="/contracts">spreadsheet</a> for you with all the player contracts.
   </span>
+  <% transaction_count = 10 %>
+  <h2>Completed transactions (Last <%= transaction_count %>)</h2>
+  <table>
+    <% @current_league.completed_transactions(transaction_count).each do |t| %>
+      <tr>
+        <td style="border:none;">
+          <div style="background-color:silver;">
+            <%= t.completed_on %> : <%= t.moves.count %> moves
+          </div>
+          <% t.moves.each do |m| %>
+            <%= description_for(m) %><br/>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+  <% if brian? %>
   <%= form_tag(transactions_path, :method => "POST") do %>
     <%= submit_tag("Start working on a new transaction") %>
+  <% end %>
   <% end %>
 <% end %>
