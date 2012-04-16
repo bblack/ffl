@@ -16,7 +16,7 @@
   <%= hidden_field_tag :player_id, '', :style => "width: 4em;" %>
   <%= hidden_field_tag :transaction_id, @transaction.id %>
   <%= select_tag(:type, options_for_select([['Add', 'add'], ['Drop', 'drop'], ['Trade', 'trade']])) %>
-  <%= render :partial => "components/teampicker", :locals => {:league_id => @current_league.id} %>
+  <%= render :partial => "components/teampicker", :locals => {:league_id => @transaction.league_id} %>
   <%= submit_tag "Add move" %>
   <style>
     .ui-autocomplete-loading { background: white url('/images/tiny-throbber.gif') right center no-repeat; }

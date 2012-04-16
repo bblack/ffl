@@ -15,6 +15,7 @@ class TransactionsController < ApplicationController
 
   def show
     @transaction = Transaction.find params[:id]
+    change_current_league @transaction.league_id
   end
 
   # Non-crud below
