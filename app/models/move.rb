@@ -7,12 +7,12 @@ class Move < ActiveRecord::Base
   validates_associated :old_contract
   # ghetto hack
   after_validation do |move|
-    move.old_contract.errors.each {|k,v| move.errors[:base] += "#{k} #{v}"} if move.old_contract
+    move.old_contract.errors.each {|k,v| move.errors[:base] += v.collect{|e|"#{k} #{e}"}} if move.old_contract
   end
   validates_associated :new_contract
   # ghetto hack
   after_validation do |move|
-    move.new_contract.errors.each {|k,v| move.errors[:base] += "#{k} #{v}"} if move.new_contract
+    move.new_contract.errors.each {|k,v| move.errors[:base] += v.collect{|e|"#{k} #{e}"}} if move.new_contract
   end
   validate :old_and_new_must_have_same_player
   validate :old_and_new_must_have_same_league
