@@ -17,10 +17,10 @@ class Contract < ActiveRecord::Base
   def cant_re_nix_or_re_start
     if self.id
       contract_in_db = Contract.find self.id
-      unless [nil, self.nixed_at].member?(contract_in_db.nixed_at)
+      unless contract_in_db.nixed_at.nil? or contract_in_db.nixed_at.to_time.eql?(self.nixed_at)
         errors.add(:nixed_at, "can't be changed after it's nixed")
       end
-      unless [nil, self.started_at].member?(contract_in_db.started_at)
+      unless contract_in_db.started_at.nil? or contract_in_db.started_at.to_time.eql?(self.started_at)
         errors.add(:started_at, "can't be changed after it's started")
       end
     end
