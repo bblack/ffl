@@ -5,7 +5,15 @@ class Move < ActiveRecord::Base
   # Validating contracts is e.g. to ensure that nobody has signed a player on this move
   # since this move was created
   validates_associated :old_contract
+  # ghetto hack
+  after_validation do |move|
+    move.old_contract.errors.each {|k,v| move.errors[:base] += "#{k} #{v}"} if move.old_contract
+  end
   validates_associated :new_contract
+  # ghetto hack
+  after_validation do |move|
+    move.new_contract.errors.each {|k,v| move.errors[:base] += "#{k} #{v}"} if move.new_contract
+  end
   validate :old_and_new_must_have_same_player
   validate :old_and_new_must_have_same_league
   validate :no_other_move_may_have_same_player
