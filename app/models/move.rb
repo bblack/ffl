@@ -4,28 +4,14 @@ class Move < ActiveRecord::Base
   belongs_to :new_contract, :class_name => 'Contract', :foreign_key => 'new_contract_id'
   # Validating contracts is e.g. to ensure that nobody has signed a player on this move
   # since this move was created
-  #validates_associated :old_contract
-  #validates_associated :new_contract
+  validates_associated :old_contract
+  validates_associated :new_contract
   validate :old_and_new_must_have_same_player
   validate :old_and_new_must_have_same_league
   validate :no_other_move_may_have_same_player
   validate :cant_save_after_transaction_completed
   validate :contracts_belong_to_league
-  validate :contracts_validate
   before_destroy :cant_destroy_after_transaction_completed
-
-  def contracts_validate
-    [:old_contract, :new_contract].each do |c|
-      contract = self.send(c)
-      if contract.invalid?
-        contracs.errors.each do |contract_att, error_arr|
-          error_arr.each do |e|
-            self.errors[:base] << "#{c} #{contract_att} #{e}"
-          end
-        end
-      end
-    end
-  end
 
   def contracts_belong_to_league
     if new_contract_id and new_contract.team.league_id != transaction.league_id
