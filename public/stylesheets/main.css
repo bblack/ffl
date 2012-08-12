@@ -92,7 +92,7 @@ th {
 }
 
 .warning {
-  padding: 1em;
+  padding: .5em;
   margin-bottom: 1px;
   font-weight: bold;
   color: white;
@@ -101,7 +101,7 @@ th {
 }
 
 .error {
-  padding: 1em;
+  padding: .5em;
   margin-bottom: 1px;
   font-weight: bold;
   color: white;
@@ -110,7 +110,7 @@ th {
 }
 
 .notice {
-  padding: 1em;
+  padding: .5em;
   margin-bottom: 1px;
   font-weight: bold;
   color: white;
