@@ -1,0 +1,11 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  draft_nomination_id: 1
+  team_id: 1
+  cost: 1
+
+two:
+  draft_nomination_id: 1
+  team_id: 1
+  cost: 1

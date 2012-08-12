@@ -1,0 +1,15 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  name: MyString
+  type: MyString
+  state: MyString
+  current_round: 1
+  current_pick_in_round: 1
+
+two:
+  name: MyString
+  type: MyString
+  state: MyString
+  current_round: 1
+  current_pick_in_round: 1

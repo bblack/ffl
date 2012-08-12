@@ -1,0 +1,17 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  league_id: 1
+  draft_id: 1
+  from_team_id: 1
+  to_team_id: 1
+  orig_team_id: 1
+  round: 1
+
+two:
+  league_id: 1
+  draft_id: 1
+  from_team_id: 1
+  to_team_id: 1
+  orig_team_id: 1
+  round: 1

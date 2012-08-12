@@ -1,0 +1,13 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  round: 1
+  pick_in_round: 1
+  team_id: 1
+  player_id: 1
+
+two:
+  round: 1
+  pick_in_round: 1
+  team_id: 1
+  player_id: 1

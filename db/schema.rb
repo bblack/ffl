@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120415234359) do
+ActiveRecord::Schema.define(:version => 20120812211224) do
 
   create_table "contracts", :force => true do |t|
     t.integer  "team_id"
@@ -25,6 +25,44 @@ ActiveRecord::Schema.define(:version => 20120415234359) do
     t.string   "nix_message"
     t.datetime "started_at"
     t.text     "started_msg"
+  end
+
+  create_table "draft_acquisitions", :force => true do |t|
+    t.integer  "draft_nomination_id"
+    t.integer  "team_id"
+    t.integer  "cost"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "draft_nominations", :force => true do |t|
+    t.integer  "round"
+    t.integer  "pick_in_round"
+    t.integer  "team_id"
+    t.integer  "player_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "draft_pick_transactions", :force => true do |t|
+    t.integer  "league_id"
+    t.integer  "draft_id"
+    t.integer  "from_team_id"
+    t.integer  "to_team_id"
+    t.integer  "orig_team_id"
+    t.integer  "round"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "drafts", :force => true do |t|
+    t.string   "name"
+    t.string   "type"
+    t.string   "state"
+    t.integer  "current_round"
+    t.integer  "current_pick_in_round"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "leagues", :force => true do |t|
