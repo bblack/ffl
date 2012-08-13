@@ -31,8 +31,8 @@ class SnakeDraft < Draft
       :team_id => team_id,
       :player_id => player_id)
     da = DraftAcquisition.create(
-      :draft_nomination_id => dn.id
-      :team_id => team_id
+      :draft_nomination_id => dn.id,
+      :team_id => team_id,
       :cost => 1)
 
     advance!

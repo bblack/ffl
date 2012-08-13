@@ -1,15 +1,20 @@
 class Draft < ActiveRecord::Base
-  #belongs_to :league
+  belongs_to :league
 
-  attr_reader :type
+  before_create {|d| d.state = 'nys'}
+  
   attr_reader :teams_ordered
 
-  def initialize
-    # Ordered for first round (just by name while debugging)
-    @teams_ordered = League.find(1).teams.sort_by! &:name
+  def start!(order_of_teams)
+    if order_of_teams.sort != league.teams.collect(&:id).sort
+      raise StandardError.new("Please pass an ordered list of all team ids in the league")
+    end
+
+    @teams_ordered = order_of_teams
     current_round = 0
-    current_pick_in_round  = 0
+    current_pick_in_round = 0
   end
+
 
   def current_pick
     [current_round, current_pick_in_round]
