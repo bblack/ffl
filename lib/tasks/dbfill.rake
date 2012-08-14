@@ -4,7 +4,7 @@ namespace :db do
   task :fill => :environment do
     require 'net/http'
     
-    responsebody = Net::HTTP.get(URI.parse("http://football.myfantasyleague.com/2011/player_listing?POSITION=*&TEAM=*"))
+    responsebody = Net::HTTP.get(URI.parse("http://football.myfantasyleague.com/2012/player_listing?POSITION=*&TEAM=*"))
     puts responsebody
     
     #re = Regexp.new('<a href="player?P=(.*?)">(.*), .* ([^ ]*) ([^ ]*)</a>')
@@ -27,12 +27,10 @@ namespace :db do
         players_created_count += 1
       elsif matches_in_db.count == 1
         matches_in_db.first.update_attributes(atts)
-        players_updated_count += 1
       else
         puts "That's odd... found multiple players in DB with mfl_id #{atts[:mfl_id]}"
       end
     end
     puts "#{players_created_count} players created"
-    puts "#{players_updated_count} players updated"
   end
 end
