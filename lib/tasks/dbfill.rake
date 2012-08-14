@@ -22,11 +22,11 @@ namespace :db do
         :position => match[4]
       }
       matches_in_db = Player.where(:mfl_id => atts[:mfl_id])
-      if matches.count == 0
+      if matches_in_db.count == 0
         Player.create(atts)
         players_created_count += 1
-      elsif matches.count == 1
-        matches.first.update_attributes(atts)
+      elsif matches_in_db.count == 1
+        matches_in_db.first.update_attributes(atts)
         players_updated_count += 1
       else
         puts "That's odd... found multiple players in DB with mfl_id #{atts[:mfl_id]}"
