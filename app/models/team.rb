@@ -4,7 +4,7 @@ class Team < ActiveRecord::Base
   belongs_to :league
   belongs_to :owner, :class_name => 'User', :foreign_key => 'owner_id'
 
-  def players
+  def moves_to_still_on_team
     # Get the most recent move to or from this team for each player
     # that was ever on this team. Then a player is on this team currently iff
     # their latest move is *to* the team.
@@ -15,14 +15,27 @@ class Team < ActiveRecord::Base
             where old_team_id = #{self.id} or new_team_id = #{self.id} group by player_id)
         and new_team_id = #{self.id}
     EOD
-    moves_to = Move2.connection.select_all(q)
-    Player.where(:id => moves_to.collect(&:player_id))
+    
+    Move2.connection.select_all(q)
+  end
+
+  def players
+    moves_to = moves_to_still_on_team
+    return Player.where(:id => moves_to.collect{|m| m['player_id']})
   end
   
   def payroll
-    ret = 0
-    active_contracts.each { |c| ret += c.value }
-    ret
+    q = <<-EOD
+      select max(id) from move2s
+        where new_pv is not null
+        and player_id in (#{players.collect(&:id).join(',')}) 
+        group by player_id
+    EOD
+
+    salaries_for_players = Move2.connection.select_all(q)
+    move_ids_for_salaries = salaries_for_players.collect{|row| row['max(id)']}
+
+    return Move2.where(:id => move_ids_for_salaries).sum(:new_pv)
   end
   
   def payroll_available
