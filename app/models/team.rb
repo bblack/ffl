@@ -1,13 +1,22 @@
 require 'open-uri'
 
 class Team < ActiveRecord::Base
-  has_many :contracts
-  #has_many :players, :through => :contracts # but should exclude nixed contracts!
   belongs_to :league
   belongs_to :owner, :class_name => 'User', :foreign_key => 'owner_id'
 
-  def active_contracts
-    contracts.includes(:player).where(:nixed_at => nil).where("started_at is not null")
+  def players
+    # Get the most recent move to or from this team for each player
+    # that was ever on this team. Then a player is on this team currently iff
+    # their latest move is *to* the team.
+    q = <<-EOD
+      select * from move2s
+        where id in 
+          (select max(id) from move2s
+            where old_team_id = #{self.id} or new_team_id = #{self.id} group by player_id)
+        and new_team_id = #{self.id}
+    EOD
+    moves_to = Move2.connection.select_all(q)
+    Player.where(:id => moves_to.collect(&:player_id))
   end
   
   def payroll
