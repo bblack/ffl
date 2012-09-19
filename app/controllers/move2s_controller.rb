@@ -5,8 +5,8 @@ class Move2sController < ApplicationController
     if last_move
       m.old_team_id = last_move.new_team_id
     else
-      m.new_pv = 1
-      m.final_year = Date.today.year
+      m.new_pv = params[:new_pv] || 1
+      m.final_year = params[:final_year] || Date.today.year
     end
     
     m.save!
