@@ -8,7 +8,7 @@
       <th>to</th>
       <th>new pv</th>
     </tr>
-    <% Move2.where(:player_id => player.id, :new_team_id => @current_league.team_ids).each do |m| %>
+    <% Move2.where(:player_id => player.id, :league_id => @current_league.id).each do |m| %>
       <tr>
         <td><%= m.old_team.name if m.old_team %></td>
         <td><%= m.new_team.name if m.new_team %></td>
