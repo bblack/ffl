@@ -26,6 +26,8 @@ class Team < ActiveRecord::Base
   end
   
   def payroll
+    return 0 if players.empty?
+
     q = <<-EOD
       select max(id) from move2s
         where new_pv is not null
