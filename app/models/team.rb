@@ -67,7 +67,8 @@ class Team < ActiveRecord::Base
   end
 
   def espn_url
-    espn? ? "http://games.espn.go.com/ffl/clubhouse?leagueId=#{self.league.espn_id}&teamId=#{self.espn_id}" : nil
+    # can't use mobile as of 2012-09-19 only because the links for D/ST don't contain playerid, only a link to that NFL team
+    "http://games.espn.go.com/ffl/clubhouse?leagueId=#{league.espn_id}&teamId=#{espn_id}" if espn?
   end
 
   def compare_to_espn
@@ -83,7 +84,7 @@ class Team < ActiveRecord::Base
         'full_name' => el.inner_text
         } if el.inner_text.present?
     end
-    players_in_db = Set.new(self.active_contracts.includes(:player).collect{|c| {'espn_id' => c.player.espn_id.to_s, 'full_name' => c.player.full_name}})
+    players_in_db = Set.new(players.collect{|p| {'espn_id' => p.espn_id.to_s, 'full_name' => p.full_name}})
     players_only_on_espn = players_on_espn.select{|p| players_in_db.none? {|q| q['espn_id'] == p['espn_id'] }}
     players_only_in_db = players_in_db.select{|p| players_on_espn.none? {|q| q['espn_id'] == p['espn_id'] }}
 
