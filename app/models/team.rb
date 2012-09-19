@@ -36,7 +36,7 @@ class Team < ActiveRecord::Base
     EOD
 
     salaries_for_players = Move2.connection.select_all(q)
-    move_ids_for_salaries = salaries_for_players.collect{|row| row['max(id)']}
+    move_ids_for_salaries = salaries_for_players.collect{|row| row['max']}
 
     return Move2.where(:id => move_ids_for_salaries).sum(:new_pv)
   end
