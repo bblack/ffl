@@ -2,7 +2,20 @@
 <%= render :partial => "components/playercard", :locals => {:player_id => player.id}%><br/><br/>
 
 <% if @current_league %>
-  <%= render :partial => 'components/contract_widget', :locals => { :league_id => @current_league.id, :player_id => player.id} %>
+  <table>
+    <tr>
+      <th>from</th>
+      <th>to</th>
+      <th>new pv</th>
+    </tr>
+    <% Move2.where(:player_id => player.id, :new_team_id => @current_league.team_ids).each do |m| %>
+      <tr>
+        <td><%= m.old_team.name if m.old_team %></td>
+        <td><%= m.new_team.name if m.new_team %></td>
+        <td><%= m.new_pv %></td>
+      </tr>
+    <% end %>
+  </table>
   
   <% RfaPeriod.includes(:rfa_bids).where(:league_id => @current_league.id).each do |rfa| %>
     <h2>Bids for RFA lasting <%= rfa.open_date.strftime("%b %d %Y") %> to <%= rfa.close_date.strftime("%b %d %Y") %></h2>

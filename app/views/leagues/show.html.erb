@@ -16,28 +16,71 @@
     </span>
     I even made a nice little <a href="/contracts">spreadsheet</a> for you with all the player contracts.
   </span>
-  <% transaction_count = 10 %>
-  <h2>Completed transactions (Last <%= transaction_count %>)</h2>
+  <%= form_tag "/move2s", :method => 'post', :style => 'background: orange;' do %>
+    <%= label_tag :player_finder, 'Last name'%>
+    <%= text_field_tag :player_finder %>
+    <%= hidden_field_tag :player_id, '', :style => "width: 4em;" %>
+    <%= hidden_field_tag :league_id, @current_league.id %>
+    <span id='selected-player-old-team' style='min-width:10em;display:inline-block;'>--</span>
+    <%= select_tag :new_team_id, options_for_select(@current_league.teams.collect{|t| [t.name, t.id]} + [['(drop)', 0]]) %>
+    <%= label_tag :new_pv, "New PV" %>
+    <%= text_field_tag :new_pv, '', :style => 'width: 4em;' %>
+    <%= submit_tag "Make move" %>
+  <% end %>
   <table>
-    <% @current_league.completed_transactions(transaction_count).each do |t| %>
-      <tr>
-        <td style="border:none;">
-          <div style="background-color:silver;">
-            <%= t.completed_on %> : <%= t.moves.count %> moves
-          </div>
-          <% t.moves.each do |m| %>
-            <%= description_for(m) %><br/>
-          <% end %>
-          <% t.comments.each do |c| %>
-            <div style='color:silver; font-style:italic;'>* <%= c.text %></div>
-          <% end %>
-        </td>
-      </tr>
-    <% end %>
+    <tr>
+      <th>Time</th>
+      <th>Player</th>
+      <th>From</th>
+      <th>To</th>
+      <td>New PV</th>
+    </tr>
+  <% Move2.where(:league_id => @current_league.id).order("created_at desc").first(10).each do |m| %>
+    <tr>
+      <td><%= m.created_at %></td>
+      <td><%= m.player.name %></td>
+      <td><%= m.old_team.name if m.old_team %></td>
+      <td><%= m.new_team.name if m.new_team %></td>
+      <td><%= m.new_pv %></td>
+    </tr>
+  <% end %>
   </table>
-  <% if brian? %>
-  <%= form_tag(transactions_path, :method => "POST") do %>
-    <%= submit_tag("Start working on a new transaction") %>
-  <% end %>
-  <% end %>
+  
+
+  <script>
+    $(function (){
+      var cache = {}, lastXhr;
+      $("#player_finder").autocomplete({
+        minLength: 3,
+        select: function(event, ui){
+          $("#player_id").val(ui.item.id.toString());
+        },
+        source: function(request, response) {
+          var term = request.term;
+          if (term in cache) {
+            response(cache[term]);
+            return;
+          }
+          
+          lastXhr = $.getJSON("/players.json", {'last_name': term}, function(data, status, xhr){
+            ret = [];
+            for (var i = 0; i < data.length; i++)
+            {
+              var p = data[i].player;
+              var showtext = p.first_name + " " + p.last_name + " (" + p.position + ", " + p.nfl_team + ")";
+              ret.push({
+                label: showtext,
+                value: showtext,
+                id: data[i].player.id
+              });
+            }
+            cache[term] = ret;
+            if (xhr === lastXhr) {
+              response(ret);
+            }
+          });
+        }
+      });
+    });
+  </script>
 <% end %>

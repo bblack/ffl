@@ -1,6 +1,7 @@
 require 'open-uri'
 
 class Team < ActiveRecord::Base
+  has_many :contracts # deprecado
   belongs_to :league
   belongs_to :owner, :class_name => 'User', :foreign_key => 'owner_id'
 

@@ -8,8 +8,8 @@ class TeamsController < ApplicationController
   private
 
     def load_team
-      @team = Team.includes(:league, :contracts => [:player]).find(params[:id])
-    change_current_league(@team.league_id)
+      @team = Team.includes(:league).find(params[:id]) # Include players when this becomes a proper association
+      change_current_league(@team.league_id)
     end
 
 end

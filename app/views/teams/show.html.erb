@@ -30,31 +30,23 @@
     <th>First year</th>
     <th>Length</th>
   </tr>
-  <% @team.active_contracts.sort { |x,y| (@team.league.positions.index(x.player.position) <=> @team.league.positions.index(y.player.position)) || 0 }.each do |c| %>
+  <% @team.players.sort { |x,y| (@team.league.positions.index(x.position) <=> @team.league.positions.index(y.position)) || 0 }.each do |p| %>
     <tr>
       <td>
-        <a href="/players/<%= c.player.id %>">
-        <%= c.player.first_name %> <%= c.player.last_name %>,
-        <%= c.player.position %> <%= c.player.nfl_team %>
+        <a href="/players/<%= p.id %>">
+        <%= p.first_name %> <%= p.last_name %>,
+        <%= p.position %> <%= p.nfl_team %>
         </a>
       </td>
       <td>
-        <%= c.value %>
+        NYI
       </td>
       <td>
-        <%= c.first_year %>
+        NYI
       </td>
       <td>
-        <%= c.length %>
+        NYI
       </td>
-      <% if brian? %>
-      <td>
-        <%= form_tag("/contracts/#{c.id}", :method => "DELETE") do %>
-          <%= text_field_tag(:msg) %>
-          <%= submit_tag("Comment and nix", :confirm => "Are you sure you want to drop #{c.player.first_name} #{c.player.last_name}?") %>
-        <% end %>
-      </td>
-      <% end %>
     </tr>
   <% end %>
 </table>

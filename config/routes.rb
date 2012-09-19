@@ -21,6 +21,7 @@ Ffl::Application.routes.draw do
   resources :transactions
   match 'transactions/:id/complete' => 'transactions#complete', :via => [:post]
   resources :moves
+  resources :move2s
 
   # Sample of named route:
   #   match 'products/:id/purchase' => 'catalog#purchase', :as => :purchase
