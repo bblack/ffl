@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
   before_filter :set_current_user
   before_filter :set_current_league
+  before_filter :brian_only_mode
   before_filter :reject_posts_by_nongods
   before_filter :reject_posts_unless_logged_in
   
@@ -54,6 +55,12 @@ class ApplicationController < ActionController::Base
     if errors.any?
       errors.each { |e| add_flash :error, false, e }
       redirect_to :back
+    end
+  end
+
+  def brian_only_mode
+    unless brian? or [['application', 'login'], ['application', 'index']].member?([params[:controller], params[:action]])
+      add_flash(:error, false, 'Nope.') and redirect_to '/'
     end
   end
   
