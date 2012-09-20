@@ -26,7 +26,7 @@ class Player < ActiveRecord::Base
     raise WrongPlayerPositionError if not Player.positions_with_photos.member? self.position
     url = "http://search.espn.go.com/#{self.first_name} #{self.last_name}".gsub(' ', '-')
     response = Net::HTTP.get_response(URI.parse(url))
-    re = Regexp.new('http:\/\/sports\.espn\.go\.com\/nfl\/players\/profile\?playerId=(\d*)')
+    re = Regexp.new('http:\/\/espn\.go\.com\/nfl\/players\/profile\?playerId=(\d*)')
     matches = response.body.scan(re)
     playerids = []
     matches.each {|m| playerids << m[0] if not playerids.member? m[0]}
