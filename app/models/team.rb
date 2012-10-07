@@ -17,7 +17,8 @@ class Team < ActiveRecord::Base
         and new_team_id = #{self.id}
     EOD
     
-    Move2.connection.select_all(q)
+    move_ids = Move2.connection.select_all(q).collect{|m| m['id']}
+    Move2.find(move_ids)
   end
 
   def players
@@ -29,14 +30,14 @@ class Team < ActiveRecord::Base
     return 0 if players.empty?
 
     q = <<-EOD
-      select max(id) from move2s
+      select max(id) as move_id from move2s
         where new_pv is not null
         and player_id in (#{players.collect(&:id).join(',')}) 
         group by player_id
     EOD
 
     salaries_for_players = Move2.connection.select_all(q)
-    move_ids_for_salaries = salaries_for_players.collect{|row| row['max']}
+    move_ids_for_salaries = salaries_for_players.collect{|row| row['move_id']}
 
     return Move2.where(:id => move_ids_for_salaries).sum(:new_pv)
   end
