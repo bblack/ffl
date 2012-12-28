@@ -1,0 +1,13 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  player_id: 1
+  new_value: 1
+  first_year: 1
+  last_year: 1
+
+two:
+  player_id: 1
+  new_value: 1
+  first_year: 1
+  last_year: 1

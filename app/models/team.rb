@@ -5,41 +5,16 @@ class Team < ActiveRecord::Base
   belongs_to :league
   belongs_to :owner, :class_name => 'User', :foreign_key => 'owner_id'
 
-  def moves_to_still_on_team
-    # Get the most recent move to or from this team for each player
-    # that was ever on this team. Then a player is on this team currently iff
-    # their latest move is *to* the team.
-    q = <<-EOD
-      select * from move2s
-        where id in 
-          (select max(id) from move2s
-            where old_team_id = #{self.id} or new_team_id = #{self.id} group by player_id)
-        and new_team_id = #{self.id}
-    EOD
-    
-    move_ids = Move2.connection.select_all(q).collect{|m| m['id']}
-    Move2.find(move_ids)
-  end
-
   def players
-    moves_to = moves_to_still_on_team
-    return Player.where(:id => moves_to.collect{|m| m['player_id']})
+    @_players ||= espn_players
+    @_players
   end
   
   def payroll
-    return 0 if players.empty?
-
-    q = <<-EOD
-      select max(id) as move_id from move2s
-        where new_pv is not null
-        and player_id in (#{players.collect(&:id).join(',')}) 
-        group by player_id
-    EOD
-
-    salaries_for_players = Move2.connection.select_all(q)
-    move_ids_for_salaries = salaries_for_players.collect{|row| row['move_id']}
-
-    return Move2.where(:id => move_ids_for_salaries).sum(:new_pv)
+    pvcs = PlayerValueChange.where(:team_id => self.league.team_ids, :player_id => players.collect(&:id))
+      .group(:player_id)
+      .order('created_at desc')
+    pvcs.to_a.sum(&:new_value)
   end
   
   def payroll_available
@@ -72,24 +47,29 @@ class Team < ActiveRecord::Base
     "http://games.espn.go.com/ffl/clubhouse?leagueId=#{league.espn_id}&teamId=#{espn_id}" if espn?
   end
 
-  def compare_to_espn
+  def espn_players
     raise StandardError.new("league's espn_id is nil") if self.league.espn_id == nil
     raise StandardError.new("team's espn_id is nil") if self.espn_id == nil
 
     doc = Nokogiri::HTML(open(self.espn_url))
     player_link_elements = doc.css('.playertablePlayerName a')
-    players_on_espn = Set.new
-    player_link_elements.each do |el|
-      players_on_espn << {
-        'espn_id' => el.attributes['playerid'].value,
-        'full_name' => el.inner_text
-        } if el.inner_text.present?
-    end
-    players_in_db = Set.new(players.collect{|p| {'espn_id' => p.espn_id.to_s, 'full_name' => p.full_name}})
-    players_only_on_espn = players_on_espn.select{|p| players_in_db.none? {|q| q['espn_id'] == p['espn_id'] }}
-    players_only_in_db = players_in_db.select{|p| players_on_espn.none? {|q| q['espn_id'] == p['espn_id'] }}
 
-    return {:espn => players_only_on_espn, :db => players_only_in_db}
+    # Map espn_id => name
+    espn_hash = Hash[
+      player_link_elements
+        .select{|e| e.inner_text.present?}
+        .collect{|e| [e.attributes['playerid'].value, e.inner_text]}
+    ]
+    
+    # Fetch players from database
+    players = Player.where(:espn_id => espn_hash.keys)
+    players_missing = espn_hash.slice(*
+      espn_hash.keys.select do |espnid|
+        players.none?{|p| p.espn_id.to_s == espnid.to_s}
+      end
+    )
+    raise StandardError.new("DB missing players: #{players_missing.to_a.join(', ')}") if players_missing.any?
+    return players
   end
   
 end
