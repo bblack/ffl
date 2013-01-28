@@ -17,12 +17,6 @@
   <tr><th style="font-size:9pt; text-transform:uppercase;">Payroll available</th></tr>
   <tr><td style="font-size:24pt; text-align:center;"><%= @team.payroll_available %></td></tr>
 </table>
-<table style="display:inline-table;">
-  <tr><th style="font-size:9pt; text-transform:uppercase;">Quick sign</th></tr>
-  <tr><td>
-    <%= render :partial => 'components/quick_sign', :locals => {:team => @team} %>
-  </td></tr>
-</table>
 <table>
   <tr>
     <th>Name</th>
