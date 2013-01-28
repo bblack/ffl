@@ -50,38 +50,3 @@
     </tr>
   <% end %>
 </table>
-
-<% if brian? %>
-<div id='espn-compare'>
-  <span style='cursor:pointer;' id='espn-compare-reloader'>Click here to compare to ESPN roster</span>
-  <div id='espn-compare-board'>
-  </div>
-  <script type='text/javascript'>
-    $(document).ready(function(){
-      $("#espn-compare-reloader").click(function(){
-        $("#espn-compare-board").empty();
-        $("#espn-compare-board").append("<img src='/images/tiny-throbber.gif' />");
-
-        $.ajax({
-          url: "/teams/<%= @team.id %>/espn_compare",
-          dataType: 'json',
-          success: function(data){
-            var compareTable = $("<table><tr><th>Only on ESPN</th><th>Only on FFL</th></tr></table>");
-            for (var i = 0; i < data.espn.length; i++) {
-              compareTable.append($("<tr><td>" + data.espn[i].full_name + "</td><td></td></tr>"));
-            }
-            for (var i = 0; i < data.db.length; i++) {
-              compareTable.append($("<tr><td></td><td>" + data.db[i].full_name + "</td></tr>"));
-            }
-            $("#espn-compare-board").empty();
-            $("#espn-compare-board").append(compareTable);
-          },
-          error: function(xhr, status, error){
-            $("#espn-compare-board").text("Error: " + error);
-          }
-        });
-      });
-    });
-  </script>
-</div>
-<% end %>

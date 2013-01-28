@@ -1,9 +1,5 @@
 class TeamsController < ApplicationController
-  before_filter :load_team, :only => [:show, :espn_compare]
-
-  def espn_compare
-    render :json => @team.compare_to_espn
-  end
+  before_filter :load_team, :only => [:show]
 
   private
 
