@@ -30,22 +30,22 @@
     <th>First year</th>
     <th>Length</th>
   </tr>
-  <% @team.players.sort { |x,y| (@team.league.positions.index(x.position) <=> @team.league.positions.index(y.position)) || 0 }.each do |p| %>
+  <% @team.players_pvcs.includes(:player).sort { |x,y| poslist = @team.league.positions; (poslist.index(x.player.position) <=> poslist.index(y.player.position)) || 0 }.each do |pvc| %>
     <tr>
       <td>
-        <a href="/players/<%= p.id %>">
-        <%= p.first_name %> <%= p.last_name %>,
-        <%= p.position %> <%= p.nfl_team %>
+        <a href="/players/<%= pvc.player_id %>">
+        <%= pvc.player.name %>,
+        <%= pvc.player.position %> <%= pvc.player.nfl_team %>
         </a>
       </td>
       <td>
-        <%= p.value_in_league(@team.league_id) %>
+        <%= pvc.new_value %>
       </td>
       <td>
-        NYI
+        <%= pvc.first_year %>
       </td>
       <td>
-        NYI
+        <%= pvc.last_year - pvc.first_year + 1 %>
       </td>
     </tr>
   <% end %>

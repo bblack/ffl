@@ -9,12 +9,15 @@ class Team < ActiveRecord::Base
     @_players ||= espn_players
     @_players
   end
-  
-  def payroll
-    pvcs = PlayerValueChange.where(:team_id => self.league.team_ids, :player_id => players.collect(&:id))
+
+  def players_pvcs
+    PlayerValueChange.where(:team_id => self.league.team_ids, :player_id => players.collect(&:id))
       .group(:player_id, :id)
       .order('created_at desc')
-    pvcs.to_a.sum(&:new_value)
+  end
+  
+  def payroll
+    players_pvcs.to_a.sum(&:new_value)
   end
   
   def payroll_available
