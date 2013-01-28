@@ -2,54 +2,16 @@
   <h1><%= @current_league.name %></h1>
   <% @current_league.rfa_periods.each do |rfa| %>
     <span class="noticebox">
-      <span style="font-weight:bold;">
-        Hey, check it! There's an RFA period
-      </span>
+      <strong>Hey, check it! There's an RFA period</strong>
       from <%= rfa.open_date %>
       until <%= rfa.close_date %>
       for players with contracts expiring at the end of the <%= rfa.final_year %> season. <a href="/rfa_periods/<%= rfa.id %>">Take a look.</a>
     </span>
   <% end %>
   <span class="noticebox">
-    <span style="font-weight:bold;">
-      Wow, look how nice I am.
-    </span>
-    I even made a nice little <a href="/contracts">spreadsheet</a> for you with all the player contracts.
+    <strong>Wow, look how nice I am.</strong>
+    <!-- I even made a nice little <a href="/player_value_changes">spreadsheet</a> for you with all the player contracts. -->
   </span>
-  <%= form_tag "/move2s", :method => 'post', :style => 'background: orange;' do %>
-    <%= label_tag :player_finder, 'Last name'%>
-    <%= text_field_tag :player_finder %>
-    <%= hidden_field_tag :player_id, '', :style => "width: 4em;" %>
-    <%= hidden_field_tag :league_id, @current_league.id %>
-    <span id='selected-player-old-team' style='min-width:10em;display:inline-block;'>--</span>
-    <%= select_tag :new_team_id, options_for_select(@current_league.teams.collect{|t| [t.name, t.id]} + [['(drop)', 0]]) %>
-    <%= label_tag :new_pv, "New PV" %>
-    <%= text_field_tag :new_pv, '', :style => 'width: 4em;' %>
-    <%= label_tag :final_year, "Final year" %>
-    <%= text_field_tag :final_year, '', :style => 'width: 6em' %>
-    <%= submit_tag "Make move" %>
-  <% end %>
-  <table>
-    <tr>
-      <th>Time</th>
-      <th>Player</th>
-      <th>From</th>
-      <th>To</th>
-      <th>New PV</th>
-      <th>Final yr</th>
-    </tr>
-  <% Move2.where(:league_id => @current_league.id).order("created_at desc").first(10).each do |m| %>
-    <tr>
-      <td><%= m.created_at %></td>
-      <td><%= m.player.name %></td>
-      <td><%= m.old_team.name if m.old_team %></td>
-      <td><%= m.new_team.name if m.new_team %></td>
-      <td><%= m.new_pv %></td>
-      <td><%= m.final_year %></td>
-    </tr>
-  <% end %>
-  </table>
-  
 
   <script>
     $(function (){
