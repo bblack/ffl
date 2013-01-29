@@ -75,7 +75,7 @@
     <table>
       <tr>
         <th>Player</th>
-        <% if brian? %><th>PV</th><% end %>
+        <% if god? %><th>PV</th><% end %>
         <th>Top bid</th>
         <% if @rfaperiod.open? %><th>Action</th><% end %>
         <% if @rfaperiod.rfa_decision_period %><th>Keep?</th><% end %>
@@ -90,7 +90,7 @@
               </span>
             </a>
           </td>
-          <% if brian? %><td><%= c.value %></td><% end %>
+          <% if god? %><td><%= c.value %></td><% end %>
           <td>
             <% max_bid = @rfaperiod.top_bid_for(c.player_id) %>
             <% if max_bid %>

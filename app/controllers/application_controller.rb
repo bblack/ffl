@@ -59,7 +59,7 @@ class ApplicationController < ActionController::Base
   end
 
   def brian_only_mode
-    unless brian? or [['application', 'login'], ['application', 'index']].member?([params[:controller], params[:action]])
+    unless god? or [['application', 'login'], ['application', 'index']].member?([params[:controller], params[:action]])
       add_flash(:error, false, 'Nope.') and redirect_to '/'
     end
   end

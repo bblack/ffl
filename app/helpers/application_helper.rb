@@ -4,10 +4,6 @@ module ApplicationHelper
     @current_user and @current_user.god_mode
   end
 
-  def brian?
-    @current_user and (@current_user.name == 'brian' or @current_user.god_mode)
-  end
-
   def timespan_string(seconds_left)
       time_left_days = (seconds_left / (60*60*24)).to_i
       time_left_hours = ((seconds_left - time_left_days*60*60*24) / (60*60)).to_i
