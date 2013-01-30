@@ -1,0 +1,18 @@
+%h1 Teams
+- if @current_league
+  %table
+    %tr
+      %th Team name
+      %th Payroll
+      - @current_league.positions.each do |p|
+        %th= "#{p}s"
+      - @current_league.teams.each do |team|
+        %tr
+          %td
+            %a{:href => "/teams/#{team.id}"}
+              = team.name
+          %td
+            = team.payroll
+          - @current_league.positions.each do |p|
+            %td
+              = team.players.where(:position => p).count

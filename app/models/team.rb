@@ -4,11 +4,8 @@ class Team < ActiveRecord::Base
   has_many :contracts # deprecado
   belongs_to :league
   belongs_to :owner, :class_name => 'User', :foreign_key => 'owner_id'
-
-  def players
-    @_players ||= espn_players
-    @_players
-  end
+  has_many :espn_roster_spots
+  has_many :players, :through => :espn_roster_spots
 
   def players_pvcs
     PlayerValueChange.where(:team_id => self.league.team_ids, :player_id => players.collect(&:id))
@@ -50,7 +47,7 @@ class Team < ActiveRecord::Base
     "http://games.espn.go.com/ffl/clubhouse?leagueId=#{league.espn_id}&teamId=#{espn_id}" if espn?
   end
 
-  def espn_players
+  def fetch_espn_roster
     raise StandardError.new("league's espn_id is nil") if self.league.espn_id == nil
     raise StandardError.new("team's espn_id is nil") if self.espn_id == nil
 
@@ -64,15 +61,19 @@ class Team < ActiveRecord::Base
         .collect{|e| [e.attributes['playerid'].value, e.inner_text]}
     ]
     
-    # Fetch players from database
-    players = Player.where(:espn_id => espn_hash.keys)
-    players_missing = espn_hash.slice(*
-      espn_hash.keys.select do |espnid|
-        players.none?{|p| p.espn_id.to_s == espnid.to_s}
+    self.transaction do
+      self.espn_roster_spots.delete_all
+      espn_hash.keys.each do |espn_id|
+        EspnRosterSpot.create(:espn_player_id => espn_id, :team_id => self.id)
       end
-    )
-    raise StandardError.new("DB missing players: #{players_missing.to_a.join(', ')}") if players_missing.any?
-    return players
+      self.espn_roster_last_updated = Time.now
+      self.save!
+    end
+
+    players_missing = espn_hash.slice(*(espn_hash.keys - Player.where(:espn_id => espn_hash.keys).collect{|e| e.espn_id.to_s}))
+    raise StandardError.new("Players missing: #{players_missing.collect{|k| k.join(' ')}.join(', ')}") if players_missing.any?
+
+    self.players(true)
   end
   
 end
