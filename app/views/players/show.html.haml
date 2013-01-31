@@ -1,0 +1,2 @@
+- player = Player.find(params[:id])
+= render :partial => "components/playercard", :locals => {:player_id => player.id}
