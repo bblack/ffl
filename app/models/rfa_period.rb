@@ -2,7 +2,7 @@ class RfaPeriod < ActiveRecord::Base
   belongs_to :league
   has_many :rfa_bids
   has_one :rfa_decision_period
-  validates :league_id, :uniqueness => true
+  validates :league_id, :uniqueness => {:scope => :final_year}
   
   def bigredbutton(dryrun=true)
     raise StandardError.new("This RFA period has already been redbuttoned") if self.redbuttoned
