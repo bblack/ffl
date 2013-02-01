@@ -25,12 +25,16 @@ class League < ActiveRecord::Base
     # or for players currently signed to a particular team
     # TODO: Filter out any pvcs that ended before this season
     # TODO: Any players w/o valid current pvcs take on 1-yr, 1-pv
+    # TODO: consider returning .to_a instead of association,
+    # since the joins can silently cause problems if additional relations
+    # are chained to the return value with ambiguous column names
+    # TODO: consider removing pvc.team_id and making pvc.league_id
     PlayerValueChange.
       joins('inner join players on players.id = player_value_changes.player_id').
       joins('inner join espn_roster_spots on espn_roster_spots.espn_player_id = players.espn_id').
       group('player_value_changes.player_id', 'player_value_changes.id').
       order('player_value_changes.created_at desc').
-      where(:team_id => (team_id || self.team_ids))
+      where('espn_roster_spots.team_id' => (team_id || self.team_ids))
   end
 
 end

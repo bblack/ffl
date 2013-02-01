@@ -60,7 +60,6 @@ class RfaPeriod < ActiveRecord::Base
   def contracts_eligible
     self.league.signed_players_pvcs.includes(:player)
       .where("last_year = ?", self.final_year)
-      .collect(&:player)
   end
   
   def open?

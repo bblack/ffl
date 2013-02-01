@@ -90,7 +90,7 @@
               </span>
             </a>
           </td>
-          <% if god? %><td><%= c.value %></td><% end %>
+          <% if god? %><td><%= c.new_value %></td><% end %>
           <td>
             <% max_bid = @rfaperiod.top_bid_for(c.player_id) %>
             <% if max_bid %>
