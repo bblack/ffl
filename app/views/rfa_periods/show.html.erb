@@ -69,7 +69,7 @@
 <% end %> 
 
 <h2>Eligible players</h2>
-<% @rfaperiod.league.teams.each do |team| %>
+<% @rfaperiod.league.teams.includes(:espn_roster_spots => :player).each do |team| %>
   <span style="display:inline-block; margin-right:1em;">
     <h3><a href="/teams/<%=team.id%>"><%= team.name %></a></h3>
     <table>
@@ -80,19 +80,18 @@
         <% if @rfaperiod.open? %><th>Action</th><% end %>
         <% if @rfaperiod.rfa_decision_period %><th>Keep?</th><% end %>
       </tr>
-      <% @rfaperiod.contracts_eligible.select { |c|  c.team_id == team.id }.each do |c| %>
+      <% team.players.select{|p| @rfaperiod.contracts_eligible.any?{|c| c.player_id == p.id}}.each do |p| %> 
         <tr>
           <td>
-            <a href="/players/<%= c.player.id %>">
-              <%= c.player.first_name %> <%= c.player.last_name %>
+            <a href="/players/<%= p.id %>">
+              <%= p.first_name %> <%= p.last_name %>
               <span style="font-variant:small-caps;">
-                <%= c.player.position.downcase %>, <%= c.player.nfl_team.downcase %>
+                <%= p.position.downcase %>, <%= p.nfl_team.downcase %>
               </span>
             </a>
           </td>
-          <% if god? %><td><%= c.new_value %></td><% end %>
           <td>
-            <% max_bid = @rfaperiod.top_bid_for(c.player_id) %>
+            <% max_bid = @rfaperiod.top_bid_for(p.id) %>
             <% if max_bid %>
               <%= max_bid.value %>
               <span style="font-size:50%;"><%= max_bid.team.name %></span>
@@ -102,14 +101,14 @@
             <td>
               <%= form_tag("/rfa_bids", :method => "POST") do %>
                 <%= hidden_field_tag(:rfa_period_id, @rfaperiod.id) %>
-                <%= hidden_field_tag(:player_id, c.player.id) %>
+                <%= hidden_field_tag(:player_id, p.id) %>
                 <%= text_field_tag(:value, '', :style => "width: 3em;") %>
                 <%= submit_tag("Bid") %>
               <% end %>
             </td>
           <% end %>
           <% if @rfaperiod.rfa_decision_period %>
-            <% decision = @rfaperiod.rfa_decision_period.rfa_decisions.select{|d| d.player_id == c.player_id and d.team_id == c.team_id}.first %>
+            <% decision = @rfaperiod.rfa_decision_period.rfa_decisions.select{|d| d.player_id == p.id and d.team_id == team.id}.first %>
             <% keep = decision.keep rescue nil %>
             <td style='background-color: <%= {true => 'lightgreen', false => 'salmon', nil => 'lightyellow'}[keep] %>;'>
               <%= render :partial => 'components/rfa_decider', :locals => { :contract => c, :team => @current_team } %>

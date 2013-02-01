@@ -1,6 +1,6 @@
 class League < ActiveRecord::Base
   has_many :teams
-  has_many :contracts, :through => :teams
+  has_many :espn_roster_spots, :through => :teams
   has_many :rfa_periods
   has_many :transactions
 
