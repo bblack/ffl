@@ -1,16 +1,6 @@
 class Player < ActiveRecord::Base
   has_many :contracts
   
-  def value_in_league(league_id)
-    last_move = Move2.where(:player_id => self.id, :league_id => league_id).where("new_pv is not null").last
-    last_move.new_pv rescue nil
-  end
-
-  def owner_in_league(league_id)
-    last_move = Move2.where(:player_id => self.id).where(:league_id => league_id).last
-    last_move ? last_move.new_team : nil
-  end
-
   def full_name
     "#{self.first_name} #{self.last_name}"
   end
