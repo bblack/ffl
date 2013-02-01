@@ -37,7 +37,7 @@ class RfaBid < ActiveRecord::Base
   end
 
   validates_each :team_id do |model, att, value|
-    if self.rfa_period.league.get_contract_for_player(model.player_id).team_id == value
+    if self.team.players_pvcs.where(:player_id => model.player_id).any?
       model.errors.add(att, " must not be the same team who currently owns the player")
     end
   end

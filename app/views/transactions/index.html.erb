@@ -1,9 +1,0 @@
-<h1>Your WIP Transactions</h1>
-<% if god? %>
-  <%= form_tag "/transactions", :method => 'post' do %>
-    <%= submit_tag "Create new" %>
-  <% end %>
-<% end %>
-<% @transactions.each do |t| %>
-  <a href="<%= transaction_path(t.id) %>"><%= t.id %></a><br/>
-<% end %>

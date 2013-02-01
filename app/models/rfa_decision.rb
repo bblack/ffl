@@ -5,8 +5,8 @@ class RfaDecision < ActiveRecord::Base
   validate :validate_team_has_player
 
   def validate_team_has_player
-    contract = self.rfa_decision_period.rfa_period.league.get_contract_for_player(self.player_id)
-    if contract.nil? or contract.team_id != self.team_id
+    contract = self.team.players_pvcs.where(:player_id => self.player_id)
+    if contract.none?
       errors.add(:team_id, "must be the same as the team who owns this player's contract in this league.")
     end
   end

@@ -8,9 +8,7 @@ class Team < ActiveRecord::Base
   has_many :players, :through => :espn_roster_spots
 
   def players_pvcs
-    PlayerValueChange.where(:team_id => self.league.team_ids, :player_id => players.collect(&:id))
-      .group(:player_id, :id)
-      .order('created_at desc')
+    self.league.signed_players_pvcs(self.id)
   end
   
   def payroll
@@ -32,8 +30,8 @@ class Team < ActiveRecord::Base
     if payroll_available.nil?
       return nil
     else
-      expiring_contracts = rfa_period.contracts_eligible.where(:team_id => self.id)
-      expiring_contracts_value = (expiring_contracts.collect { |c| c.value }).inject(:+)
+      expiring_contracts = rfa_period.contracts_eligible.where(:player_id => self.player_ids)
+      expiring_contracts_value = expiring_contracts.all.sum{|c| c.new_value}
       return self.payroll_available + expiring_contracts_value
     end
   end

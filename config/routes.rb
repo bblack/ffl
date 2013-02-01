@@ -11,15 +11,11 @@ Ffl::Application.routes.draw do
   resources :players
   resources :leagues
   resources :teams
-  resources :contracts
   resources :users#, :only => [:create]
   resources :rfa_periods
   match 'rfa_periods/:id/bigredbutton' => 'rfa_periods#bigredbutton', :via => [:post]
   resources :rfa_bids
   resources :rfa_decisions
-  resources :transactions
-  match 'transactions/:id/complete' => 'transactions#complete', :via => [:post]
-  resources :moves
   resources :player_value_changes
 
   # Sample of named route:

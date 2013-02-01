@@ -3,7 +3,6 @@ class Contract < ActiveRecord::Base
 
   belongs_to :player
   belongs_to :team, :include => :league
-  validate :one_contract_per_player_per_league
   validates :player_id, :first_year, :value, :length, :presence => true
   validates_each :value do |model, att, value|
     model.errors.add(att, 'must be positive') if (value <= 0) rescue false
@@ -28,15 +27,6 @@ class Contract < ActiveRecord::Base
   def nix(msg=nil)
     self.nixed_at = Time.now
     self.nix_message = msg
-  end
-
-  def one_contract_per_player_per_league
-    league_active_contracts = self.team.league.active_contracts
-      .where(:player_id => self.player_id)
-      .where("contracts.id != ?", self.id)
-    if self.active? and league_active_contracts.any?
-      errors.add(:player_id, "cannot be the same as another contract in the same league")
-    end
   end
   
 end

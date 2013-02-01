@@ -13,40 +13,42 @@ class RfaPeriod < ActiveRecord::Base
     nixed_contracts = []
     new_contracts = []
 
-    Contract.transaction do
-      self.contracts_eligible.each do |c|
-        c.nix("big red button from rfa period no. #{self.id}")
-        c.save! unless dryrun
-        nixed_contracts << c
+    begin
+      ActiveRecord::Base.transaction do
+        self.contracts_eligible.each do |c|
+          nixed_contracts << c
 
-        top_bid = self.top_bid_for(c.player_id)
-        new_contract_value = top_bid ? top_bid.value : 1
-        decision = self.rfa_decision_period.rfa_decisions.where(:player_id => c.player_id).first
-        new_contract = Contract.new(
-          :player_id => c.player_id,
-          :first_year => self.final_year + 1,
-          :value => new_contract_value,
-          :length => self.league.contract_length_for_value(new_contract_value)
-          )
+          top_bid = self.top_bid_for(c.player_id)
+          new_contract_value = top_bid ? top_bid.value : 1
+          decision = self.rfa_decision_period.rfa_decisions.where(:player_id => c.player_id).first
+          new_contract = PlayerValueChange.new(
+            :player_id => c.player_id,
+            :first_year => self.final_year + 1,
+            :value => new_contract_value,
+            :last_year => self.final_year + self.league.contract_length_for_value(new_contract_value)
+            )
 
-        if decision and decision.keep
-          new_contract.team_id = c.team_id
-          new_contract.save! unless dryrun
-          new_contracts << new_contract
-        elsif top_bid
-          new_contract.team_id = top_bid.team_id
-          new_contract.save! unless dryrun
-          new_contracts << new_contract
-        else
-          # Owner releases, and there are no bids.
-        end
-      end # rfa-eligible contracts
+          if decision and decision.keep
+            new_contract.team_id = c.team_id
+            new_contract.save!
+            new_contracts << new_contract
+          elsif top_bid
+            new_contract.team_id = top_bid.team_id
+            new_contract.save!
+            new_contracts << new_contract
+          else
+            # Owner releases, and there are no bids.
+          end
+        end # rfa-eligible contracts
 
-      unless dryrun
         self.redbuttoned = true
         self.save!
-      end
-    end # transaction
+
+        raise DryRunError if dryrun
+      end # transaction
+    rescue DryRunError => ex
+      # This exception is only meant to prevent transaction from passing
+    end
 
     return {
       :dryrun => dryrun,
@@ -56,10 +58,9 @@ class RfaPeriod < ActiveRecord::Base
   end
 
   def contracts_eligible
-    self.league.contracts.includes(:player)
-      .where("first_year + length - 1 <= ?", self.final_year)
-      .where("started_at is not null")
-      .where((self.close_date ? "nixed_at IS NULL OR nixed_at >= ?" : "nixed_at IS NULL" ), self.close_date) # For showing old RFA periods accurately. Pay attention to the conditional/sql string substitution
+    self.league.signed_players_pvcs.includes(:player)
+      .where("last_year = ?", self.final_year)
+      .collect(&:player)
   end
   
   def open?
@@ -79,3 +80,5 @@ class RfaPeriod < ActiveRecord::Base
   end
   
 end
+
+class DryRunError < StandardError; end
