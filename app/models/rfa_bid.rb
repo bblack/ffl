@@ -9,6 +9,8 @@ class RfaBid < ActiveRecord::Base
   validates :player_id, :presence => true
   validates :team_id, :presence => true
 
+  validate :cannot_bid_on_own
+
   validates_each :value, :on => :create do |model, att, value|
     biggest_bid = RfaBid.where(:rfa_period_id => model.rfa_period_id, :player_id => model.player_id).maximum(:value)
     model.errors.add(att, "must exceed the greatest bid value which is #{biggest_bid}") if biggest_bid and value <= biggest_bid
@@ -36,9 +38,9 @@ class RfaBid < ActiveRecord::Base
     model.errors.add(att, " must be a currently open RFA period") if not rfa.open?
   end
 
-  validates_each :team_id do |model, att, value|
-    if self.team.players_pvcs.where(:player_id => model.player_id).any?
-      model.errors.add(att, " must not be the same team who currently owns the player")
+  def cannot_bid_on_own
+    if self.team.players_pvcs.where(:player_id => self.player_id).any?
+      self.errors.add(att, " must not be the same team who currently owns the player")
     end
   end
   
