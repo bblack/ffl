@@ -17,11 +17,11 @@
       <% if @current_league %>
         <a href="/leagues" style="color: lightgreen; display:block;"><%= @current_league.name %> &blacktriangledown;</a>
       <% else %>
-        <a href="/leagues" style="color: salmon; font-style:italic;">No league &blacktriangledown;</a>
+        <a href="/leagues" style="color: salmon; font-style:italic;">Select a league &blacktriangledown;</a>
       <% end %>
         <div id='user-team-selector' >
           <a href="/leagues/-1" style="font-style:italic;">No league</a>
-          <% (@current_user.leagues rescue []).each do |l| %>
+          <% League.all.each do |l| %>
             <a href="/leagues/<%= l.id %>"><%= l.name %></a>
           <% end %>
         </div>
@@ -29,7 +29,7 @@
     <li><a href="/players">players</a></li>
     <% if @current_league %>
       <li><a href="/teams">teams</a></li>
-      <% @current_league.rfa_periods.each do |rfa| %>
+      <% @current_league.rfa_periods.select{|r| not r.ended?}.each do |rfa| %>
         <li><a href="/rfa_periods/<%= rfa.id %>" style="color:lightyellow;">RFA</a></li>      
       <% end %>
     <% end %>

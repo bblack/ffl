@@ -51,6 +51,7 @@ th {
   margin-bottom: 1px;
   color: white;
   padding: .5em;
+  overflow: hidden; /* expands to contain float if necessary */
 }
 
 #header a {

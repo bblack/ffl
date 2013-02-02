@@ -1,6 +1,6 @@
 <% if @current_league %>
   <h1><%= @current_league.name %></h1>
-  <% @current_league.rfa_periods.each do |rfa| %>
+  <% @current_league.rfa_periods.select{|r| not r.ended?}.each do |rfa| %>
     <span class="noticebox">
       <strong>Hey, check it! There's an RFA period</strong>
       from <%= rfa.open_date %>
@@ -8,10 +8,6 @@
       for players with contracts expiring at the end of the <%= rfa.final_year %> season. <a href="/rfa_periods/<%= rfa.id %>">Take a look.</a>
     </span>
   <% end %>
-  <span class="noticebox">
-    <strong>Wow, look how nice I am.</strong>
-    <!-- I even made a nice little <a href="/player_value_changes">spreadsheet</a> for you with all the player contracts. -->
-  </span>
 
   <script>
     $(function (){
