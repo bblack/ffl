@@ -1,5 +1,11 @@
 class TeamsController < ApplicationController
-  before_filter :load_team, :only => [:show]
+  before_filter :load_team, :except => [:index]
+
+  def fetch_espn
+    @team.fetch_espn_roster
+    add_flash(:notice, false, "Fetched the ESPN roster of team '#{@team.name}'")
+    redirect_to team_path(@team)
+  end
 
   private
 

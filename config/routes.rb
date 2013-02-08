@@ -11,6 +11,7 @@ Ffl::Application.routes.draw do
   resources :players
   resources :leagues
   resources :teams
+  match 'teams/:id/fetch_espn' => 'teams#fetch_espn'
   resources :users#, :only => [:create]
   resources :rfa_periods
   match 'rfa_periods/:id/bigredbutton' => 'rfa_periods#bigredbutton', :via => [:post]

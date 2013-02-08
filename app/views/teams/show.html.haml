@@ -4,6 +4,7 @@
     = @team.owner ? @team.owner.name : "(Unowned)"
     %br
     = "Last fetched from ESPN at #{@team.espn_roster_last_updated}"
+    = link_to('Update', "/teams/#{@team.id}/fetch_espn", :method => :post) if god?
 
 %table{:style => "display: inline-table;"}
   %tr
