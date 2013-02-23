@@ -1,2 +1,40 @@
-- player = Player.find(params[:id])
-= render :partial => "components/playercard", :locals => {:player_id => player.id}
+= render :partial => "components/playercard", :locals => {:player_id => @player.id}
+#chartbox
+:javascript
+  $(function(){
+    var chart = new Highcharts.Chart({
+      chart: {
+        renderTo: 'chartbox'
+      },
+      credits: {
+        enabled: false
+      },
+      xAxis: {
+        title: {
+          text: "Week"
+        },
+      },
+      yAxis: {
+        title: {
+          text: "Points"
+        }
+      },
+      title: 'Scores by Week'
+    });
+
+    chart.showLoading();
+    $.ajax('/stats/player_points?' + $.param(#{@chart_data_options.to_json}),{
+      success: function(d) {
+        chart.addSeries({
+          name: "Points",
+          data: d.map(function(e){
+            return {
+              x: e.espn_stat.week,
+              y: e.espn_stat.points
+            };
+          })
+        });
+        chart.hideLoading();
+      }
+    });
+  });

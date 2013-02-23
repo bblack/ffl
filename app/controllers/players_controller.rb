@@ -10,6 +10,15 @@ class PlayersController < ApplicationController
       }
     end
   end
+
+  def show
+    @player = Player.find(params[:id])
+    @chart_data_options = {
+      player_id: @player.espn_id,
+      league_id: @current_league.espn_id,
+      season: @current_league.season
+    }
+  end
   
   # Helpers
   
@@ -18,7 +27,6 @@ class PlayersController < ApplicationController
     criteria[:position] ||= ['QB', 'RB', 'WR', 'TE', 'Def', 'PK']
     # Use the rest of the criteria later
     @players = Player.where(:position => criteria[:position]).where("lower(last_name) like ?", "%#{(criteria[:last_name] || '').downcase}%")
-
   end
   
 end

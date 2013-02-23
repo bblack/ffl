@@ -29,7 +29,7 @@
     %th First year
     %th Length
   - @team.players.sort { |x,y| poslist = @team.league.positions; (poslist.index(x.position) <=> poslist.index(y.position)) || 0 }.each do |player|
-    - pvc = @team.players_pvcs.all.select{|pvc| pvc.player_id == player.id}.first
+    - pvc = @team.players_pvcs.all.find{|pvc| pvc.player_id == player.id}
     %tr
       %td
         %a{:href => "/players/#{player.id}"}
@@ -40,3 +40,18 @@
         = pvc ? pvc.first_year : nil
       %td
         = pvc ? (pvc.last_year - pvc.first_year + 1) : nil
+#chartbox
+:javascript
+  $(function(){
+    var chart = new Highcharts.Chart({
+      chart: {
+        renderTo: 'chartbox'
+      },
+      series: [{
+        data: #{@team.players.collect{|p| {name: p.name, y: @team.players_pvcs.all.find{|pvc| pvc.player_id == p.id}.new_value }}.sort{|x,y| y[:y] <=> x[:y]}.to_json},
+        type: 'pie',
+        name: 'Contract value'
+      }],
+      title: { text: null }
+    });
+  });

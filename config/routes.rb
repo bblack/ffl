@@ -22,4 +22,8 @@ Ffl::Application.routes.draw do
   resources :rfa_bids
   resources :rfa_decisions
   resources :player_value_changes
+  scope 'stats' do
+    match 'player_points' => 'espn_stats#player_points'
+    match 'points_vs_pv' => 'espn_stats#points_vs_pv'
+  end
 end

@@ -1,0 +1,17 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  player_id: 1
+  league_id: 1
+  week: 1
+  season: 1
+  stats: MyString
+  points: 1
+
+two:
+  player_id: 1
+  league_id: 1
+  week: 1
+  season: 1
+  stats: MyString
+  points: 1

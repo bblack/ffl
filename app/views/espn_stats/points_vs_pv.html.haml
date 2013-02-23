@@ -1,0 +1,67 @@
+#chartbox{:style => 'height: 600px;'}
+:javascript
+  $(function(){
+    var chart = new Highcharts.Chart({
+      chart: {
+        renderTo: 'chartbox',
+        type: 'scatter',
+        zoomType: 'xy'
+      },
+      credits: {
+        enabled: false
+      },
+      tooltip: {
+        formatter: function() {
+          return this.point.name + "<br/>" + "Contract: " + this.point.x + "<br/>Points: " + this.point.y;
+        }
+      },
+      xAxis: {
+        title: {
+          text: "Contract value"
+        },
+      },
+      yAxis: {
+        title: {
+          text: "Points"
+        }
+      },
+      title: {
+        text: 'Season points vs. contract value'
+      }
+    });
+
+    chart.showLoading();
+    $.ajax('/stats/points_vs_pv.json?' + $.param(#{@chart_data_options.to_json}),{
+      success: function(d) {
+        var posToPlayers = {};
+        $.each(d, function(i,e){
+          if (posToPlayers[e.team.position] == undefined) { posToPlayers[e.team.position] = []; }
+          posToPlayers[e.team.position].push({
+            x: e.team.new_value,
+            y: e.team.points,
+            name: e.team.first_name + " " + e.team.last_name + " (" + e.team.nfl_team + " " + e.team.position + ")"
+          });
+        });
+
+        for (var pos in posToPlayers) {
+          chart.addSeries({
+            data: posToPlayers[pos],
+            name: pos
+          });
+        }
+        chart.hideLoading();
+        return;
+
+        chart.addSeries({
+          data: d.map(function(e){
+            return {
+              x: e.team.new_value,
+              y: e.team.points,
+              name: e.team.first_name + " " + e.team.last_name + " (" + e.team.nfl_team + " " + e.team.position + ")"
+            };
+          })
+        });
+        chart.hideLoading();
+      }
+    });
+  });
