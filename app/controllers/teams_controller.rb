@@ -2,6 +2,7 @@ class TeamsController < ApplicationController
   before_filter :load_team, :except => [:index]
 
   def fetch_espn
+    raise StandardError.new("god mode req'd") if !god?
     @team.fetch_espn_roster
     add_flash(:notice, false, "Fetched the ESPN roster of team '#{@team.name}'")
     redirect_to team_path(@team)
