@@ -40,7 +40,7 @@ class RfaBid < ActiveRecord::Base
 
   def cannot_bid_on_own
     if self.team.players_pvcs.where(:player_id => self.player_id).any?
-      self.errors.add(:team, " must not be the same team who currently owns the player")
+      self.errors.add_to_base("You cannot bid on your own player during RFA.")
     end
   end
   
