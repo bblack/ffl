@@ -82,21 +82,6 @@ ActiveRecord::Schema.define(:version => 20130130051229) do
     t.string   "espn_id"
   end
 
-  create_table "move2s", :force => true do |t|
-    t.integer  "player_id"
-    t.integer  "old_team_id"
-    t.string   "type"
-    t.integer  "new_team_id"
-    t.integer  "new_pv"
-    t.text     "comment"
-    t.integer  "final_year"
-    t.integer  "move2_group_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "league_id"
-    t.integer  "season"
-  end
-
   create_table "moves", :force => true do |t|
     t.integer  "transaction_id"
     t.integer  "old_contract_id"
