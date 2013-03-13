@@ -30,7 +30,7 @@ class Team < ActiveRecord::Base
     if payroll_available.nil?
       return nil
     else
-      expiring_contracts = rfa_period.contracts_eligible.where(:player_id => self.player_ids)
+      expiring_contracts = rfa_period.contracts_eligible.where(:player_id => self.players.collect(&:id))
       expiring_contracts_value = expiring_contracts.all.sum{|c| c.new_value}
       return self.payroll_available + expiring_contracts_value
     end
