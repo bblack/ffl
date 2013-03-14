@@ -30,7 +30,7 @@
   <script type='text/javascript'>
     $(document).ready(function(){
       $("#ticker").ticker({
-        dataUrl: '/rfa_bids?rfa_period_id=<%= @current_league.rfa_periods.first.id %>',
+        dataUrl: '/rfa_bids?rfa_period_id=<%= @current_league.rfa_periods.select{|r| not r.ended?}.last.id %>',
         dataToHtml: function(data) {
           var out = '<span class="espnyellow">Latest bids:</span> ';
           $.each(data, $.proxy(function(index, item){
