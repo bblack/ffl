@@ -3,7 +3,6 @@ class ApplicationController < ActionController::Base
 
   protect_from_forgery
   before_filter :set_current_user
-  before_filter :set_current_league
   # before_filter :brian_only_mode
   before_filter :reject_posts_by_nongods
   before_filter :reject_posts_unless_logged_in
@@ -15,27 +14,9 @@ class ApplicationController < ActionController::Base
       @current_user = User.find(session[:user_id])
     end
   end
-  
-  def set_current_league
-    if session[:league_id].nil?
-      @current_league = nil
-    else
-      @current_league = League.includes(:rfa_periods).find(session[:league_id])
-    end
-  end
 
   def change_current_league(new_league_id)
-    league = League.where(:id => new_league_id).first
-
-    if league.nil?
-      session[:league_id] = nil
-      add_flash :warning, true, "You are not browsing a league anymore"
-    elsif session[:league_id] != league.id
-      session[:league_id] = league.id
-      add_flash :notice, true, "You are now browsing league '#{league.name}'"
-    end
-    
-    set_current_league()
+    @current_league = League.includes(:rfa_periods).find(new_league_id)
   end
   
   def reject_posts_unless_logged_in

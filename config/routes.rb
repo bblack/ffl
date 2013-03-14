@@ -9,8 +9,10 @@ Ffl::Application.routes.draw do
   match 'application/logout' => 'application#logout'
   match 'application/login' => 'application#login'
   resources :players
-  resources :leagues
-  resources :teams
+  resources :leagues do
+    resources :teams, :only => :index
+  end
+  resources :teams, :except => :index
   match 'teams/:id/fetch_espn' => 'teams#fetch_espn'
   resources :users#, :only => [:create]
   resources :rfa_periods

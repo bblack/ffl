@@ -6,10 +6,10 @@ function fieldValueChanged(field) {
 
 $(document).ready(function(){
   $("#navbar-league-li").mouseenter(function(){
-    $("#user-team-selector").css('display', 'table');
+    $("#user-team-selector").show();
   });
 
   $("#navbar-league-li").mouseleave(function(event){
-    $("#user-team-selector").css('display', 'none');
+    $("#user-team-selector").hide();
   });
 });

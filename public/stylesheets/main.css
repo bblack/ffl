@@ -81,6 +81,11 @@ th {
   margin-left: -.5em;
   background-color: #303030;
   box-shadow: 0px 0px 8px black;
+  z-index: 1; /* Otherwise, appears behind h1 subtitles */
+}
+
+#user-team-selector .all-leagues {
+  font-style: italic;
 }
 
 #user-team-selector a {

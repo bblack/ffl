@@ -1,5 +1,5 @@
 <h1>Leagues</h1>
-<a href="/leagues/-1">Select no league</a> or select a league:<br/>
+Select a league:<br/>
 <% League.all.each do |league| %>
   <a href="/leagues/<%= league.id %>"><%= league.name %></a><br/>
 <% end %>

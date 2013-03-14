@@ -1,6 +1,10 @@
 class TeamsController < ApplicationController
   before_filter :load_team, :except => [:index]
 
+  def index
+    change_current_league(params[:league_id])
+  end
+
   def fetch_espn
     raise StandardError.new("god mode req'd") if !god?
     @team.fetch_espn_roster
