@@ -29,7 +29,7 @@
     <li><a href="/players">players</a></li>
     <% if @current_league %>
       <li><%= link_to "teams", league_teams_path(@current_league) %></li>
-      <% @current_league.rfa_periods.select{|r| not r.ended?}.each do |rfa| %>
+      <% @current_league.rfa_periods.select{|r| r.open? || (r.rfa_decision_period.open? rescue false)}.each do |rfa| %>
         <li><a href="/rfa_periods/<%= rfa.id %>" style="color:lightyellow;">RFA</a></li>      
       <% end %>
     <% end %>

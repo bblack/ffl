@@ -23,7 +23,7 @@ class RfaDecisionPeriod < ActiveRecord::Base
     nonrfas = 0
     team.players_pvcs.each do |c|
       unless self.rfa_period.contracts_eligible.any? { |ce| ce.player_id == c.player_id }
-        nonrfas += c.value 
+        nonrfas += c.new_value
       end
     end
     
