@@ -4,7 +4,7 @@ class RfaPeriodsController < ApplicationController
   def show
     if @rfaperiod.ended?
       if @rfaperiod.rfa_decision_period.nil? || @rfaperiod.rfa_decision_period.ended?
-        head 410 and return
+        head 410 unless god?
       end
     end
   end
