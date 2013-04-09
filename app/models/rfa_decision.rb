@@ -3,7 +3,7 @@ class RfaDecision < ActiveRecord::Base
   belongs_to :player
   belongs_to :rfa_decision_period
   validate :validate_team_has_player
-  validate :rfa_decision_period_is_open, :on => :create
+  validate :rfa_decision_period_is_open
 
   def validate_team_has_player
     contract = self.team.players_pvcs.where(:player_id => self.player_id)

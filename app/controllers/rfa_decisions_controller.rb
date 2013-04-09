@@ -12,11 +12,6 @@ class RfaDecisionsController < ApplicationController
   end
 
   def create
-    unless @rfa_decision_period.open?
-      add_flash(:error, false, "The RFA decision period isn't currently open.")
-      redirect_to :back and return
-    end
-
     decision = RfaDecision.find_or_initialize_by_rfa_decision_period_id_and_player_id(
       @rfa_decision_period.id, params[:player_id])
     decision.update_attributes({
