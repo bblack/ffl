@@ -123,7 +123,9 @@
             <% decision = @rfaperiod.rfa_decision_period.rfa_decisions.select{|d| d.player_id == p.id and d.team_id == team.id}.first %>
             <% keep = decision.keep rescue nil %>
             <td style='background-color: <%= {true => 'lightgreen', false => 'salmon', nil => 'lightyellow'}[keep] %>;'>
-              <%= render :partial => 'components/rfa_decider', :locals => { :player => p, :team => @current_team } %>
+              <% if @rfaperiod.rfa_decision_period.open? %>
+                <%= render :partial => 'components/rfa_decider', :locals => { :player => p, :team => @current_team } %>
+              <% end %>
               <%= decision.keepstring rescue 'undecided' %>
             </td>
           <% end %>
