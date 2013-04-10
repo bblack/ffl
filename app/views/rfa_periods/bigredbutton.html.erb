@@ -2,11 +2,9 @@ This <%= @bigredbutton_results[:dryrun] ? 'was' : 'WAS NOT' %> a dry run.
 
 <table>
   <tr>
-    <th>Action</th>
     <th>Player</th>
-    <th>Owner</th>
-    <th>Value</th>
-    <th>Length</th>
+    <th>New owner</th>
+    <th>New value</th>
   </tr>
   <% @bigredbutton_results[:pvcs].each do |c| %>
     <tr>
