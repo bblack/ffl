@@ -10,36 +10,33 @@ class RfaPeriod < ActiveRecord::Base
     raise StandardError.new("Can't bigredbutton because there is no decision period for this RFA period") if self.rfa_decision_period.nil?
     raise StandardError.new("Can't bigredbutton because RFA decision period is open") if self.rfa_decision_period.open?
 
-    nixed_contracts = []
-    new_contracts = []
+    pvcs = []
 
     begin
       ActiveRecord::Base.transaction do
         self.contracts_eligible.each do |c|
-          nixed_contracts << c
+          decision = RfaDecision.find_or_initialize_by_rfa_decision_period_id_and_player_id(
+            rfa_decision_period.id, c.player_id)
+          if decision.id.nil?
+            # owner made no decision
+            decision.made_by_redbutton = true
+            decision.team_id = EspnRosterSpot.where(:espn_player_id => c.player.espn_id).first.team_id
+            decision.keep = false # Valid by constitution as of 9 April 2013
+            decision.save!
+          end
 
           top_bid = self.top_bid_for(c.player_id)
           new_contract_value = top_bid ? top_bid.value : 1
-          decision = self.rfa_decision_period.rfa_decisions.where(:player_id => c.player_id).first
-          new_contract = PlayerValueChange.new(
+          pvc = PlayerValueChange.new(
+            :team_id => top_bid ? top_bid.team_id : nil,
             :player_id => c.player_id,
             :first_year => self.final_year + 1,
             :value => new_contract_value,
-            :last_year => self.final_year + self.league.contract_length_for_value(new_contract_value)
-            )
+            :last_year => self.final_year + self.league.contract_length_for_value(new_contract_value))
+          pvcs << pvc
 
-          if decision and decision.keep
-            new_contract.team_id = c.team_id
-            new_contract.save!
-            new_contracts << new_contract
-          elsif top_bid
-            new_contract.team_id = top_bid.team_id
-            new_contract.save!
-            new_contracts << new_contract
-          else
-            # Owner releases, and there are no bids.
-          end
-        end # rfa-eligible contracts
+          raise DryRunError if dryrun
+        end
 
         self.redbuttoned = true
         self.save!
@@ -50,14 +47,11 @@ class RfaPeriod < ActiveRecord::Base
       # This exception is only meant to prevent transaction from passing
     end
 
-    return {
-      :dryrun => dryrun,
-      :nixed_contracts => nixed_contracts,
-      :new_contracts => new_contracts
-      }
+    return {:dryrun => dryrun, :pvcs => pvcs}
   end
 
   def contracts_eligible
+    raise StandardError("RFA period has been redbuttoned. Check its decisions instead.") if self.redbuttoned
     self.league.signed_players_pvcs.includes(:player)
       .where("last_year = ?", self.final_year)
   end
