@@ -6,8 +6,14 @@
 </h1>
 
 <% if god? %>
-  <%= form_tag("/rfa_periods/#{@rfaperiod.id}/bigredbutton", :method => "POST") do %>
-    <%= submit_tag('BIG RED BUTAN', {:style => 'cursor:pointer; background-image:url("/images/bigredbutton.png"); background-position:center; background-color:transparent; color:#700; text-shadow:0px 1px 0px #e00; border:none; width:122px; height:122px;'}) %>
+  <% if @rfaperiod.redbuttoned %>
+    <span class="noticebox">
+      This RFA period has been redbuttoned.
+    </span>
+  <% else %>
+    <%= form_tag("/rfa_periods/#{@rfaperiod.id}/bigredbutton", :method => "POST") do %>
+      <%= submit_tag('BIG RED BUTAN', {:style => 'cursor:pointer; background-image:url("/images/bigredbutton.png"); background-position:center; background-color:transparent; color:#700; text-shadow:0px 1px 0px #e00; border:none; width:122px; height:122px;'}) %>
+    <% end %>
   <% end %>
 <% end %>
 
@@ -69,7 +75,11 @@
 <% end %> 
 
 <h2>Eligible players</h2>
-<% pid_to_pcv = Hash[ @rfaperiod.contracts_eligible.collect{|c| [c.player_id, c]} ] %>
+<% if @rfaperiod.redbuttoned %>
+  <% pid_to_pcv = Hash[ @rfaperiod.rfa_decision_period.rfa_decisions.collect{|d| [d.player_id, d]} ] %>
+<% else %>
+  <% pid_to_pcv = Hash[ @rfaperiod.contracts_eligible.collect{|c| [c.player_id, c]} ] %>
+<% end %>
 <% @rfaperiod.league.teams.includes(:espn_roster_spots => :player).each do |team| %>
   <span style="display:inline-block; margin-right:1em;">
     <h3><a href="/teams/<%=team.id%>"><%= team.name %></a></h3>
@@ -80,7 +90,8 @@
         <% if @rfaperiod.open? %><th>Action</th><% end %>
         <% if @rfaperiod.rfa_decision_period %><th>Keep?</th><% end %>
       </tr>
-      <% team.players.each do |p| %> 
+      <% team_players = @rfaperiod.redbuttoned ? @rfaperiod.rfa_decision_period.rfa_decisions.where(:team_id => team.id).all.map{|d| d.player} : team.players %>
+      <% team_players.each do |p| %> 
         <% pvc = pid_to_pcv[p.id]; next if pvc.nil? %>
         <tr>
           <td>
