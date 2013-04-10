@@ -22,6 +22,7 @@ class RfaPeriod < ActiveRecord::Base
             decision.made_by_redbutton = true
             decision.team_id = EspnRosterSpot.where(:espn_player_id => c.player.espn_id).first.team_id
             decision.keep = false # Valid by constitution as of 9 April 2013
+            decision.skip_rfa_decision_period_is_open = true
             decision.save!
           end
 

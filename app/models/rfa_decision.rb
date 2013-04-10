@@ -4,6 +4,8 @@ class RfaDecision < ActiveRecord::Base
   belongs_to :rfa_decision_period
   validate :validate_team_has_player
   validate :rfa_decision_period_is_open
+  after_validation { reset_skip_flags }
+  attr_accessor :skip_rfa_decision_period_is_open
 
   def validate_team_has_player
     contract = self.team.players_pvcs.where(:player_id => self.player_id)
@@ -13,6 +15,7 @@ class RfaDecision < ActiveRecord::Base
   end
 
   def rfa_decision_period_is_open
+    return if skip_rfa_decision_period_is_open
     if not rfa_decision_period.open?
       errors.add(:rfa_decision_period, "must be open")
     end
@@ -20,5 +23,9 @@ class RfaDecision < ActiveRecord::Base
 
   def keepstring
     {true => 'keep', false => 'drop', nil => 'undecided'}[self.keep]
+  end
+
+  def reset_skip_flags
+    skip_rfa_decision_period_is_open = false
   end
 end
