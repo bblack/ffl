@@ -12,7 +12,13 @@ class Team < ActiveRecord::Base
   end
   
   def payroll
-    players_pvcs.to_a.sum{|pvc| pvc.new_value || 0}
+    rosterspots = EspnRosterSpot.where(:team_id => self.id)
+    playerids = Player.where(:espn_id => rosterspots.map(&:espn_player_id)).map(&:id)
+    teamids = league.team_ids
+    # fuck it
+    playerids.inject(0) do |m, spot|
+      m + PlayerValueChange.where(:team_id => teamids, :player_id => playerids).last.new_value || 0
+    end
   end
   
   def payroll_available
