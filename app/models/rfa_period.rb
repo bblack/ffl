@@ -27,7 +27,11 @@ class RfaPeriod < ActiveRecord::Base
           end
 
           top_bid = self.top_bid_for(c.player_id)
-          new_contract_value = top_bid ? top_bid.value : 1
+          if decision.keep
+            new_contract_value = top_bid ? top_bid.value : 1
+          else
+            new_contract_value = nil  
+          end
           pvc = PlayerValueChange.new(
             :team_id => top_bid ? top_bid.team_id : nil,
             :player_id => c.player_id,
