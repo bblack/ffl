@@ -16,8 +16,8 @@ class Team < ActiveRecord::Base
     playerids = Player.where(:espn_id => rosterspots.map(&:espn_player_id)).map(&:id)
     teamids = league.team_ids
     # fuck it
-    playerids.inject(0) do |m, spot|
-      m + PlayerValueChange.where(:team_id => teamids, :player_id => playerids).last.new_value || 0
+    playerids.inject(0) do |m, pid|
+      m + PlayerValueChange.where(:team_id => teamids, :player_id => pid).last.new_value || 0
     end
   end
   
