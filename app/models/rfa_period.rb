@@ -31,11 +31,9 @@ class RfaPeriod < ActiveRecord::Base
             :team_id => top_bid ? top_bid.team_id : nil,
             :player_id => c.player_id,
             :first_year => self.final_year + 1,
-            :value => new_contract_value,
+            :new_value => new_contract_value,
             :last_year => self.final_year + self.league.contract_length_for_value(new_contract_value))
           pvcs << pvc
-
-          raise DryRunError if dryrun
         end
 
         self.redbuttoned = true
