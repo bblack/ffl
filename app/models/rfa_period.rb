@@ -35,10 +35,10 @@ class RfaPeriod < ActiveRecord::Base
             new_team_id = top_bid.team_id
           else # no bids and releasing
             new_contract_value = nil
-            new_team_id = nil
+            new_team_id = decision.team_id
           end
           pvc = PlayerValueChange.new(
-            :team_id => new_team_id,
+            :team_id => new_team_id, # Must be a team id in the league for other queries. consider replacing attribute with a league_id
             :player_id => c.player_id,
             :first_year => self.final_year + 1,
             :new_value => new_contract_value,
