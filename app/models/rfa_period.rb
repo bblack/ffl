@@ -37,7 +37,7 @@ class RfaPeriod < ActiveRecord::Base
             new_contract_value = nil
             new_team_id = decision.team_id
           end
-          pvc = PlayerValueChange.new(
+          pvc = PlayerValueChange.create(
             :team_id => new_team_id, # Must be a team id in the league for other queries. consider replacing attribute with a league_id
             :player_id => c.player_id,
             :first_year => self.final_year + 1,
