@@ -12,7 +12,7 @@ class Team < ActiveRecord::Base
   end
   
   def payroll
-    players_pvcs.to_a.sum(&:new_value)
+    players_pvcs.to_a.sum{|pvc| pvc.new_value || 0}
   end
   
   def payroll_available
