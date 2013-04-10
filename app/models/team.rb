@@ -17,7 +17,7 @@ class Team < ActiveRecord::Base
     teamids = league.team_ids
     # fuck it
     playerids.inject(0) do |m, pid|
-      m + PlayerValueChange.where(:team_id => teamids, :player_id => pid).last.new_value || 0
+      m + (PlayerValueChange.where(:team_id => teamids, :player_id => pid).last.new_value || 0)
     end
   end
   
