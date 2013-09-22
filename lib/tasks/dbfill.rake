@@ -4,7 +4,7 @@ namespace :db do
   task :fill => :environment do
     require 'net/http'
     
-    responsebody = Net::HTTP.get(URI.parse("http://football.myfantasyleague.com/2012/player_listing?POSITION=*&TEAM=*"))
+    responsebody = Net::HTTP.get(URI.parse("http://football.myfantasyleague.com/2013/player_listing?POSITION=*&TEAM=*"))
     puts responsebody
     
     #re = Regexp.new('<a href="player?P=(.*?)">(.*), .* ([^ ]*) ([^ ]*)</a>')
