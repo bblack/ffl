@@ -71,7 +71,7 @@ class Team < ActiveRecord::Base
       espn_hash.keys.each do |espn_id|
         EspnRosterSpot.create(:espn_player_id => espn_id, :team_id => self.id)
 
-        player = Player.find(:espn_player_id => espn_id)
+        player = Player.find(:espn_id => espn_id)
         last_pvc = PlayerValueChange.where(
           :player_id => player.id,
           :team_id => league.team_ids # todo - change to league id
