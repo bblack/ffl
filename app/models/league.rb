@@ -71,4 +71,19 @@ class League < ActiveRecord::Base
     return new_pvcs
   end
 
+  def draft(picks)
+    now = Time.now
+
+    ActiveRecord::Base.transaction do
+      picks.each do |pick|
+        PlayerValueChange.create!(
+          pick.slice('player_id', 'new_value').merge(
+            :team_id => team_ids.first, # todo - change pvc.team_id to league_id
+            :comment => "draft #{now}"
+          )
+        )
+      end
+    end
+  end
+
 end

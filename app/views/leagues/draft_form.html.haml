@@ -1,0 +1,98 @@
+%h1
+  Draft Input  
+%table{:id => 'picks'}
+  %th player
+  %th value
+%span{:id => 'submit'}
+  submit
+
+:javascript
+  $(function(){
+
+    $("#submit").click(function(){
+      $.ajax({
+        url: '/leagues/#{params[:id]}/draft',
+        type: 'POST',
+        headers: {
+          'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+        },
+        contentType: 'application/json',
+        processData: false,
+        data: function(){
+          ret = {
+            picks: $.map($("#picks tr input").closest('tr'), function(e){
+              return {
+                player_id: $(e).find("[name='player_id']").val(),
+                new_value: $(e).find("[name='new_value']").val()
+              };
+            })
+          };
+
+          return JSON.stringify(ret);
+        }(),
+        success: function(){
+          debugger;
+        },
+        error: function(){
+          debugger;
+        }
+      })    
+    })
+
+    var makeNewRow = function(){
+      var tr = $("<tr><td></td><td></td><td></td></tr>");
+      var visPlayerInput = $("<input type='text'></input>");
+      var hidPlayerInput = $("<input name='player_id' type='hidden'></input>");
+      var valInput = $("<input name='new_value' type='text'></input>");
+      var addButton = $("<span>another</span>");
+
+      playerFinderize(visPlayerInput, hidPlayerInput);
+      addButton.click(makeNewRow);
+
+      tr.find('td:eq(0)').append(visPlayerInput);
+      tr.find('td:eq(0)').append(hidPlayerInput);
+      tr.find('td:eq(1)').append(valInput);
+      tr.find('td:eq(2)').append(addButton);
+
+      tr.insertAfter("#picks tr:eq(0)");
+      visPlayerInput.focus();
+    }
+
+    var playerFinderize = function($el, $saveTo){
+      var cache = {}, lastXhr;
+      $el.autocomplete({
+        minLength: 3,
+        select: function(event, ui){
+          $saveTo.val(ui.item.id.toString());
+        },
+        source: function(request, response) {
+          var term = request.term;
+          if (term in cache) {
+            response(cache[term]);
+            return;
+          }
+          
+          lastXhr = $.getJSON("/players.json", {'last_name': term}, function(data, status, xhr){
+            ret = [];
+            for (var i = 0; i < data.length; i++)
+            {
+              var p = data[i].player;
+              var showtext = p.first_name + " " + p.last_name + " (" + p.position + ", " + p.nfl_team + ")";
+              ret.push({
+                label: showtext,
+                value: showtext,
+                id: data[i].player.id
+              });
+            }
+            cache[term] = ret;
+            if (xhr === lastXhr) {
+              response(ret);
+            }
+          });
+        }
+      });
+    };
+
+    makeNewRow();
+
+  });
