@@ -37,4 +37,38 @@ class League < ActiveRecord::Base
       where('espn_roster_spots.team_id' => (team_id || self.team_ids))
   end
 
+  def clear_values_for_unsigned_players
+    # For all players that have a value AND that are not on a team, set their
+    # value to nil. To be used after all the RFA and resolve crap but before
+    # the draft.
+    r = ActiveRecord::Base.connection.execute("""
+      select players.id from players
+        left outer join (select * from player_value_changes order by created_at desc) pvc_latest
+          on pvc_latest.player_id = players.id
+        left outer join teams on teams.id = pvc_latest.team_id
+        left outer join espn_roster_spots
+          on players.espn_id = espn_roster_spots.espn_player_id
+      where espn_roster_spots.id IS NULL
+        and teams.league_id = #{id}
+      group by players.id, espn_roster_spots.team_id
+    """)
+
+    player_ids = r.map{|x| x['id']}
+
+    new_pvcs = []
+
+    ActiveRecord::Base.transaction do
+      player_ids.each do |player_id|
+        new_pvcs << PlayerValueChange.create!(
+          :player_id => player_id,
+          :new_value => nil,
+          :team_id   => team_ids.first, # whatever, i need to replace this with league_id
+          :comment   => 'clear_values_for_unsigned_players'
+        )
+      end
+    end
+
+    return new_pvcs
+  end
+
 end
