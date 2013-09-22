@@ -17,6 +17,7 @@ class Team < ActiveRecord::Base
     teamids = league.team_ids
     # fuck it
     playerids.inject(0) do |m, pid|
+      # todo - change pvc team_id to league_id
       m + (PlayerValueChange.where(:team_id => teamids, :player_id => pid).last.new_value || 0)
     end
   end
@@ -69,6 +70,26 @@ class Team < ActiveRecord::Base
       self.espn_roster_spots.delete_all
       espn_hash.keys.each do |espn_id|
         EspnRosterSpot.create(:espn_player_id => espn_id, :team_id => self.id)
+
+        player = Player.find(:espn_player_id => espn_id)
+        last_pvc = PlayerValueChange.where(
+          :player_id => player.id,
+          :team_id => league.team_ids # todo - change to league id
+        ).last
+
+        if (last_pvc.nil? || last_pvc.new_value.nil?)
+          new_value = 1
+          start_year = Date.today.year
+
+          # todo - change pvc team_id to league_id
+          PlayerValueChange.create!(
+            :player_id => player.id,
+            :team_id => id,
+            :new_value => new_value,
+            :first_year => start_year,
+            :last_year => start_year - 1 + league.contract_length_for_value(new_value),
+            :comment => 'free agent pickup')
+        end
       end
       self.espn_roster_last_updated = Time.now
       self.save!

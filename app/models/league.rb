@@ -76,10 +76,14 @@ class League < ActiveRecord::Base
 
     ActiveRecord::Base.transaction do
       picks.each do |pick|
+        first_year = Date.today.year
+
         PlayerValueChange.create!(
           pick.slice('player_id', 'new_value').merge(
             :team_id => team_ids.first, # todo - change pvc.team_id to league_id
-            :comment => "draft #{now}"
+            :comment => "draft #{now}",
+            :first_year => first_year,
+            :last_year => first_year - 1 + contract_length_for_value(pick['new_value'])
           )
         )
       end
