@@ -19,7 +19,7 @@
         %td
           = team.espn_roster_last_updated
         - if god?
-          %span{:updateurl => "/teams/#{@team.id}/fetch_espn"}
+          %span{:updateurl => "/teams/#{team.id}/fetch_espn"}
           %span.update-status
         - @current_league.positions.each do |p|
           %td
