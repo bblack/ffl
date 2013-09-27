@@ -3,16 +3,41 @@
   %table
     %tr
       %th Team name
+      %th Last updated
+      - if god?
+        Update
       %th Payroll
       - @current_league.positions.each do |p|
         %th= "#{p}s"
-      - @current_league.teams.each do |team|
-        %tr
+    - @current_league.teams.each do |team|
+      %tr
+        %td
+          %a{:href => "/teams/#{team.id}"}
+            = team.name
+        %td
+          = team.payroll
+        %td
+          = team.espn_roster_last_updated
+        - if god?
+          %span{:updateurl => "/teams/#{@team.id}/fetch_espn"}
+          %span.update-status
+        - @current_league.positions.each do |p|
           %td
-            %a{:href => "/teams/#{team.id}"}
-              = team.name
-          %td
-            = team.payroll
-          - @current_league.positions.each do |p|
-            %td
-              = team.players.where(:position => p).count
+            = team.players.where(:position => p).count
+
+:javascript
+  $("[updateurl]").click(function(evt){
+    var $el = $(evt.delegateTarget);
+
+    $.ajax({
+      url: $el.attr('updateurl'),
+      type: 'POST',
+      success: function(data){
+        // i'm lazy
+        window.location.reload();
+      },
+      error: function(){
+        $el.siblings('.update-status').text('error');
+      }
+    })
+  });
