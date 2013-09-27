@@ -18,7 +18,8 @@
           = team.espn_roster_last_updated
         - if god?
           %td
-            %span{:updateurl => "/teams/#{team.id}/fetch_espn"}
+            %button{:updateurl => "/teams/#{team.id}/fetch_espn"}
+              Update
             %span.update-status
         %td
           = team.payroll
