@@ -72,6 +72,9 @@ class Team < ActiveRecord::Base
         EspnRosterSpot.create(:espn_player_id => espn_id, :team_id => self.id)
 
         player = Player.where(:espn_id => espn_id).first
+
+        Rails.logger.debug "Couldn't find player with espn_id #{espn_id}" if player.nil?
+
         last_pvc = PlayerValueChange.where(
           :player_id => player.id,
           :team_id => league.team_ids # todo - change to league id
