@@ -73,7 +73,7 @@ class Team < ActiveRecord::Base
 
         player = Player.where(:espn_id => espn_id).first
 
-        Rails.logger.debug "Couldn't find player with espn_id #{espn_id}" if player.nil?
+        raise StandardError.new("Couldn't find player with espn_id #{espn_id}") if player.nil?
 
         last_pvc = PlayerValueChange.where(
           :player_id => player.id,
