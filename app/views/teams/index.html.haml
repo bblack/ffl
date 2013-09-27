@@ -5,7 +5,7 @@
       %th Team name
       %th Last updated
       - if god?
-        Update
+        %th Update
       %th Payroll
       - @current_league.positions.each do |p|
         %th= "#{p}s"
@@ -15,12 +15,13 @@
           %a{:href => "/teams/#{team.id}"}
             = team.name
         %td
-          = team.payroll
-        %td
           = team.espn_roster_last_updated
         - if god?
-          %span{:updateurl => "/teams/#{team.id}/fetch_espn"}
-          %span.update-status
+          %td
+            %span{:updateurl => "/teams/#{team.id}/fetch_espn"}
+            %span.update-status
+        %td
+          = team.payroll
         - @current_league.positions.each do |p|
           %td
             = team.players.where(:position => p).count
