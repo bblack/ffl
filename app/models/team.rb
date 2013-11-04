@@ -57,6 +57,10 @@ class Team < ActiveRecord::Base
     raise StandardError.new("team's espn_id is nil") if self.espn_id == nil
 
     doc = Nokogiri::HTML(open(self.espn_url))
+
+    team_name_el = doc.css('.games-univ-mod3 h3')  # <h3>Caprica Buccaneers <span>(CAP)</span></h3> 
+    team_name = team_name_el.children[0].text.rstrip
+
     player_link_elements = doc.css('.playertablePlayerName a')
 
     # Map espn_id => name
@@ -95,6 +99,9 @@ class Team < ActiveRecord::Base
         end
       end
       self.espn_roster_last_updated = Time.now
+
+      self.name = team_name
+
       self.save!
     end
 
