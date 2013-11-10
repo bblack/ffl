@@ -1,9 +1,13 @@
 # SQLite version 3.x
 #   gem install sqlite3
 development:
-  adapter: sqlite3
-  database: db/development.sqlite3
+  adapter: postgresql
+  encoding: unicode
+  hostname: 127.0.0.1
+  database: ffl_development
   pool: 5
+  username: ffl
+  password:
   timeout: 5000
 
 # Warning: The database defined as "test" will be erased and
