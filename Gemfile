@@ -7,10 +7,10 @@ gem 'haml'
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
-group :development, :test do
+group :test do
   gem 'sqlite3'
 end
-group :production do
+group :development, :production do
   gem 'pg'
 end
 #gem 'typhoeus'
