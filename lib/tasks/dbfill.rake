@@ -70,8 +70,10 @@ namespace :db do
           p.espn_id = u[:id]
           p.save!
         else
+          first_name, last_name = u[:name].split(' ', 2)
           p = Player.create(
-            name: u[:name] + u[:team_and_pos],
+            first_name: first_name,
+            last_name: last_name,
             espn_id: u[:id]
           )
         end
