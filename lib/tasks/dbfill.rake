@@ -65,7 +65,7 @@ namespace :db do
         puts "Enter ID for #{u[:name]}#{u[:team_and_pos]}, or leave blank to create new player."
         puts "Possible matches: #{Player.where(:first_name => u[:name].split[0], :last_name => u[:name].split[1]).all}"
         existing_player_id = STDIN.gets.strip
-        if (existing_player_id)
+        if (existing_player_id.present?)
           p = Player.find(existing_player_id)
           p.espn_id = u[:id]
           p.save!
