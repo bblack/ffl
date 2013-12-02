@@ -50,32 +50,29 @@ namespace :db do
 
       players = anchors.map do |a|
         sib = a.next_sibling
-        p = {name: a.inner_text, id: a.get_attribute('playerid'), :team_and_pos => sib.text}
-        puts p
+        p = {
+          first_name: a.inner_text.split(' ', 2)[0],
+          last_name: a.inner_text.split(' ', 2)[1],
+          nfl_team: sib.text.split(/[[:space:]]+/)[1], # [0] is comma + optional asterisk
+          position: sib.text.split(/[[:space:]]+/)[2],
+          espn_id: a.get_attribute('playerid')
+        }
+        if p[:last_name] == 'D/ST'
+          p[:nfl_team] = nil
+          p[:position] = 'D/ST'
+        end
+        # puts p
         p
       end
 
-      matching_players = Player.where(espn_id: players.map{|p| p[:id]})
-      puts "#{matching_players.count} matches"
-      matching_player_ids = matching_players.map(&:espn_id)
-      unmatching_players = players.reject{|p| matching_player_ids.member? p[:id].to_i}
-
-      puts "#{unmatching_players.count} not found"
-      unmatching_players.each do |u|
-        puts "Enter ID for #{u[:name]}#{u[:team_and_pos]}, or leave blank to create new player."
-        puts "Possible matches: #{Player.where(:first_name => u[:name].split[0], :last_name => u[:name].split[1]).all}"
-        existing_player_id = STDIN.gets.strip
-        if (existing_player_id.present?)
-          p = Player.find(existing_player_id)
-          p.espn_id = u[:id]
-          p.save!
+      players.each do |p|
+        existing_player = Player.where(espn_id: p[:espn_id]).first
+        
+        if existing_player
+          existing_player.update_attributes!(p)
         else
-          first_name, last_name = u[:name].split(' ', 2)
-          p = Player.create(
-            first_name: first_name,
-            last_name: last_name,
-            espn_id: u[:id]
-          )
+          new_player = Player.create(p)
+          puts "Created #{new_player.inspect}"
         end
       end
 
