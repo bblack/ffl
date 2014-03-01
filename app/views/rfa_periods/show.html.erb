@@ -97,8 +97,8 @@
           <td>
             <a href="/players/<%= p.id %>">
               <%= p.first_name %> <%= p.last_name %>
-              <span style="font-variant:small-caps;">
-                <%= p.position.downcase %>, <%= p.nfl_team %>
+              <span style="font-variant: small-caps; text-transform: lowercase;">
+                <%= p.position %>, <%= p.nfl_team %>
               </span>
             </a>
           </td>
