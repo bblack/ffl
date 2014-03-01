@@ -21,20 +21,15 @@ class League < ActiveRecord::Base
   end
 
   def signed_players_pvcs(team_id=nil)
-    # The most recent PVC for the league for all players,
-    # or for players currently signed to a particular team
-    # TODO: Filter out any pvcs that ended before this season
-    # TODO: Any players w/o valid current pvcs take on 1-yr, 1-pv
-    # TODO: consider returning .to_a instead of association,
-    # since the joins can silently cause problems if additional relations
-    # are chained to the return value with ambiguous column names
-    # TODO: consider removing pvc.team_id and making pvc.league_id
+    # The most recent PVC each player currently signed to a team in the league
+
     PlayerValueChange.
-      joins('inner join players on players.id = player_value_changes.player_id').
-      joins('inner join espn_roster_spots on espn_roster_spots.espn_player_id = players.espn_id').
-      group('player_value_changes.player_id', 'player_value_changes.id').
-      order('player_value_changes.created_at desc').
-      where('espn_roster_spots.team_id' => (team_id || self.team_ids))
+      joins('left join player_value_changes pvc2 on (player_value_changes.player_id = pvc2.player_id and player_value_changes.id < pvc2.id)').
+      joins('left join players on players.id = player_value_changes.player_id').
+      joins('left join espn_roster_spots on espn_roster_spots.espn_player_id = players.espn_id').
+      where('pvc2.id is null').
+      where('espn_roster_spots.team_id in (?)', team_id ? [team_id] : self.team_ids).
+      order('player_value_changes.id desc')
   end
 
   def clear_values_for_unsigned_players

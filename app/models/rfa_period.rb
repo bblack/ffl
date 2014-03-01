@@ -61,7 +61,7 @@ class RfaPeriod < ActiveRecord::Base
   def contracts_eligible
     raise StandardError("RFA period has been redbuttoned. Check its decisions instead.") if self.redbuttoned
     self.league.signed_players_pvcs.includes(:player)
-      .where("last_year = ?", self.final_year)
+      .where("player_value_changes.last_year = ?", self.final_year)
   end
   
   def open?
