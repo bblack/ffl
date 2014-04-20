@@ -21,6 +21,9 @@ class RfaPeriod < ActiveRecord::Base
             # owner made no decision
             decision.made_by_redbutton = true
             decision.team_id = EspnRosterSpot.where(:espn_player_id => c.player.espn_id).first.team_id
+            if decision.team_id.nil?
+              Rails.logger.debug("decision for player #{c.player.id} #{c.player.name} has nil team")
+            end
             decision.keep = false # Valid by constitution as of 9 April 2013
             decision.skip_rfa_decision_period_is_open = true
             decision.save!
