@@ -9,7 +9,13 @@ class RfaDecision < ActiveRecord::Base
 
   def validate_team_has_player
     if self.team.nil?
-      Rails.logger.debug("team is nil: decision #{id}, player #{player.id} #{player.name}, team #{team_id}")
+      s = "team is nil: decision #{id}, player #{player.id} #{player.name}, team #{team_id}"
+      Rails.logger.debug('log: ' + s)
+      puts 'puts: ' + s
+    else
+      s = "team is NOT nil: decision #{id}, player #{player.id} #{player.name}, team #{team_id}"
+      Rails.logger.debug('log: ' + s)
+      puts 'puts: ' + s
     end
 
     contract = self.team.players_pvcs.where(:player_id => self.player_id)
