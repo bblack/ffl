@@ -8,6 +8,10 @@ class RfaDecision < ActiveRecord::Base
   attr_accessor :skip_rfa_decision_period_is_open
 
   def validate_team_has_player
+    if self.team.nil?
+      Rails.logger.debug("team is nil: decision #{id}, player #{player.id} #{c.player.name}, team #{team_id}")
+    end
+    
     contract = self.team.players_pvcs.where(:player_id => self.player_id)
     if contract.none?
       errors.add(:team_id, "must be the same as the team who owns this player's contract in this league.")
