@@ -12,8 +12,12 @@ class Team < ActiveRecord::Base
   end
   
   def payroll
-    rosterspots = EspnRosterSpot.where(:team_id => self.id)
-    playerids = Player.where(:espn_id => rosterspots.map(&:espn_player_id)).map(&:id)
+    rosterspots = EspnRosterSpot.connection.execute("""
+      select e1.* from espn_roster_spots e1
+      left outer join espn_roster_spots e2 on e1.espn_player_id = e2.espn_player_id and e1.id < e2.id
+      where e2.id is null and e1.team_id = #{id}
+    """)
+    playerids = Player.where(:espn_id => rosterspots.map{|spot| spot['espn_player_id']}).map(&:id)
     teamids = league.team_ids
     # fuck it
     playerids.inject(0) do |m, pid|
