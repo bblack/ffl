@@ -14,6 +14,7 @@ class TeamsController < ApplicationController
 
   def drop_and_zero_player
     # For dropping players in ffl when espn season hasn't opened yet
+    raise StandardError.new("god mode req'd") if !god?
     player = Player.find(params[:player_id])
     EspnRosterSpot.where(
       :team_id => @team.id,
