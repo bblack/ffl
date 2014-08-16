@@ -28,6 +28,8 @@
     %th Value
     %th First year
     %th Length
+    - if god?
+      %th Actions
   - @team.players.sort { |x,y| poslist = @team.league.positions; (poslist.index(x.position) <=> poslist.index(y.position)) || 0 }.each do |player|
     - pvc = @team.players_pvcs.all.select{|pvc| pvc.player_id == player.id}.first
     %tr
@@ -40,3 +42,6 @@
         = pvc ? pvc.first_year : nil
       %td
         = pvc ? (pvc.last_year - pvc.first_year + 1) : nil
+      - if god?
+        %td
+          = link_to('Drop', "/teams/#{@team.id}/players/#{player.id}/drop", :method => :post)

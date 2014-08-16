@@ -12,6 +12,17 @@ class TeamsController < ApplicationController
     redirect_to team_path(@team)
   end
 
+  def drop_player
+    # For dropping players in ffl when espn season hasn't opened yet
+    player = Player.find(params[:player_id])
+    EspnRosterSpot.where(
+      :team_id => @team.id,
+      :espn_player_id => player.espn_id
+    ).destroy_all
+    add_flash(:notice, false, "Dropped #{player.name} from #{@team.name}")
+    redirect_to team_path(@team)
+  end
+
   private
 
     def load_team

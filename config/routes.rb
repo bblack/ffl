@@ -15,7 +15,8 @@ Ffl::Application.routes.draw do
     post 'draft'     => 'leagues#draft', :on => :member
   end
   resources :teams, :except => :index
-  match 'teams/:id/fetch_espn' => 'teams#fetch_espn'
+  match 'teams/:id/fetch_espn' => 'teams#fetch_espn' # should be post
+  match 'teams/:id/players/:player_id/drop' => 'teams#drop_player' # should be post
   resources :users#, :only => [:create]
   resources :rfa_periods
   match 'rfa_periods/:id/bigredbutton' => 'rfa_periods#bigredbutton', :via => [:post]
