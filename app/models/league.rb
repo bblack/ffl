@@ -11,9 +11,13 @@ class League < ActiveRecord::Base
   def active_contracts
     contracts.where(:nixed_at => nil).where("started_at is not null")
   end
-  
+
+  def self.positions
+    ['QB', 'RB', 'WR', 'TE', 'K', 'D/ST']
+  end
+
   def positions
-    ['QB', 'RB', 'WR', 'TE', 'PK', 'Def']
+    return self.class.positions
   end
 
   def contract_length_for_value(value)
