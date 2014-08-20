@@ -41,7 +41,7 @@
       %td
         = pvc ? pvc.first_year : nil
       %td
-        = pvc ? (pvc.last_year - pvc.first_year + 1) : nil
+        = pvc ? pvc.length : nil
       - if god?
         %td
           = link_to('Drop', "/teams/#{@team.id}/players/#{player.id}/drop0", :method => :post)
