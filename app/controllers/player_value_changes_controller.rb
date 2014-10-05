@@ -1,6 +1,7 @@
 class PlayerValueChangesController < ApplicationController
   def index
-    render :text => "No league selected" if @current_league.nil?
+    change_current_league(params[:league_id])
+    render :text => "No league selected" and return if @current_league.nil?
 
     retval = "Player,Position,Team,Owner,Value,First year,Last year,Length\r\n"
     @current_league.teams.each do |team|
