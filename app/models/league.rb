@@ -35,7 +35,6 @@ class League < ActiveRecord::Base
       joins('left join players on players.id = player_value_changes.player_id').
       joins('left join espn_roster_spots on espn_roster_spots.espn_player_id = players.espn_id').
       where('pvc2.id is null').
-      where('"player_value_changes".new_value is not null').
       where('espn_roster_spots.team_id in (?)', team_id ? [team_id] : self.team_ids).
       order('player_value_changes.id desc')
   end
@@ -130,7 +129,7 @@ class League < ActiveRecord::Base
 
         lines.push(line)
     end
-
+    
     return lines
   end
 
