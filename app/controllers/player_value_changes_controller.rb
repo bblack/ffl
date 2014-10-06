@@ -6,6 +6,7 @@ class PlayerValueChangesController < ApplicationController
     retval = "Player,Position,Team,Owner,Value,First year,Last year,Length\r\n"
     @current_league.teams.each do |team|
       team.players_pvcs.includes(:player).each do |pvc|
+        length = (pvc.last_year - pvc.first_year + 1) rescue nil
         retval += [
           pvc.player.name,
           pvc.player.position,
@@ -14,7 +15,7 @@ class PlayerValueChangesController < ApplicationController
           pvc.new_value,
           pvc.first_year,
           pvc.last_year,
-          (pvc.last_year - pvc.first_year + 1) rescue nil
+          length
         ].join(',') + "\r\n"
       end
     end
