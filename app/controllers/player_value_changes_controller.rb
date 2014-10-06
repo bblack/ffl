@@ -14,7 +14,7 @@ class PlayerValueChangesController < ApplicationController
           pvc.new_value,
           pvc.first_year,
           pvc.last_year,
-          pvc.last_year - pvc.first_year + 1
+          (pvc.last_year - pvc.first_year + 1) rescue nil
         ].join(',') + "\r\n"
       end
     end
