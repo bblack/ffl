@@ -1,3 +1,6 @@
+require 'nokogiri'
+require 'open-uri'
+
 class League < ActiveRecord::Base
   has_many :teams
   has_many :espn_roster_spots, :through => :teams
@@ -87,6 +90,47 @@ class League < ActiveRecord::Base
         )
       end
     end
+  end
+
+  def possibly_out_of_date_contracts
+    # Needed to do this once after I forgot to nil out contracts before 2014 started
+    year = Time.now.year
+    lines = []
+    q = PlayerValueChange.find_by_sql("""
+        select pvc.* from player_value_changes pvc
+        left join player_value_changes pvc2
+        on pvc.player_id = pvc2.player_id
+        and pvc2.created_at > pvc.created_at
+        where pvc2.id is null
+        and pvc.first_year < #{year}
+    """)
+    q.each do |pvc|
+        pvc.player = Player.find(pvc.player_id)
+        line = {:espn_id => pvc.player.espn_id, :name => pvc.player.name}
+
+        if pvc.last_year < year
+            new_pvc = PlayerValueChange.create!({
+                :player_id => pvc.player.id,
+                :team_id => 1,
+                :comment => 'niling out out contracts'
+            })
+            line[:status] = 'Most recent contract was old; nil\'d out.'
+        else
+            url = "http://games.espn.go.com/ffl/format/playerpop/transactions?leagueId=#{self.espn_id}&playerId=#{pvc.player.espn_id}&playerIdType=playerId&seasonId=#{year}&xhr=1"
+            doc = Nokogiri::HTML(open(url))
+            actions = doc.css('body div tr')
+
+            if actions.any? {|a| a.text.match(/Selected as a Keeper/)}
+                line[:status] = 'Keeper. No action taken.'
+            else
+                line[:status] = 'NOT KEEPER. ACTIONS THIS YEAR: ' + actions.map(&:text).join('; ')
+            end
+        end
+
+        lines.push(line)
+    end
+    
+    return lines
   end
 
 end
