@@ -29,13 +29,18 @@ class League < ActiveRecord::Base
 
   def signed_players_pvcs(team_id=nil)
     # The most recent PVC each player currently signed to a team in the league
+    players_pvcs(team_id).
+      joins('left join espn_roster_spots on espn_roster_spots.espn_player_id = players.espn_id').
+      where('espn_roster_spots.team_id in (?)', team_id ? [team_id] : self.team_ids)
+  end
 
+  def players_pvcs(team_id=nil)
+    # PVCs for all players with a current value, whether they're signed or not
     PlayerValueChange.
       joins('left join player_value_changes pvc2 on (player_value_changes.player_id = pvc2.player_id and player_value_changes.id < pvc2.id)').
       joins('left join players on players.id = player_value_changes.player_id').
-      joins('left join espn_roster_spots on espn_roster_spots.espn_player_id = players.espn_id').
       where('pvc2.id is null').
-      where('espn_roster_spots.team_id in (?)', team_id ? [team_id] : self.team_ids).
+      where(:team_id => team_id ? [team_id] : self.team_ids).
       order('player_value_changes.id desc')
   end
 
@@ -129,7 +134,7 @@ class League < ActiveRecord::Base
 
         lines.push(line)
     end
-    
+
     return lines
   end
 
