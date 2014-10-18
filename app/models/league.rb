@@ -31,7 +31,7 @@ class League < ActiveRecord::Base
     # The most recent PVC each player currently signed to a team in the league
     players_pvcs.
       joins('left join espn_roster_spots on espn_roster_spots.espn_player_id = players.espn_id').
-      where('espn_roster_spots.team_id in (?)', team_id ? [team_id] : self.team_ids)
+      where('espn_roster_spots.team_id in (?)', self.team_ids)
   end
 
   def players_pvcs
