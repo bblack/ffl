@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130410000533) do
+ActiveRecord::Schema.define(:version => 20141018051417) do
 
   create_table "contracts", :force => true do |t|
     t.integer  "team_id"
@@ -54,6 +54,21 @@ ActiveRecord::Schema.define(:version => 20130410000533) do
     t.integer  "season"
   end
 
+  create_table "move2s", :force => true do |t|
+    t.integer  "player_id"
+    t.integer  "old_team_id"
+    t.string   "type"
+    t.integer  "new_team_id"
+    t.integer  "new_pv"
+    t.text     "comment"
+    t.integer  "final_year"
+    t.integer  "move2_group_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "league_id"
+    t.integer  "season"
+  end
+
   create_table "moves", :force => true do |t|
     t.integer  "transaction_id"
     t.integer  "old_contract_id"
@@ -67,10 +82,10 @@ ActiveRecord::Schema.define(:version => 20130410000533) do
     t.integer  "new_value"
     t.integer  "first_year"
     t.integer  "last_year"
-    t.integer  "team_id"
     t.integer  "comment"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "league_id"
   end
 
   create_table "players", :force => true do |t|

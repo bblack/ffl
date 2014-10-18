@@ -40,7 +40,7 @@ class League < ActiveRecord::Base
       joins('left join player_value_changes pvc2 on (player_value_changes.player_id = pvc2.player_id and player_value_changes.id < pvc2.id)').
       joins('left join players on players.id = player_value_changes.player_id').
       where('pvc2.id is null').
-      where(:team_id => self.team_ids).
+      where(:league_id => self.id).
       order('player_value_changes.id desc')
   end
 
@@ -52,11 +52,10 @@ class League < ActiveRecord::Base
       select players.id from players
         left outer join (select * from player_value_changes order by created_at desc) pvc_latest
           on pvc_latest.player_id = players.id
-        left outer join teams on teams.id = pvc_latest.team_id
         left outer join espn_roster_spots
           on players.espn_id = espn_roster_spots.espn_player_id
       where espn_roster_spots.id IS NULL
-        and teams.league_id = #{id}
+        and pvc_latest.league_id = #{id}
       group by players.id, espn_roster_spots.team_id
     """)
 
@@ -69,7 +68,7 @@ class League < ActiveRecord::Base
         new_pvcs << PlayerValueChange.create!(
           :player_id => player_id,
           :new_value => nil,
-          :team_id   => team_ids.first, # whatever, i need to replace this with league_id
+          :league_id => self.id,
           :comment   => 'clear_values_for_unsigned_players'
         )
       end
@@ -87,7 +86,7 @@ class League < ActiveRecord::Base
 
         PlayerValueChange.create!(
           pick.slice('player_id', 'new_value').merge(
-            :team_id => team_ids.first, # todo - change pvc.team_id to league_id
+            :league_id => self.id,
             :comment => "draft #{now}",
             :first_year => first_year,
             :last_year => first_year - 1 + contract_length_for_value(pick['new_value'])
@@ -116,7 +115,7 @@ class League < ActiveRecord::Base
         if pvc.last_year < year
             new_pvc = PlayerValueChange.create!({
                 :player_id => pvc.player.id,
-                :team_id => 1,
+                :league_id => self.id,
                 :comment => 'niling out out contracts'
             })
             line[:status] = 'Most recent contract was old; nil\'d out.'

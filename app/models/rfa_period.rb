@@ -3,7 +3,7 @@ class RfaPeriod < ActiveRecord::Base
   has_many :rfa_bids
   has_one :rfa_decision_period
   validates :league_id, :uniqueness => {:scope => :final_year}
-  
+
   def bigredbutton(dryrun=true)
     raise StandardError.new("This RFA period has already been redbuttoned") if self.redbuttoned
     raise StandardError.new("Can't bigredbutton because RFA period is open") if self.open?
@@ -29,16 +29,13 @@ class RfaPeriod < ActiveRecord::Base
           top_bid = self.top_bid_for(c.player_id)
           if decision.keep
             new_contract_value = top_bid ? top_bid.value : 1
-            new_team_id = decision.team_id
           elsif top_bid.present? # and releasing
             new_contract_value = top_bid.value
-            new_team_id = top_bid.team_id
           else # no bids and releasing
             new_contract_value = nil
-            new_team_id = decision.team_id
           end
           pvc = PlayerValueChange.create(
-            :team_id => new_team_id, # Must be a team id in the league for other queries. consider replacing attribute with a league_id
+            :league_id => self.league_id,
             :player_id => c.player_id,
             :first_year => self.final_year + 1,
             :new_value => new_contract_value,
@@ -63,15 +60,15 @@ class RfaPeriod < ActiveRecord::Base
     self.league.signed_players_pvcs.includes(:player)
       .where("player_value_changes.last_year = ?", self.final_year)
   end
-  
+
   def open?
     self.started? and not self.ended?
   end
-  
+
   def started?
     self.open_date.nil? or self.open_date < Time.now
   end
-  
+
   def ended?
     !self.close_date.nil? and self.close_date < Time.now
   end
@@ -79,7 +76,7 @@ class RfaPeriod < ActiveRecord::Base
   def top_bid_for(player_id)
     self.rfa_bids.select{|b| b.player_id == player_id}.sort{|x,y| y.value <=> x.value}.first
   end
-  
+
 end
 
 class DryRunError < StandardError; end

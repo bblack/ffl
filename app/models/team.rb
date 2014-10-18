@@ -10,7 +10,7 @@ class Team < ActiveRecord::Base
   def players_pvcs
     self.league.signed_players_pvcs(self.id)
   end
-  
+
   def payroll
     rosterspots = EspnRosterSpot.connection.execute("""
       select e1.* from espn_roster_spots e1
@@ -21,23 +21,22 @@ class Team < ActiveRecord::Base
     teamids = league.team_ids
     # fuck it
     playerids.inject(0) do |m, pid|
-      # todo - change pvc team_id to league_id
-      m + (PlayerValueChange.where(:team_id => teamids, :player_id => pid).last.new_value || 0)
+      m + (PlayerValueChange.where(:league_id => self.league_id, :player_id => pid).last.new_value || 0)
     end
   end
-  
+
   def payroll_available
-    self.league.salary_cap.nil? ? nil : self.league.salary_cap - self.payroll 
+    self.league.salary_cap.nil? ? nil : self.league.salary_cap - self.payroll
   end
-  
+
   def under_cap?
     payroll_available.nil? or payroll_available > 0
   end
-  
+
   def max_rfa_bid(rfa_period_id)
     rfa_period = RfaPeriod.find rfa_period_id
     raise StandardError if rfa_period.league_id != self.league_id
-    
+
     if payroll_available.nil?
       return nil
     else
@@ -62,7 +61,7 @@ class Team < ActiveRecord::Base
 
     doc = Nokogiri::HTML(open(self.espn_url))
 
-    team_name_el = doc.css('.games-univ-mod3 h3')  # <h3>Caprica Buccaneers <span>(CAP)</span></h3> 
+    team_name_el = doc.css('.games-univ-mod3 h3')  # <h3>Caprica Buccaneers <span>(CAP)</span></h3>
     team_name = team_name_el.children[0].text.rstrip
 
     player_link_elements = doc.css('.playertablePlayerName a')
@@ -73,7 +72,7 @@ class Team < ActiveRecord::Base
         .select{|e| e.inner_text.present?}
         .collect{|e| [e.attributes['playerid'].value, e.inner_text]}
     ]
-    
+
     self.transaction do
       self.espn_roster_spots.delete_all
       espn_hash.keys.each do |espn_id|
@@ -85,17 +84,16 @@ class Team < ActiveRecord::Base
 
         last_pvc = PlayerValueChange.where(
           :player_id => player.id,
-          :team_id => league.team_ids # todo - change to league id
+          :league_id => self.league_id
         ).last
 
         if (last_pvc.nil? || last_pvc.new_value.nil?)
           new_value = 1
           start_year = Date.today.year
 
-          # todo - change pvc team_id to league_id
           PlayerValueChange.create!(
             :player_id => player.id,
-            :team_id => id,
+            :league_id => self.league_id,
             :new_value => new_value,
             :first_year => start_year,
             :last_year => start_year - 1 + league.contract_length_for_value(new_value),
@@ -114,5 +112,5 @@ class Team < ActiveRecord::Base
 
     self.players(true)
   end
-  
+
 end

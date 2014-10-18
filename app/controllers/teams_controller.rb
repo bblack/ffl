@@ -23,7 +23,7 @@ class TeamsController < ApplicationController
     PlayerValueChange.create!(
       player_id: player.id,
       new_value: nil,
-      team_id: @team.id,
+      league_id: @team.league_id,
       comment: 'drop_and_zero'
     )
     add_flash(:notice, false, "Dropped #{player.name} from #{@team.name}")
