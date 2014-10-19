@@ -5,6 +5,9 @@ ruby '1.9.3'
 gem 'rails', '3.2.19'
 gem 'nokogiri'
 gem 'haml'
+gem 'uglifier'
+gem 'jquery-rails'
+gem 'jquery-ui-rails'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'

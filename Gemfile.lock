@@ -31,11 +31,17 @@ GEM
     arel (3.0.3)
     builder (3.0.4)
     erubis (2.7.0)
+    execjs (2.2.2)
     haml (4.0.3)
       tilt
     hike (1.2.3)
     i18n (0.6.11)
     journey (1.0.4)
+    jquery-rails (3.1.2)
+      railties (>= 3.0, < 5.0)
+      thor (>= 0.14, < 2.0)
+    jquery-ui-rails (5.0.2)
+      railties (>= 3.2.16)
     json (1.8.1)
     mail (2.5.4)
       mime-types (~> 1.16)
@@ -196,14 +202,20 @@ GEM
       polyglot (>= 0.3.1)
       polyglot (>= 0.3.1)
     tzinfo (0.3.41)
+    uglifier (2.5.3)
+      execjs (>= 0.3.0)
+      json (>= 1.8.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   haml
+  jquery-rails
+  jquery-ui-rails
   nokogiri
   pg
   rails (= 3.2.19)
   rails_12factor
   sqlite3
+  uglifier
