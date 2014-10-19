@@ -15,6 +15,9 @@ end
 group :development, :production do
   gem 'pg'
 end
+group :production do
+  gem 'rails_12factor'
+end
 #gem 'typhoeus'
 
 # Use unicorn as the web server
