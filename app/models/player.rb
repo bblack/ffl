@@ -1,15 +1,14 @@
 class Player < ActiveRecord::Base
-  has_many :contracts
   
   def full_name
     "#{self.first_name} #{self.last_name}"
   end
-  alias_method :name, :full_name 
+  alias_method :name, :full_name
 
   def self.positions_with_photos
     ['QB', 'RB', 'WR', 'TE', 'PK']
   end
-  
+
   require 'uri'
   require 'net/http'
   def try_fetch_espn_id
@@ -25,7 +24,7 @@ class Player < ActiveRecord::Base
     end
     playerids[0]
   end
-  
+
   def espn_img_url
     begin
       raise StandardError if self.espn_id.nil?
@@ -36,7 +35,7 @@ class Player < ActiveRecord::Base
       return nil
     end
   end
-  
+
 end
 
 class WrongPlayerPositionError < StandardError

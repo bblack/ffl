@@ -5,15 +5,6 @@ class League < ActiveRecord::Base
   has_many :teams
   has_many :espn_roster_spots, :through => :teams
   has_many :rfa_periods
-  has_many :transactions
-
-  def completed_transactions(limit=10)
-    transactions.where("completed_on is not null").order('completed_on desc').limit(limit)
-  end
-
-  def active_contracts
-    contracts.where(:nixed_at => nil).where("started_at is not null")
-  end
 
   def self.positions
     ['QB', 'RB', 'WR', 'TE', 'K', 'D/ST']

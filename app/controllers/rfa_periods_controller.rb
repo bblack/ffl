@@ -18,9 +18,9 @@ class RfaPeriodsController < ApplicationController
       change_current_league(@rfaperiod.league_id)
 
       if @current_user
-        teams = Team.includes(:contracts).where(:owner_id => @current_user.id, :league_id => @rfaperiod.league_id)
+        teams = Team.where(:owner_id => @current_user.id, :league_id => @rfaperiod.league_id)
         @current_team = teams.first if teams.one?
       end
     end
-  
+
 end
