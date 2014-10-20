@@ -22,10 +22,10 @@
               Update
             %span.update-status
         %td
-          = team.payroll
+          = @payrolls[team.id]
         - @current_league.positions.each do |p|
           %td
-            = team.players.where(:position => p).count
+            = @rosters_by_pos[team.id][p] || 0
 
 :javascript
   $("[updateurl]").click(function(evt){
