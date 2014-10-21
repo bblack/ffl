@@ -87,6 +87,8 @@ class League < ActiveRecord::Base
           )
         )
       end
+
+      clear_values_for_unsigned_players()
     end
   end
 

@@ -25,4 +25,5 @@ Ffl::Application.routes.draw do
   resources :rfa_bids
   resources :rfa_decisions
   resources :player_value_changes
+  get '/app(/*path)' => 'application#app'
 end

@@ -6,7 +6,11 @@ class ApplicationController < ActionController::Base
   # before_filter :brian_only_mode
   before_filter :reject_posts_by_nongods
   before_filter :reject_posts_unless_logged_in
-  
+
+  def app
+    render :app, :layout => false
+  end
+
   def set_current_user
     if session[:user_id].nil?
       @current_user = nil
@@ -18,10 +22,10 @@ class ApplicationController < ActionController::Base
   def change_current_league(new_league_id)
     @current_league = League.includes(:rfa_periods).find(new_league_id)
   end
-  
+
   def reject_posts_unless_logged_in
     errors = []
-    
+
     if not request.get?
       if [
         ['application', 'login'],
@@ -32,7 +36,7 @@ class ApplicationController < ActionController::Base
         errors << "Gotta be logged in to do that, bro"
       end
     end
-    
+
     if errors.any?
       errors.each { |e| add_flash :error, false, e }
       redirect_to :back
@@ -44,10 +48,10 @@ class ApplicationController < ActionController::Base
       add_flash(:error, false, 'Nope.') and redirect_to '/'
     end
   end
-  
+
   def reject_posts_by_nongods
     errors = []
-    
+
     if !request.get?
       if [
         ['application', 'login'],
@@ -65,13 +69,13 @@ class ApplicationController < ActionController::Base
       errors.each { |e| add_flash :error, false, e }
       redirect_to :back
     end
-  end 
-  
+  end
+
   def add_flash(category, now, msg)
     if not [:error, :warning, :notice].member? category
-      raise "#{category} is not an acceptable flash category" 
+      raise "#{category} is not an acceptable flash category"
     end
-    
+
     if now
       flash.now[category] ||= []
       flash.now[category] << msg
@@ -80,7 +84,7 @@ class ApplicationController < ActionController::Base
       flash[category] << msg
     end
   end
-  
+
   def login
     users = User.where("lower(name) = lower(?) and pw_hash = ?", params[:name], Digest::MD5.hexdigest(params[:password]))
     if users.count == 0
@@ -93,11 +97,11 @@ class ApplicationController < ActionController::Base
     end
     redirect_to :back
   end
-  
+
   def logout
     reset_session
     add_flash :notice, false, "You are now logged out"
     redirect_to :action => 'index'
   end
-  
+
 end
