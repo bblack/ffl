@@ -88,14 +88,33 @@ class ApplicationController < ActionController::Base
   def login
     users = User.where("lower(name) = lower(?) and pw_hash = ?", params[:name], Digest::MD5.hexdigest(params[:password]))
     if users.count == 0
-      add_flash :error, false, "User '#{params[:name]}' doesn't exist, or password is incorrect."
+      err = "User '#{params[:name]}' doesn't exist, or password is incorrect."
     elsif users.count > 1
-      add_flash :error, false, "Lolwut, found multiple users with that name and password"
+      err = "Lolwut, found multiple users with that name and password"
     else
-      session[:user_id] = users.first.id
-      add_flash :notice, false, "Welcome #{users.first.name}!"
+      user = users.first
+      session[:user_id] = user.id
     end
-    redirect_to :back
+
+    respond_to do |format|
+      format.html do
+        if err
+          add_flash :error, false, err
+        else
+          add_flash :notice, false, "Welcome #{users.first.name}!"
+        end
+
+        redirect_to :back
+      end
+
+      format.json do
+        render json: {
+            id: user.id,
+            name: user.name,
+            email: user.email
+        }
+      end
+    end
   end
 
   def logout

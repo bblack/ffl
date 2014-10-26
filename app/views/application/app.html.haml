@@ -8,7 +8,7 @@
         = stylesheet_link_tag 'app'
         -#= csrf_meta_tag
     %body
-        %nav.navbar.navbar-inverse{role: 'navigation'}
+        %nav.navbar.navbar-inverse{role: 'navigation', 'ng-controller' => 'Nav'}
             .container-fluid
                 .navbar-header
                     %button.navbar-toggle.collapsed{type: 'button', :'data-toggle' => 'collapse', :'data-target' => '#ffl-nav-collapse' }
@@ -21,5 +21,13 @@
                             %a{:href => '#'} Hello
                         %li
                             %a{:href => '#'} World
+                    %p.navbar-text.pull-right{'ng-if' => 'user'}
+                        {{ user.name }}
+                    %form.navbar-form.navbar-right{'ng-submit' => 'login(username, password)', 'ng-if' => '!user'}
+                        .form-group
+                            %input.form-control.input-sm{type: 'text', placeholder: 'username', 'ng-model' => 'username'}
+                        .form-group
+                            %input.form-control.input-sm{type: 'password', placeholder: 'password', 'ng-model' => 'password'}
+                        %input{type: 'submit', style: 'display: none;'}
         %button{class: 'btn btn-primary'} Button
         %div{'ng-view' => true}
