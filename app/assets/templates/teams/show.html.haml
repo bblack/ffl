@@ -1,0 +1,16 @@
+%h1
+    {{team.name}}
+    %small {{team.owner.name}}
+.well.well-sm
+    Roster as of {{team.espn_roster_last_updated | from_now}}
+%table.table
+    %tr
+        %th Name
+        %th Position
+        %th Value
+    %tr{'ng-repeat' => 'pvc in roster | orderBy:posOrder'}
+        %td
+            {{pvc.player.first_name}} {{pvc.player.last_name}}
+            %small {{pvc.player.nfl_team}}
+        %td {{pvc.player.position}}
+        %td {{pvc.new_value}}

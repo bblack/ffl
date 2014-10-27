@@ -36,6 +36,20 @@ class TeamsController < ApplicationController
     end
   end
 
+  def show
+    respond_to do |format|
+      format.html
+      format.json { render json: @team.to_json(:include => :owner) }
+    end
+  end
+
+  def roster
+    players = @team.players.index_by(&:id)
+    pvcs = @team.players_pvcs.includes(:player)
+    pvcs.each {|c| c.player = players[c.player_id]}
+    render json: pvcs.to_json(:include => :player)
+  end
+
   def fetch_espn
     raise StandardError.new("god mode req'd") if !god?
     @team.fetch_espn_roster

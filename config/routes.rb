@@ -17,6 +17,7 @@ Ffl::Application.routes.draw do
     post 'update_espn_rosters' => 'leagues#update_espn_rosters', on: :member
   end
   resources :teams, :except => :index
+  get 'teams/:id/roster' => 'teams#roster'
   match 'teams/:id/fetch_espn' => 'teams#fetch_espn' # should be post
   match 'teams/:id/players/:player_id/drop0' => 'teams#drop_and_zero_player' # should be post
   resources :users#, :only => [:create]
