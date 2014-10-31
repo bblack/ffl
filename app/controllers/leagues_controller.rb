@@ -2,6 +2,10 @@ class LeaguesController < ApplicationController
 
   def show
     change_current_league(params[:id])
+    respond_to do |format|
+      format.html
+      format.json { render json: @current_league }
+    end
   end
 
   def draft_form

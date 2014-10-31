@@ -4,35 +4,41 @@ class TeamsController < ApplicationController
   def index
     change_current_league(params[:league_id])
 
-    pvcs = @current_league.signed_players_pvcs.all
-    rosters = EspnRosterSpot
+    respond_to do |format|
+      format.html do
+        pvcs = @current_league.signed_players_pvcs.all
+      rosters = EspnRosterSpot
       .where(roster_revision: @current_league.roster_revision)
       .where('roster_revision is not null')
       .includes(:player).all
       .group_by(&:team_id)
 
-    @rosters_by_pos = {}
+        @rosters_by_pos = {}
 
-    by_player = {}
+        by_player = {}
 
-    rosters.each do |tid, roster|
-      roster.each do |spot|
-        by_player[spot.player.id] = {spot: spot}
-        @rosters_by_pos[tid] ||= {}
-        @rosters_by_pos[tid][spot.player.position] ||= 0
-        @rosters_by_pos[tid][spot.player.position] += 1
+        rosters.each do |tid, roster|
+          roster.each do |spot|
+            by_player[spot.player.id] = {spot: spot}
+            @rosters_by_pos[tid] ||= {}
+            @rosters_by_pos[tid][spot.player.position] ||= 0
+            @rosters_by_pos[tid][spot.player.position] += 1
+          end
+        end
+
+        pvcs.each do |pvc|
+          by_player[pvc.player_id][:pvc] = pvc
+        end
+
+        @payrolls = {}
+
+        by_player.each do |pid, stuff|
+          @payrolls[stuff[:spot].team_id] ||= 0
+          @payrolls[stuff[:spot].team_id] += (stuff[:pvc].new_value || 0)
+        end
       end
-    end
 
-    pvcs.each do |pvc|
-      by_player[pvc.player_id][:pvc] = pvc
-    end
-
-    @payrolls = {}
-
-    by_player.each do |pid, stuff|
-      @payrolls[stuff[:spot].team_id] ||= 0
-      @payrolls[stuff[:spot].team_id] += (stuff[:pvc].new_value || 0)
+      format.json { render json: @current_league.teams.order(:id) }
     end
   end
 

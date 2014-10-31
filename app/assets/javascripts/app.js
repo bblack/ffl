@@ -40,6 +40,18 @@ app.factory('Team', function($resource){
     });
 });
 
+app.factory('League', function($resource){
+    var League = $resource('/leagues/:id', {id: '@id'}, {
+        teams: {
+            method: 'GET',
+            url: '/leagues/:id/teams',
+            isArray: true
+        }
+    });
+
+    return League;
+});
+
 app.controller('Team', function($scope, $routeParams, Team){
     $scope.id = $routeParams.id;
     $scope.posOrder = function(pvc){
@@ -68,6 +80,20 @@ app.controller('Team', function($scope, $routeParams, Team){
     });
 });
 
+app.controller('LeagueTeams', function($scope, $routeParams, League, Team){
+    $scope.leagueId = $routeParams.id;
+
+    League.teams({id: $scope.leagueId}).$promise
+    .then(function(teams){
+        $scope.teams = teams;
+    });
+
+    League.get({id: $scope.leagueId}).$promise
+    .then(function(league){
+        $scope.league = league;
+    });
+})
+
 app.controller('Nav', ['$scope', 'User', function($scope, User){
     $scope.login = function(username, pw){
         User.login(username, pw);
@@ -79,6 +105,10 @@ app.controller('Nav', ['$scope', 'User', function($scope, User){
 
 app.config(['$routeProvider', function($routeProvider){
     $routeProvider
+    .when('/leagues/:id/teams', {
+        controller: 'LeagueTeams',
+        templateUrl: '/assets/leagues/teams.html'
+    })
     .when('/teams/:id', {
         controller: 'Team',
         templateUrl: '/assets/teams/show.html'
