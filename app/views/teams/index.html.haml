@@ -9,7 +9,7 @@
       %th Payroll
       - @current_league.positions.each do |p|
         %th= "#{p}s"
-    - @current_league.teams.each do |team|
+    - @current_league.teams.order(:id).each do |team|
       %tr
         %td
           %a{:href => "/teams/#{team.id}"}
