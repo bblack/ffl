@@ -72,7 +72,7 @@
       the league salary cap of <%= @rfaperiod.league.salary_cap %>.
     <% end %>
   </span>
-<% end %> 
+<% end %>
 
 <h2>Eligible players</h2>
 <% if @rfaperiod.redbuttoned %>
@@ -91,7 +91,7 @@
         <% if @rfaperiod.rfa_decision_period %><th>Keep?</th><% end %>
       </tr>
       <% team_players = @rfaperiod.redbuttoned ? @rfaperiod.rfa_decision_period.rfa_decisions.where(:team_id => team.id).all.map{|d| d.player} : team.players %>
-      <% team_players.each do |p| %> 
+      <% team_players.each do |p| %>
         <% pvc = pid_to_pcv[p.id]; next if pvc.nil? %>
         <tr>
           <td>
@@ -123,7 +123,7 @@
             <% decision = @rfaperiod.rfa_decision_period.rfa_decisions.select{|d| d.player_id == p.id and d.team_id == team.id}.first %>
             <% keep = decision.keep rescue nil %>
             <td style='background-color: <%= {true => 'lightgreen', false => 'salmon', nil => 'lightyellow'}[keep] %>;'>
-              <% if @rfaperiod.rfa_decision_period.open? %>
+              <% if @rfaperiod.rfa_decision_period.open? && @current_team %>
                 <%= render :partial => 'components/rfa_decider', :locals => { :player => p, :team => @current_team } %>
               <% end %>
               <%= decision.keepstring rescue 'undecided' %>
