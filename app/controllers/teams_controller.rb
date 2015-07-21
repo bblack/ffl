@@ -28,7 +28,7 @@ class TeamsController < ApplicationController
 
     by_player.each do |pid, stuff|
       @payrolls[stuff[:spot].team_id] ||= 0
-      @payrolls[stuff[:spot].team_id] += stuff[:pvc].new_value
+      @payrolls[stuff[:spot].team_id] += (stuff[:pvc].new_value || 0)
     end
   end
 
