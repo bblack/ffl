@@ -35,23 +35,29 @@ class League < ActiveRecord::Base
       order('player_value_changes.id desc')
   end
 
+  def unsigned_players
+    ActiveRecord::Base.connection.execute("""
+      select players.id from players
+        left join player_value_changes pvc_latest
+          on pvc_latest.player_id = players.id
+        left join player_value_changes pvc2
+          on pvc2.player_id = pvc_latest.player_id
+          and pvc2.id > pvc_latest.id
+        left outer join espn_roster_spots
+          on players.espn_id = espn_roster_spots.espn_player_id
+      where espn_roster_spots.id IS NULL
+        and pvc2.id IS NULL
+        and pvc_latest.league_id = #{id}
+      group by players.id, espn_roster_spots.team_id
+    """)
+  end
+
   def clear_values_for_unsigned_players
     # For all players that have a value AND that are not on a team, set their
     # value to nil. To be used after all the RFA and resolve crap but before
     # the draft.
-    r = ActiveRecord::Base.connection.execute("""
-      select players.id from players
-        left outer join (select * from player_value_changes order by created_at desc) pvc_latest
-          on pvc_latest.player_id = players.id
-        left outer join espn_roster_spots
-          on players.espn_id = espn_roster_spots.espn_player_id
-      where espn_roster_spots.id IS NULL
-        and pvc_latest.league_id = #{id}
-      group by players.id, espn_roster_spots.team_id
-    """)
-
+    r = unsigned_players
     player_ids = r.map{|x| x['id']}
-
     new_pvcs = []
 
     ActiveRecord::Base.transaction do
