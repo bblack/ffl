@@ -1,0 +1,11 @@
+%h1 Players
+%table.table.table-striped.table-condensed{'ng-table' => 'tableParams'}
+    %tr
+        %th Name
+        %th Position
+    %tr{'ng-repeat' => 'player in $data'}
+        %td
+            %a{'ng-href' => '{{player.link()}}'}
+                {{player.indexName()}}
+                %small {{player.nfl_team}}
+        %td {{player.position}}

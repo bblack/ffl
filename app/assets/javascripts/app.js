@@ -1,7 +1,8 @@
 //= require jquery
 //= require bootstrap-sprockets
+//= require ng-table/dist/ng-table
 
-var app = angular.module('bb.ffl', ['ngRoute', 'ngResource']);
+var app = angular.module('bb.ffl', ['ngRoute', 'ngResource', 'ngTable']);
 
 app.run(function($http){
     // https://github.com/rails/rails/issues/9940
@@ -30,14 +31,36 @@ app.factory('User', ['$http', '$rootScope', function($http, $rootScope){
     return User;
 }]);
 
-app.factory('Team', function($resource){
-    return $resource('/teams/:id', {id: '@id'}, {
+app.factory('Team', function($resource, $http, Player){
+    function transformRes(data){
+        data = JSON.parse(data);
+        return data.map(function(pvc){
+            pvc.player = new Player(pvc.player);
+            return pvc;
+        });
+    }
+    var Team = $resource('/teams/:id', {id: '@id'}, {
         roster: {
             method: 'GET',
             isArray: true,
-            url: '/teams/:id/roster'
+            url: '/teams/:id/roster',
+            transformResponse: transformRes
         }
     });
+    Team.prototype.fetchEspn = function(){
+        return $http({
+            method: 'post',
+            url: '/teams/' + this.id + '/fetch_espn',
+            transformResponse: transformRes
+        })
+        .then(function(val){
+            return val.data;
+        });
+    };
+    Team.prototype.maxPayroll = function(){
+        return this.payroll + this.payroll_available;
+    };
+    return Team;
 });
 
 app.factory('League', function($resource){
@@ -52,36 +75,77 @@ app.factory('League', function($resource){
     return League;
 });
 
-app.controller('Team', function($scope, $routeParams, Team){
-    $scope.id = $routeParams.id;
-    $scope.posOrder = function(pvc){
-        // TODO: get this order from server
-        return ['QB', 'RB', 'WR', 'TE', 'D/ST', 'K'].indexOf(pvc.player.position);
+app.factory('Player', function($resource){
+    var Player = $resource('/players/:id', {id: '@id'});
+    var espnCombinerUrl = 'http://a.espncdn.com/combiner/i?'
+    Player.prototype.fullName = function(){
+        return this.first_name + ' ' + this.last_name;
     };
-    $scope.headshot = function(player){
-        return 'http://a.espncdn.com/combiner/i?' + $.param({
-            img: '/i/teamlogos/nfl/500/' + player.nfl_team + '.png',
-            w: 100,
-            h: 50,
+    Player.prototype.indexName = function(){
+        return this.last_name + ', ' + this.first_name;
+    };
+    Player.prototype.link = function(){
+        return 'players/' + this.id;
+    };
+    Player.prototype.headshot = function(opts){
+        return espnCombinerUrl + $.param({
+            img: '/i/headshots/nfl/players/full/' + this.espn_id + '.png',
+            w: opts.w || 100,
+            h: opts.h || 50,
             scale: 'crop',
             background: '0xcccccc',
             transparent: true
         });
     };
+    Player.prototype.teamlogo = function(opts){
+        var team = this.nfl_team;
+        return espnCombinerUrl + $.param({
+            img: '/i/teamlogos/nfl/500/' + team + '.png',
+            w: opts.w || 100,
+            h: opts.h || 50,
+            scale: 'crop',
+            background: '0xcccccc',
+            transparent: true
+        });
+    };
+    return Player;
+})
 
-    Team.get({id: $scope.id}).$promise
-    .then(function(team){
-        $scope.team = team;
-    });
+app.controller('Team', function($scope, $rootScope, $routeParams, Team, Player, ngTableParams){
+    $scope.id = $routeParams.id;
+    $scope.posOrder = function(pvc){
+        // TODO: get this order from server
+        return ['QB', 'RB', 'WR', 'TE', 'D/ST', 'K'].indexOf(pvc.player.position);
+    };
+    $scope.fetchEspn = function(team){
+        team.fetchEspn()
+        .then(function(roster){
+            $scope.roster = roster;
+            $scope.team.espn_roster_last_updated = new Date();
+        });
+    };
+    $scope.tableParams = new ngTableParams({
+        page: 1,
+        count: 20
+    }, {
+        getData: function($defer, params){
+            Team.roster({id: $scope.id}).$promise
+            .then(function(roster){
+                $scope.roster = roster;
+                $defer.resolve(roster);
+            }, function(e){
+                $defer.reject(e);
+            });
+        }
+    })
 
-    Team.roster({id: $scope.id}).$promise
-    .then(function(roster){
-        $scope.roster = roster;
+    $scope.team = Team.get({id: $scope.id}, function(team){
+        $rootScope.leagueId = team.league_id;
     });
 });
 
-app.controller('LeagueTeams', function($scope, $routeParams, League, Team){
-    $scope.leagueId = $routeParams.id;
+app.controller('LeagueTeams', function($scope, $rootScope, $routeParams, League, Team){
+    $rootScope.leagueId = $routeParams.id;
 
     League.teams({id: $scope.leagueId}).$promise
     .then(function(teams){
@@ -92,6 +156,29 @@ app.controller('LeagueTeams', function($scope, $routeParams, League, Team){
     .then(function(league){
         $scope.league = league;
     });
+})
+
+app.controller('Players', function($scope, $rootScope, $location, League, Player, ngTableParams){
+    var leagueId = $rootScope.leagueId = $location.search().leagueId;
+    $scope.league = League.get({id: leagueId});
+    $scope.tableParams = new ngTableParams({
+        count: 10,
+        page: 1
+    }, {
+        getData: function($defer, params){
+            Player.query({
+                leagueId: leagueId,
+                offset: params.count() * (params.page() - 1),
+                limit: params.count()
+            }, function(roster, headers){
+                params.total(headers('x-total'));
+                $defer.resolve(roster);
+            }, $defer.reject);
+        }
+    });
+})
+.controller('PlayerShow', function($scope, $routeParams, Player){
+    $scope.player = Player.get({id: $routeParams.id});
 })
 
 app.controller('Nav', ['$scope', 'User', function($scope, User){
@@ -108,6 +195,14 @@ app.config(['$routeProvider', function($routeProvider){
     .when('/leagues/:id/teams', {
         controller: 'LeagueTeams',
         templateUrl: '/assets/leagues/teams.html'
+    })
+    .when('/players', {
+        controller: 'Players',
+        templateUrl: '/assets/players/index.html'
+    })
+    .when('/players/:id', {
+        controller: 'PlayerShow',
+        templateUrl: '/assets/players/show.html'
     })
     .when('/teams/:id', {
         controller: 'Team',

@@ -45,22 +45,27 @@ class TeamsController < ApplicationController
   def show
     respond_to do |format|
       format.html
-      format.json { render json: @team.to_json(:include => :owner) }
+      format.json { render json: @team.to_json(:include => [:owner], :methods => [:payroll, :payroll_available] ) }
     end
   end
 
   def roster
-    players = @team.players.index_by(&:id)
-    pvcs = @team.players_pvcs.includes(:player)
-    pvcs.each {|c| c.player = players[c.player_id]}
+    pvcs = roster_pvcs(@team)
     render json: pvcs.to_json(:include => :player)
   end
 
   def fetch_espn
     raise StandardError.new("god mode req'd") if !god?
     @team.fetch_espn_roster
-    add_flash(:notice, false, "Fetched the ESPN roster of team '#{@team.name}'")
-    redirect_to team_path(@team)
+    respond_to do |format|
+      format.html do
+        add_flash(:notice, false, "Fetched the ESPN roster of team '#{@team.name}'")
+        redirect_to team_path(@team)
+      end
+      format.json do
+        render json: roster_pvcs(@team).to_json(:include => :player)
+      end
+    end
   end
 
   # TODO: REMOVE THIS
@@ -88,6 +93,13 @@ class TeamsController < ApplicationController
     def load_team
       @team = Team.includes(:league).find(params[:id]) # Include players when this becomes a proper association
       change_current_league(@team.league_id)
+    end
+
+    def roster_pvcs(team)
+      players = team.players.index_by(&:id)
+      pvcs = team.players_pvcs.includes(:player)
+      pvcs.each {|c| c.player = players[c.player_id]}
+      return pvcs
     end
 
 end

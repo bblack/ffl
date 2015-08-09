@@ -62,12 +62,18 @@ class ApplicationController < ActionController::Base
         # We're cool here
       elsif not god?
         errors << "You need GOD MODE to do that, man."
+        errors << @current_user
       end
     end
 
     if errors.any?
-      errors.each { |e| add_flash :error, false, e }
-      redirect_to :back
+      respond_to do |format|
+        format.html do
+          errors.each { |e| add_flash :error, false, e }
+          redirect_to :back
+        end
+        format.json { render :json => {:errors => errors} }
+      end
     end
   end
 

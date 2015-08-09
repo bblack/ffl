@@ -49,5 +49,7 @@ module Ffl
     # Change the path that assets are served from
     # config.assets.prefix = "/assets"
     ActiveRecord::Base.include_root_in_json = false
+
+    config.assets.paths << Rails.root.join('vendor', 'assets', 'components')
   end
 end

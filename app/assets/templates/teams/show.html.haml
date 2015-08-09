@@ -1,16 +1,22 @@
 %h1
     {{team.name}}
-    %small {{team.owner.name}}
-.well.well-sm
-    Roster as of {{team.espn_roster_last_updated | from_now}}
-%table.table
+    %small {{team.owner.name}} {{foo()}}
+%div.progress
+    %div.progress-bar{'ng-style' => '{width: 100*team.payroll/300 + "%", minWidth: "4em"}'}
+        <strong>R</strong> {{team.payroll}} / {{team.maxPayroll()}}
+.alert.alert-info
+    Fetched {{team.espn_roster_last_updated | from_now}}.
+    %button.btn.btn-link.alert-link{'ng-click' => 'fetchEspn(team)'}
+        Update
+%table.table.table-condensed.table-striped{'ng-table' => 'tableParams'}
     %tr
         %th Name
         %th Position
         %th Value
     %tr{'ng-repeat' => 'pvc in roster | orderBy:posOrder'}
         %td
-            {{pvc.player.first_name}} {{pvc.player.last_name}}
-            %small {{pvc.player.nfl_team}}
+            %a{'ng-href' => '{{pvc.player.link()}}'}
+                {{pvc.player.fullName()}}
+                %small {{pvc.player.nfl_team}}
         %td {{pvc.player.position}}
         %td {{pvc.new_value}}

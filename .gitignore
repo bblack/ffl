@@ -4,3 +4,4 @@ log/*.log
 tmp/
 .powenv
 .rvmrc
+vendor/assets/components/
