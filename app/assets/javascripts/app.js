@@ -154,9 +154,11 @@ app.controller('Team', function($scope, $rootScope, $routeParams, Team, Player, 
     $scope.team = Team.get({id: $scope.id}, function(team){
         $rootScope.leagueId = team.league_id;
     });
-});
-
-app.controller('LeagueTeams', function($scope, $rootScope, $routeParams, League, Team){
+})
+.controller('LeagueIndex', function($scope, League){
+    $scope.leagues = League.query();
+})
+.controller('LeagueTeams', function($scope, $rootScope, $routeParams, League, Team){
     $rootScope.leagueId = $routeParams.id;
 
     League.teams({id: $scope.leagueId}).$promise
@@ -201,6 +203,18 @@ app.controller('Nav', ['$scope', 'User', function($scope, User){
 
 app.config(['$routeProvider', function($routeProvider){
     $routeProvider
+    .when('/', {
+        redirectTo: '/leagues'
+    })
+    .when('/leagues', {
+        controller: 'LeagueIndex',
+        templateUrl: '/assets/leagues/index.html'
+    })
+    .when('/leagues/:id', {
+        redirectTo: function(routeParams){
+            return '/leagues/' + routeParams.id + '/teams';
+        }
+    })
     .when('/leagues/:id/teams', {
         controller: 'LeagueTeams',
         templateUrl: '/assets/leagues/teams.html'

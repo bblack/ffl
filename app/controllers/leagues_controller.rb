@@ -1,4 +1,7 @@
 class LeaguesController < ApplicationController
+  def index
+    render json: League.all
+  end
 
   def show
     change_current_league(params[:id])
