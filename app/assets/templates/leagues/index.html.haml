@@ -1,0 +1,10 @@
+%h1
+    Leagues
+%table.table
+    %tr
+        %th
+            Name
+    %tr{'ng-repeat' => 'league in leagues'}
+        %td
+            %a{'ng-href' => './leagues/{{league.id}}'}
+                {{league.name}}

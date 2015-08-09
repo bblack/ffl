@@ -83,7 +83,7 @@ app.factory('League', function($resource){
             isArray: true
         }
     });
-
+    League.positions =  ['QB', 'RB', 'WR', 'TE', 'D/ST', 'K'];
     return League;
 });
 
@@ -123,11 +123,10 @@ app.factory('Player', function($resource){
     return Player;
 })
 
-app.controller('Team', function($scope, $rootScope, $routeParams, Team, Player, ngTableParams){
+app.controller('Team', function($scope, $rootScope, $routeParams, League, Team, Player, ngTableParams){
     $scope.id = $routeParams.id;
     $scope.posOrder = function(pvc){
-        // TODO: get this order from server
-        return ['QB', 'RB', 'WR', 'TE', 'D/ST', 'K'].indexOf(pvc.player.position);
+        return League.positions.indexOf(pvc.player.position);
     };
     $scope.fetchEspn = function(team){
         team.fetchEspn()
@@ -160,16 +159,15 @@ app.controller('Team', function($scope, $rootScope, $routeParams, Team, Player, 
 })
 .controller('LeagueTeams', function($scope, $rootScope, $routeParams, League, Team){
     $rootScope.leagueId = $routeParams.id;
-
-    League.teams({id: $scope.leagueId}).$promise
-    .then(function(teams){
-        $scope.teams = teams;
-    });
-
-    League.get({id: $scope.leagueId}).$promise
-    .then(function(league){
-        $scope.league = league;
-    });
+    $scope.positions = League.positions;
+    $scope.spotsTaken = function(team){
+        var roster = team.roster;
+        return Object.keys(roster).reduce(function(m, key){
+            return m + roster[key];
+        }, 0);
+    }
+    $scope.teams = League.teams({id: $scope.leagueId});
+    $scope.league = League.get({id: $scope.leagueId});
 })
 
 app.controller('Players', function($scope, $rootScope, $location, League, Player, ngTableParams){

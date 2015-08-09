@@ -3,16 +3,18 @@
     %small {{team.owner.name}} {{foo()}}
 %div.progress
     %div.progress-bar{'ng-style' => '{width: 100*team.payroll/300 + "%", minWidth: "4em"}'}
-        <strong>R</strong> {{team.payroll}} / {{team.maxPayroll()}}
+        %strong R
+        {{team.payroll}} / {{team.maxPayroll()}}
 .alert.alert-info
     Fetched {{team.espn_roster_last_updated | from_now}}.
     %button.btn.btn-link.alert-link{'ng-click' => 'fetchEspn(team)'}
         Update
 %table.table.table-condensed.table-striped{'ng-table' => 'tableParams'}
-    %tr
-        %th Name
-        %th Position
-        %th Value
+    %thead
+        %tr
+            %th Name
+            %th Position
+            %th Value
     %tr{'ng-repeat' => 'pvc in roster | orderBy:posOrder'}
         %td
             %a{'ng-href' => '{{pvc.player.link()}}'}
