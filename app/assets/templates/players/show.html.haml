@@ -1,2 +1,4 @@
-%h1.ng-cloak
-    {{player.fullName()}}
+%div{'ng-if' => 'player.$resolved'}
+    %h1.ng-cloak
+        {{player.fullName()}}
+    %img{'ng-src' => '{{player.headshot()}}'}

@@ -2,6 +2,12 @@
 //= require bootstrap-sprockets
 //= require ng-table/dist/ng-table
 
+function qs(params){
+    return Object.keys(params).map(function(key){
+        return encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
+    }).join('&');
+}
+
 var app = angular.module('bb.ffl', ['ngRoute', 'ngResource', 'ngTable'])
 .config(function($httpProvider){
     var $rootScope;
@@ -100,6 +106,7 @@ app.factory('Player', function($resource){
         return 'players/' + this.id;
     };
     Player.prototype.headshot = function(opts){
+        opts = opts || {};
         return espnCombinerUrl + qs({
             img: '/i/headshots/nfl/players/full/' + this.espn_id + '.png',
             w: opts.w || 100,
@@ -111,6 +118,7 @@ app.factory('Player', function($resource){
     };
     Player.prototype.teamlogo = function(opts){
         var team = this.nfl_team;
+        opts = opts || {};
         return espnCombinerUrl + qs({
             img: '/i/teamlogos/nfl/500/' + team + '.png',
             w: opts.w || 100,
