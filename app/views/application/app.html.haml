@@ -25,6 +25,7 @@
                             %a{href: 'leagues/{{leagueId}}/teams'} Teams
                     %p.navbar-text.pull-right{'ng-if' => 'user'}
                         {{ user.name }}
+                        %a.glyphicon.glyphicon-log-out{href: true, :'ng-click' => 'logout()' }
                     %form.navbar-form.navbar-right{'ng-submit' => 'login(username, password)', 'ng-if' => '!user'}
                         .form-group
                             %input.form-control.input-sm{type: 'text', placeholder: 'username', 'ng-model' => 'username'}

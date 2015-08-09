@@ -2,11 +2,27 @@
 //= require bootstrap-sprockets
 //= require ng-table/dist/ng-table
 
-var app = angular.module('bb.ffl', ['ngRoute', 'ngResource', 'ngTable']);
+var app = angular.module('bb.ffl', ['ngRoute', 'ngResource', 'ngTable'])
+.config(function($httpProvider){
+    var $rootScope;
+    $httpProvider.interceptors.push(function($injector){
+        if (!$rootScope) $rootScope = $injector.get('$rootScope');
+        return {
+            response: function(response){
+                var user = response.headers()['x-user'];
+                $rootScope.user = user === undefined ? undefined : JSON.parse(user);
+                return response;
+            }
+        }
+    })
+})
 
-app.run(function($http){
+app.run(function($http, $rootScope){
     // https://github.com/rails/rails/issues/9940
     $http.defaults.headers.common.Accept = 'application/json';
+    $rootScope.logout = function(){
+        $http.get('/application/logout');
+    }
 })
 
 app.filter('from_now', function(){
@@ -21,10 +37,6 @@ app.factory('User', ['$http', '$rootScope', function($http, $rootScope){
             return $http.post('/application/login', {
                 name: username,
                 password: pw
-            })
-            .then(function(response){
-                User.current = response.data;
-                $rootScope.$broadcast('loggedIn', {user: User.current});
             });
         }
     };
@@ -88,7 +100,7 @@ app.factory('Player', function($resource){
         return 'players/' + this.id;
     };
     Player.prototype.headshot = function(opts){
-        return espnCombinerUrl + $.param({
+        return espnCombinerUrl + qs({
             img: '/i/headshots/nfl/players/full/' + this.espn_id + '.png',
             w: opts.w || 100,
             h: opts.h || 50,
@@ -99,7 +111,7 @@ app.factory('Player', function($resource){
     };
     Player.prototype.teamlogo = function(opts){
         var team = this.nfl_team;
-        return espnCombinerUrl + $.param({
+        return espnCombinerUrl + qs({
             img: '/i/teamlogos/nfl/500/' + team + '.png',
             w: opts.w || 100,
             h: opts.h || 50,
@@ -184,10 +196,7 @@ app.controller('Players', function($scope, $rootScope, $location, League, Player
 app.controller('Nav', ['$scope', 'User', function($scope, User){
     $scope.login = function(username, pw){
         User.login(username, pw);
-    }
-    $scope.$on('loggedIn', function(evt, args){
-        $scope.user = args.user;
-    });
+    };
 }]);
 
 app.config(['$routeProvider', function($routeProvider){

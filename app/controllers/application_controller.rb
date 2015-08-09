@@ -6,6 +6,7 @@ class ApplicationController < ActionController::Base
   # before_filter :brian_only_mode
   before_filter :reject_posts_by_nongods
   before_filter :reject_posts_unless_logged_in
+  after_filter :write_header_user
 
   def app
     render :app, :layout => false
@@ -17,6 +18,10 @@ class ApplicationController < ActionController::Base
     else
       @current_user = User.find(session[:user_id])
     end
+  end
+
+  def write_header_user
+    response.headers['x-user'] = @current_user.to_json(only: [:id, :name])
   end
 
   def change_current_league(new_league_id)
@@ -114,19 +119,23 @@ class ApplicationController < ActionController::Base
       end
 
       format.json do
-        render json: {
-            id: user.id,
-            name: user.name,
-            email: user.email
-        }
+        @current_user = user
+        write_header_user
+        render json: nil
       end
     end
   end
 
   def logout
     reset_session
-    add_flash :notice, false, "You are now logged out"
-    redirect_to :action => 'index'
+    @current_user = nil
+    respond_to do |format|
+      format.html do
+        add_flash :notice, false, "You are now logged out"
+        redirect_to :action => 'index'
+      end
+      format.json { render status: 200, json: nil }
+    end
   end
 
 end
