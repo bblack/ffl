@@ -22,22 +22,19 @@ var app = angular.module('bb.ffl', ['ngRoute', 'ngResource', 'ngTable'])
         }
     })
 })
-
-app.run(function($http, $rootScope){
+.run(function($http, $rootScope){
     // https://github.com/rails/rails/issues/9940
     $http.defaults.headers.common.Accept = 'application/json';
     $rootScope.logout = function(){
         $http.get('/application/logout');
     }
 })
-
-app.filter('from_now', function(){
+.filter('from_now', function(){
     return function(date){
         return moment(date).fromNow();
     };
-});
-
-app.factory('User', ['$http', '$rootScope', function($http, $rootScope){
+})
+.factory('User', function($http, $rootScope){
     var User = {
         login: function(username, pw){
             return $http.post('/application/login', {
@@ -47,9 +44,8 @@ app.factory('User', ['$http', '$rootScope', function($http, $rootScope){
         }
     };
     return User;
-}]);
-
-app.factory('Team', function($resource, $http, Player){
+})
+.factory('Team', function($resource, $http, Player){
     function transformRes(data){
         data = JSON.parse(data);
         return data.map(function(pvc){
@@ -79,9 +75,8 @@ app.factory('Team', function($resource, $http, Player){
         return this.payroll + this.payroll_available;
     };
     return Team;
-});
-
-app.factory('League', function($resource){
+})
+.factory('League', function($resource){
     var League = $resource('/leagues/:id', {id: '@id'}, {
         teams: {
             method: 'GET',
@@ -91,9 +86,8 @@ app.factory('League', function($resource){
     });
     League.positions =  ['QB', 'RB', 'WR', 'TE', 'D/ST', 'K'];
     return League;
-});
-
-app.factory('Player', function($resource){
+})
+.factory('Player', function($resource){
     var Player = $resource('/players/:id', {id: '@id'});
     var espnCombinerUrl = 'http://a.espncdn.com/combiner/i?'
     Player.prototype.fullName = function(){
@@ -130,8 +124,7 @@ app.factory('Player', function($resource){
     };
     return Player;
 })
-
-app.controller('Team', function($scope, $rootScope, $routeParams, League, Team, Player, ngTableParams){
+.controller('Team', function($scope, $rootScope, $routeParams, League, Team, Player, ngTableParams){
     $scope.id = $routeParams.id;
     $scope.posOrder = function(pvc){
         return League.positions.indexOf(pvc.player.position);
@@ -177,8 +170,7 @@ app.controller('Team', function($scope, $rootScope, $routeParams, League, Team, 
     $scope.teams = League.teams({id: $scope.leagueId});
     $scope.league = League.get({id: $scope.leagueId});
 })
-
-app.controller('Players', function($scope, $rootScope, $location, League, Player, ngTableParams){
+.controller('Players', function($scope, $rootScope, $location, League, Player, ngTableParams){
     var leagueId = $rootScope.leagueId = $location.search().leagueId;
     $scope.league = League.get({id: leagueId});
     $scope.tableParams = new ngTableParams({
@@ -200,14 +192,12 @@ app.controller('Players', function($scope, $rootScope, $location, League, Player
 .controller('PlayerShow', function($scope, $routeParams, Player){
     $scope.player = Player.get({id: $routeParams.id});
 })
-
-app.controller('Nav', ['$scope', 'User', function($scope, User){
+.controller('Nav', function($scope, User){
     $scope.login = function(username, pw){
         User.login(username, pw);
     };
-}]);
-
-app.config(['$routeProvider', function($routeProvider){
+})
+.config(function($routeProvider, $locationProvider){
     $routeProvider
     .when('/', {
         redirectTo: '/leagues'
@@ -242,9 +232,7 @@ app.config(['$routeProvider', function($routeProvider){
         controller: function($scope, $location){
             $scope.url = $location.url();
         }
-    })
-}]);
+    });
 
-app.config(function($locationProvider){
     $locationProvider.html5Mode(true);
 });
