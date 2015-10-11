@@ -45,7 +45,11 @@ class League < ActiveRecord::Base
           and pvc2.id > pvc_latest.id
         left outer join espn_roster_spots
           on players.espn_id = espn_roster_spots.espn_player_id
-      where espn_roster_spots.id IS NULL
+        left join espn_roster_spots ers2
+          on espn_roster_spots.espn_player_id = ers2.espn_player_id
+          and ers2.id > espn_roster_spots.id
+      where espn_roster_spots.team_id IS NULL
+        and ers2.id is null
         and pvc2.id IS NULL
         and pvc_latest.league_id = #{id}
       group by players.id, espn_roster_spots.team_id
