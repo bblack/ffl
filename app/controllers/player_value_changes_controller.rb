@@ -3,7 +3,7 @@ class PlayerValueChangesController < ApplicationController
     change_current_league(params[:league_id])
     render :text => "No league selected" and return if @current_league.nil?
 
-    retval = "Player,Position,Team,Owner,Value,First year,Last year,Length\r\n"
+    retval = "Player,Position,Team,Value,First year,Last year,Length\r\n"
     @current_league.players_pvcs.where('player_value_changes.new_value is not null').includes(:player).each do |pvc|
       length = (pvc.last_year - pvc.first_year + 1) rescue nil
       retval += [
