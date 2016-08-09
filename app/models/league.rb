@@ -38,38 +38,25 @@ class League < ActiveRecord::Base
   end
 
   def unsigned_players
-    ActiveRecord::Base.connection.execute("""
-      select players.id from players
-        left join player_value_changes pvc_latest
-          on pvc_latest.player_id = players.id
-        left join player_value_changes pvc2
-          on pvc2.player_id = pvc_latest.player_id
-          and pvc2.id > pvc_latest.id
-        left outer join espn_roster_spots
-          on players.espn_id = espn_roster_spots.espn_player_id
-        left join espn_roster_spots ers2
-          on espn_roster_spots.espn_player_id = ers2.espn_player_id
-          and ers2.id > espn_roster_spots.id
-      where espn_roster_spots.team_id IS NULL
-        and ers2.id is null
-        and pvc2.id IS NULL
-        and pvc_latest.league_id = #{id}
-      group by players.id, espn_roster_spots.team_id
-    """)
+    # warning: raw substitution here because ? doesn't work with #joins
+    Player
+      .joins("
+        left outer join espn_roster_spots ers on players.espn_id = ers.espn_player_id
+        and ers.roster_revision = '#{self.roster_revision}'
+      ")
+      .where('ers.id is null')
   end
 
   def clear_values_for_unsigned_players
     # For all players that have a value AND that are not on a team, set their
     # value to nil. To be used after all the RFA and resolve crap but before
     # the draft.
-    r = unsigned_players
-    player_ids = r.map{|x| x['id']}
     new_pvcs = []
 
     ActiveRecord::Base.transaction do
-      player_ids.each do |player_id|
+      unsigned_players.each do |player|
         new_pvcs << PlayerValueChange.create!(
-          :player_id => player_id,
+          :player_id => player.id,
           :new_value => nil,
           :league_id => self.id,
           :comment   => 'clear_values_for_unsigned_players'
@@ -97,47 +84,6 @@ class League < ActiveRecord::Base
         )
       end
     end
-  end
-
-  def possibly_out_of_date_contracts
-    # Needed to do this once after I forgot to nil out contracts before 2014 started
-    year = Time.now.year
-    lines = []
-    q = PlayerValueChange.find_by_sql("""
-        select pvc.* from player_value_changes pvc
-        left join player_value_changes pvc2
-        on pvc.player_id = pvc2.player_id
-        and pvc2.created_at > pvc.created_at
-        where pvc2.id is null
-        and pvc.first_year < #{year}
-    """)
-    q.each do |pvc|
-        pvc.player = Player.find(pvc.player_id)
-        line = {:espn_id => pvc.player.espn_id, :name => pvc.player.name}
-
-        if pvc.last_year < year
-            new_pvc = PlayerValueChange.create!({
-                :player_id => pvc.player.id,
-                :league_id => self.id,
-                :comment => 'niling out out contracts'
-            })
-            line[:status] = 'Most recent contract was old; nil\'d out.'
-        else
-            url = "http://games.espn.go.com/ffl/format/playerpop/transactions?leagueId=#{self.espn_id}&playerId=#{pvc.player.espn_id}&playerIdType=playerId&seasonId=#{year}&xhr=1"
-            doc = Nokogiri::HTML(open(url))
-            actions = doc.css('body div tr')
-
-            if actions.any? {|a| a.text.match(/Selected as a Keeper/)}
-                line[:status] = 'Keeper. No action taken.'
-            else
-                line[:status] = 'NOT KEEPER. ACTIONS THIS YEAR: ' + actions.map(&:text).join('; ')
-            end
-        end
-
-        lines.push(line)
-    end
-
-    return lines
   end
 
   def fetch_espn_rosters
