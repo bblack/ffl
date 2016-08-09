@@ -119,7 +119,7 @@ class League < ActiveRecord::Base
           team_id: team_espn_id_to_id[rs[:espn_team_id]],
           roster_revision: roster_revision
         })
-        player_last_pvc = current_values_and_players.all.find {|pvc| pvc.player.espn_id == rs[:espn_player_id]}
+        player_last_pvc = current_values_and_players.all.find {|pvc| pvc.player.espn_id.to_s == rs[:espn_player_id]}
         if (player_last_pvc.nil? || player_last_pvc.new_value.nil?)
           PlayerValueChange.create!(
             league_id: self.id,
