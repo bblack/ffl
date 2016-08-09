@@ -96,7 +96,6 @@ ActiveRecord::Schema.define(:version => 20160809142350) do
     t.integer  "league_id"
     t.integer  "owner_id"
     t.string   "espn_id"
-    t.datetime "espn_roster_last_updated"
   end
 
   create_table "users", :force => true do |t|
