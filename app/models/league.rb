@@ -3,7 +3,8 @@ require 'open-uri'
 
 class League < ActiveRecord::Base
   has_many :teams
-  has_many :espn_roster_spots, :through => :teams
+  has_many :espn_roster_spots, :through => :teams,
+    :conditions => proc {['roster_revision = ?', self.roster_revision]}
   has_many :rfa_periods
 
   def self.positions
@@ -20,9 +21,10 @@ class League < ActiveRecord::Base
 
   def signed_players_pvcs(team_id=nil)
     # The most recent PVC each player currently signed to a team in the league
-    players_pvcs.
-      joins('left join espn_roster_spots on espn_roster_spots.espn_player_id = players.espn_id').
-      where('espn_roster_spots.team_id in (?)', team_id ? [team_id] : self.team_ids)
+    players_pvcs
+      .joins('left join espn_roster_spots on espn_roster_spots.espn_player_id = players.espn_id')
+      .where('espn_roster_spots.team_id in (?)', team_id ? [team_id] : self.team_ids)
+      .where('espn_roster_spots.roster_revision = ?', self.roster_revision)
   end
 
   def players_pvcs
@@ -138,4 +140,41 @@ class League < ActiveRecord::Base
     return lines
   end
 
+  def fetch_espn_rosters
+    offset = 0
+    slots = []
+    while true do
+      url = "http://games.espn.com/ffl/freeagency?leagueId=#{self.espn_id}&seasonId=2016&startIndex=#{offset}&avail=5" # avail=5 is keepers
+      doc = Nokogiri::HTML(open(url))
+      doc.css('table.playerTableTable tr.pncPlayerRow').each do |tr|
+        espn_player_id = tr.attributes['id'].value.match(/plyr(\d+)/)[1]
+        espn_team_id = tr.css('td a')
+          .map {|a| a.attributes['href'].value}
+          .find {|href| href.match(/\/ffl\/clubhouse/)}
+          .match(/\/ffl\/clubhouse\?.*teamId=(\d+)/)[1]
+        slots << {espn_player_id: espn_player_id, espn_team_id: espn_team_id}
+      end
+      break if !doc.css('.paginationNav a').last.text.match(/NEXT/)
+      offset += 50
+    end
+    return slots
+  end
+
+  def update_espn_rosters
+    roster_spots = self.fetch_espn_rosters
+    roster_revision = SecureRandom::uuid
+    team_espn_id_to_id = {}
+    self.teams.each {|t| team_espn_id_to_id[t.espn_id] = t.id}
+
+    ActiveRecord::Base.transaction do
+      roster_spots.each do |rs|
+        EspnRosterSpot.create({ #ugh
+          espn_player_id: rs[:espn_player_id],
+          team_id: team_espn_id_to_id[rs[:espn_team_id]],
+          roster_revision: roster_revision
+        })
+      end
+      self.update_attributes(roster_revision: roster_revision)
+    end
+  end
 end

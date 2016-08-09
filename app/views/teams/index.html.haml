@@ -1,11 +1,12 @@
 %h1 Teams
+%form{action: "/leagues/#{@current_league.id}/update_espn_rosters", method: 'post'}
+  =hidden_field_tag :authenticity_token, form_authenticity_token
+  %button Update rosters from ESPN
+%br
 - if @current_league
   %table
     %tr
       %th Team name
-      %th Last updated
-      - if god?
-        %th Update
       %th Payroll
       - @current_league.positions.each do |p|
         %th= "#{p}s"
@@ -15,34 +16,7 @@
           %a{:href => "/teams/#{team.id}"}
             = team.name
         %td
-          = team.espn_roster_last_updated
-        - if god?
-          %td
-            %button{:updateurl => "/teams/#{team.id}/fetch_espn"}
-              Update
-            %span.update-status
-        %td
           = @payrolls[team.id]
         - @current_league.positions.each do |p|
           %td
-            = @rosters_by_pos[team.id][p] || 0
-
-:javascript
-  $("[updateurl]").click(function(evt){
-    var $el = $(evt.delegateTarget);
-
-    $.ajax({
-      url: $el.attr('updateurl'),
-      type: 'POST',
-      headers: {
-        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-      },
-      success: function(data){
-        // i'm lazy
-        window.location.reload();
-      },
-      error: function(){
-        $el.siblings('.update-status').text('error');
-      }
-    })
-  });
+            = (@rosters_by_pos[team.id] || {})[p] || 0

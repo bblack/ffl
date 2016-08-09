@@ -3,7 +3,8 @@ require 'open-uri'
 class Team < ActiveRecord::Base
   belongs_to :league
   belongs_to :owner, :class_name => 'User', :foreign_key => 'owner_id'
-  has_many :espn_roster_spots
+  has_many :espn_roster_spots,
+    :conditions => proc {['roster_revision = ?', self.league.roster_revision]}
   has_many :players, :through => :espn_roster_spots
 
   def players_pvcs
@@ -42,64 +43,6 @@ class Team < ActiveRecord::Base
   def espn_url
     # can't use mobile as of 2012-09-19 only because the links for D/ST don't contain playerid, only a link to that NFL team
     "http://games.espn.go.com/ffl/clubhouse?leagueId=#{league.espn_id}&teamId=#{espn_id}" if espn?
-  end
-
-  def fetch_espn_roster
-    raise StandardError.new("league's espn_id is nil") if self.league.espn_id == nil
-    raise StandardError.new("team's espn_id is nil") if self.espn_id == nil
-
-    doc = Nokogiri::HTML(open(self.espn_url))
-
-    team_name_el = doc.css('.games-univ-mod3 h3')  # <h3>Caprica Buccaneers <span>(CAP)</span></h3>
-    team_name = team_name_el.children[0].text.rstrip
-
-    player_link_elements = doc.css('.playertablePlayerName a')
-
-    # Map espn_id => name
-    espn_hash = Hash[
-      player_link_elements
-        .select{|e| e.inner_text.present?}
-        .collect{|e| [e.attributes['playerid'].value, e.inner_text]}
-    ]
-
-    self.transaction do
-      self.espn_roster_spots.delete_all
-      espn_hash.keys.each do |espn_id|
-        EspnRosterSpot.create(:espn_player_id => espn_id, :team_id => self.id)
-
-        player = Player.where(:espn_id => espn_id).first
-
-        raise StandardError.new("Couldn't find player with espn_id #{espn_id}") if player.nil?
-
-        last_pvc = PlayerValueChange.where(
-          :player_id => player.id,
-          :league_id => self.league_id
-        ).last
-
-        if (last_pvc.nil? || last_pvc.new_value.nil?)
-          new_value = 1
-          start_year = Date.today.year
-
-          PlayerValueChange.create!(
-            :player_id => player.id,
-            :league_id => self.league_id,
-            :new_value => new_value,
-            :first_year => start_year,
-            :last_year => start_year - 1 + league.contract_length_for_value(new_value),
-            :comment => 'free agent pickup')
-        end
-      end
-      self.espn_roster_last_updated = Time.now
-
-      self.name = team_name
-
-      self.save!
-    end
-
-    players_missing = espn_hash.slice(*(espn_hash.keys - Player.where(:espn_id => espn_hash.keys).collect{|e| e.espn_id.to_s}))
-    raise StandardError.new("Players missing: #{players_missing.collect{|k| k.join(' ')}.join(', ')}") if players_missing.any?
-
-    self.players(true)
   end
 
 end

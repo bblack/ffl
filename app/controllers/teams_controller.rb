@@ -5,7 +5,11 @@ class TeamsController < ApplicationController
     change_current_league(params[:league_id])
 
     pvcs = @current_league.signed_players_pvcs.all
-    rosters = EspnRosterSpot.where(:team_id => @current_league.team_ids).includes(:player).all.group_by(&:team_id)
+    rosters = EspnRosterSpot
+      .where(roster_revision: @current_league.roster_revision)
+      .where('roster_revision is not null')
+      .includes(:player).all
+      .group_by(&:team_id)
 
     @rosters_by_pos = {}
 
@@ -39,11 +43,13 @@ class TeamsController < ApplicationController
     redirect_to team_path(@team)
   end
 
+  # TODO: REMOVE THIS
   def drop_and_zero_player
     # For dropping players in ffl when espn season hasn't opened yet
     raise StandardError.new("god mode req'd") if !god?
     player = Player.find(params[:player_id])
     EspnRosterSpot.where(
+      :roster_revision => @current_league.roster_revision,
       :team_id => @team.id,
       :espn_player_id => player.espn_id
     ).destroy_all

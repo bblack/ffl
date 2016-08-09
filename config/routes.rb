@@ -9,10 +9,12 @@ Ffl::Application.routes.draw do
   match 'application/logout' => 'application#logout'
   match 'application/login' => 'application#login'
   resources :players
+  get '/leagues/:id' => redirect("/leagues/%{id}/teams")
   resources :leagues do
     resources :teams, :only => :index
     get 'draft_form' => 'leagues#draft_form', :on => :member
     post 'draft'     => 'leagues#draft', :on => :member
+    post 'update_espn_rosters' => 'leagues#update_espn_rosters', on: :member
   end
   resources :teams, :except => :index
   match 'teams/:id/fetch_espn' => 'teams#fetch_espn' # should be post

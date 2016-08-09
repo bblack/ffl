@@ -11,24 +11,14 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20141019195501) do
+ActiveRecord::Schema.define(:version => 20160809142350) do
 
   create_table "espn_roster_spots", :force => true do |t|
     t.integer  "espn_player_id"
     t.integer  "team_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
-
-  create_table "espn_stats", :force => true do |t|
-    t.integer  "player_id"
-    t.integer  "league_id"
-    t.integer  "week"
-    t.integer  "season"
-    t.string   "stats"
-    t.integer  "points"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.string   "roster_revision", :limit => nil
   end
 
   create_table "leagues", :force => true do |t|
@@ -37,7 +27,7 @@ ActiveRecord::Schema.define(:version => 20141019195501) do
     t.datetime "updated_at"
     t.integer  "salary_cap"
     t.string   "espn_id"
-    t.integer  "season"
+    t.string   "roster_revision", :limit => nil
   end
 
   create_table "player_value_changes", :force => true do |t|

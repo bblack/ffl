@@ -1,4 +1,4 @@
-<% if EspnRosterSpot.where(:espn_player_id => player.espn_id).last.team_id == team.id %>
+<% if EspnRosterSpot.where(:espn_player_id => player.espn_id, :roster_revision => league.roster_revision).last.team_id == team.id %>
   <span >
     <%= form_tag("/rfa_decisions", :method => "POST", :style => 'display:inline;') do %>
       <%= hidden_field_tag(:rfa_period_id, @rfaperiod.id) %>

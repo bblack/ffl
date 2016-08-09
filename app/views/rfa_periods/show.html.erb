@@ -80,7 +80,7 @@
 <% else %>
   <% pid_to_pcv = Hash[ @rfaperiod.contracts_eligible.collect{|c| [c.player_id, c]} ] %>
 <% end %>
-<% @rfaperiod.league.teams.includes(:espn_roster_spots => :player).each do |team| %>
+<% @rfaperiod.league.teams.each do |team| %>
   <span style="display:inline-block; margin-right:1em;">
     <h3><a href="/teams/<%=team.id%>"><%= team.name %></a></h3>
     <table>
@@ -124,7 +124,7 @@
             <% keep = decision.keep rescue nil %>
             <td style='background-color: <%= {true => 'lightgreen', false => 'salmon', nil => 'lightyellow'}[keep] %>;'>
               <% if @rfaperiod.rfa_decision_period.open? && @current_team %>
-                <%= render :partial => 'components/rfa_decider', :locals => { :player => p, :team => @current_team } %>
+                <%= render :partial => 'components/rfa_decider', :locals => { :player => p, :team => @current_team, :league => @current_league } %>
               <% end %>
               <%= decision.keepstring rescue 'undecided' %>
             </td>
