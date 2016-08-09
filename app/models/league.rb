@@ -111,14 +111,24 @@ class League < ActiveRecord::Base
     roster_revision = SecureRandom::uuid
     team_espn_id_to_id = {}
     self.teams.each {|t| team_espn_id_to_id[t.espn_id] = t.id}
-
+    current_values_and_players = players_pvcs.includes(:player)
     ActiveRecord::Base.transaction do
       roster_spots.each do |rs|
-        EspnRosterSpot.create({ #ugh
+        EspnRosterSpot.create!({ #ugh
           espn_player_id: rs[:espn_player_id],
           team_id: team_espn_id_to_id[rs[:espn_team_id]],
           roster_revision: roster_revision
         })
+        if !current_values_and_players.find{|pvc| pvc.player.espn_id == rs[:espn_player_id]}
+          PlayerValueChange.create!(
+            # TODO: league.season
+            league_id: self.id,
+            new_value: 1,
+            first_year: 2015,
+            last_year: 2015 + contract_length_for_value(1),
+            comment: 'FA pickup fetched from espn'
+          )
+        end
       end
       self.update_attributes(roster_revision: roster_revision)
     end
