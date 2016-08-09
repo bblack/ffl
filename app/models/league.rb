@@ -123,6 +123,7 @@ class League < ActiveRecord::Base
         if (player_last_pvc.nil? || player_last_pvc.new_value.nil?)
           PlayerValueChange.create!(
             league_id: self.id,
+            player_id: Player.find_by_espn_id(rs[:espn_player_id]).id,
             new_value: 1,
             first_year: 2015, # TODO: league.season
             last_year: 2015 + contract_length_for_value(1),
