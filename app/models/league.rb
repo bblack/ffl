@@ -119,12 +119,12 @@ class League < ActiveRecord::Base
           team_id: team_espn_id_to_id[rs[:espn_team_id]],
           roster_revision: roster_revision
         })
-        if !current_values_and_players.find{|pvc| pvc.player.espn_id == rs[:espn_player_id]}
+        player_last_pvc = current_values_and_players.find{|pvc| pvc.player.espn_id == rs[:espn_player_id]}
+        if (player_last_pvc.nil? || player_last_pvc.new_value.nil?)
           PlayerValueChange.create!(
-            # TODO: league.season
             league_id: self.id,
             new_value: 1,
-            first_year: 2015,
+            first_year: 2015, # TODO: league.season
             last_year: 2015 + contract_length_for_value(1),
             comment: 'FA pickup fetched from espn'
           )
