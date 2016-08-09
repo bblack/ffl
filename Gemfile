@@ -3,6 +3,7 @@ source 'http://rubygems.org'
 ruby '2.3.0'
 
 gem 'rails', '3.2.22.2'
+gem 'test-unit', '~> 3.0'
 gem 'nokogiri'
 gem 'haml'
 gem 'uglifier'
