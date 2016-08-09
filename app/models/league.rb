@@ -126,7 +126,7 @@ class League < ActiveRecord::Base
             player_id: Player.find_by_espn_id(rs[:espn_player_id]).id,
             new_value: 1,
             first_year: 2015, # TODO: league.season
-            last_year: 2015 + contract_length_for_value(1),
+            last_year: 2015 + contract_length_for_value(1) - 1,
             comment: 'FA pickup fetched from espn'
           )
         end
