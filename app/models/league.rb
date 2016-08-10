@@ -35,6 +35,7 @@ class League < ActiveRecord::Base
       where('pvc2.id is null').
       where(:league_id => self.id).
       order('player_value_changes.id desc')
+      .where("player_value_changes.last_year >= #{self.current_season}")
   end
 
   def unsigned_players
@@ -72,7 +73,7 @@ class League < ActiveRecord::Base
 
     ActiveRecord::Base.transaction do
       picks.each do |pick|
-        first_year = Date.today.year
+        first_year = self.current_season
 
         PlayerValueChange.create!(
           pick.slice('player_id', 'new_value').merge(
@@ -125,13 +126,17 @@ class League < ActiveRecord::Base
             league_id: self.id,
             player_id: Player.find_by_espn_id(rs[:espn_player_id]).id,
             new_value: 1,
-            first_year: 2015, # TODO: league.season
-            last_year: 2015 + contract_length_for_value(1) - 1,
+            first_year: self.current_season,
+            last_year: self.current_season + contract_length_for_value(1) - 1,
             comment: 'FA pickup fetched from espn'
           )
         end
       end
       self.update_attributes(roster_revision: roster_revision)
     end
+  end
+
+  def current_season
+     Date.today.year
   end
 end
