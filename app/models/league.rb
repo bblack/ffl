@@ -3,8 +3,8 @@ require 'open-uri'
 
 class League < ActiveRecord::Base
   has_many :teams
-  has_many :espn_roster_spots, :through => :teams,
-    :conditions => proc {['roster_revision = ?', self.roster_revision]}
+  has_many :espn_roster_spots, foreign_key: :roster_revision,
+    primary_key: :roster_revision
   has_many :rfa_periods
 
   def self.positions
@@ -53,15 +53,18 @@ class League < ActiveRecord::Base
     # value to nil. To be used after all the RFA and resolve crap but before
     # the draft.
     new_pvcs = []
+    spots = self.espn_roster_spots.all # might be unneeded due to AR cache
 
     ActiveRecord::Base.transaction do
-      unsigned_players.each do |player|
-        new_pvcs << PlayerValueChange.create!(
-          :player_id => player.id,
-          :new_value => nil,
-          :league_id => self.id,
-          :comment   => 'clear_values_for_unsigned_players'
-        )
+      players_pvcs.includes(:player).all.each do |pvc|
+        if !!spots.find {|spot| spot.player.id == pvc.player_id} # unsigned?
+          new_pvcs << PlayerValueChange.create!(
+            :player_id => pvc.player_id,
+            :new_value => nil,
+            :league_id => self.id,
+            :comment   => 'clear_values_for_unsigned_players'
+          )
+        end
       end
     end
 
