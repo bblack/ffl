@@ -53,11 +53,11 @@ class League < ActiveRecord::Base
     # value to nil. To be used after all the RFA and resolve crap but before
     # the draft.
     new_pvcs = []
-    spots = self.espn_roster_spots.all
+    spots = self.espn_roster_spots.includes(:player).all
 
     ActiveRecord::Base.transaction do
       players_pvcs.all.each do |pvc|
-        if !!spots.find {|spot| spot.espn_player_id == pvc.player.espn_id} # unsigned?
+        if !spots.find {|spot| spot.player.id == pvc.player_id} # unsigned?
           new_pvcs << PlayerValueChange.create!(
             :player_id => pvc.player_id,
             :new_value => nil,
