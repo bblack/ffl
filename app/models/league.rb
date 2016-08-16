@@ -139,6 +139,6 @@ class League < ActiveRecord::Base
   def current_season
     # TODO
     #  Date.today.year
-    2015
+    2016
   end
 end
