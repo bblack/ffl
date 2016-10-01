@@ -11,7 +11,7 @@
             %th Name
             %th Position
             %th Value
-    %tr{'ng-repeat' => 'pvc in roster | orderBy:posOrder'}
+    %tr{'ng-repeat' => 'pvc in $data | orderBy:posOrder'}
         %td
             %a{'ng-href' => '{{pvc.player.link()}}'}
                 {{pvc.player.fullName()}}

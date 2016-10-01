@@ -115,24 +115,11 @@ var app = angular.module('bb.ffl', ['ngRoute', 'ngResource', 'ngTable'])
 })
 .controller('Team', function($scope, $rootScope, $routeParams, League, Team, Player, ngTableParams){
     $scope.id = $routeParams.id;
-    $scope.posOrder = function(pvc){
-        return League.positions.indexOf(pvc.player.position);
-    };
-    $scope.tableParams = new ngTableParams({
-        page: 1,
-        count: 20
-    }, {
-        getData: function($defer, params){
-            Team.roster({id: $scope.id}).$promise
-            .then(function(roster){
-                $scope.roster = roster;
-                $defer.resolve(roster);
-            }, function(e){
-                $defer.reject(e);
-            });
-        }
-    })
-
+    $scope.posOrder = (pvc) => League.positions.indexOf(pvc.player.position);
+    $scope.tableParams = new ngTableParams({}, {
+        counts: [],
+        getData: (params) => Team.roster({id: $scope.id}).$promise
+    });
     $scope.team = Team.get({id: $scope.id}, function(team){
         $rootScope.leagueId = team.league_id;
     });
