@@ -6,12 +6,6 @@
 //= require moment/moment
 //= require ng-table/dist/ng-table
 
-function qs(params){
-    return Object.keys(params).map(function(key){
-        return encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
-    }).join('&');
-}
-
 var app = angular.module('bb.ffl', ['ngRoute', 'ngResource', 'ngTable'])
 .config(function($httpProvider){
     var $rootScope;
@@ -90,20 +84,8 @@ var app = angular.module('bb.ffl', ['ngRoute', 'ngResource', 'ngTable'])
     };
     Player.prototype.headshot = function(opts){
         opts = opts || {};
-        return espnCombinerUrl + qs({
+        return espnCombinerUrl + jQuery.param({
             img: '/i/headshots/nfl/players/full/' + this.espn_id + '.png',
-            w: opts.w || 100,
-            h: opts.h || 50,
-            scale: 'crop',
-            background: '0xcccccc',
-            transparent: true
-        });
-    };
-    Player.prototype.teamlogo = function(opts){
-        var team = this.nfl_team;
-        opts = opts || {};
-        return espnCombinerUrl + qs({
-            img: '/i/teamlogos/nfl/500/' + team + '.png',
             w: opts.w || 100,
             h: opts.h || 50,
             scale: 'crop',
