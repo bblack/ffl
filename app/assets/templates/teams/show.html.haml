@@ -5,10 +5,6 @@
     %div.progress-bar{'ng-style' => '{width: 100*team.payroll/300 + "%", minWidth: "4em"}'}
         %strong R
         {{team.payroll}} / {{team.maxPayroll()}}
-.alert.alert-info
-    Fetched {{team.espn_roster_last_updated | from_now}}.
-    %button.btn.btn-link.alert-link{'ng-click' => 'fetchEspn(team)'}
-        Update
 %table.table.table-condensed.table-striped{'ng-table' => 'tableParams'}
     %thead
         %tr

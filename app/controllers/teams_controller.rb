@@ -56,20 +56,6 @@ class TeamsController < ApplicationController
     render json: pvcs.to_json(:include => :player)
   end
 
-  def fetch_espn
-    raise StandardError.new("god mode req'd") if !god?
-    @team.fetch_espn_roster
-    respond_to do |format|
-      format.html do
-        add_flash(:notice, false, "Fetched the ESPN roster of team '#{@team.name}'")
-        redirect_to team_path(@team)
-      end
-      format.json do
-        render json: roster_pvcs(@team).to_json(:include => :player)
-      end
-    end
-  end
-
   # TODO: REMOVE THIS
   def drop_and_zero_player
     # For dropping players in ffl when espn season hasn't opened yet

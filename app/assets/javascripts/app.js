@@ -33,11 +33,6 @@ var app = angular.module('bb.ffl', ['ngRoute', 'ngResource', 'ngTable'])
         $http.get('/application/logout');
     }
 })
-.filter('from_now', function(){
-    return function(date){
-        return moment(date).fromNow();
-    };
-})
 .factory('User', function($http, $rootScope){
     var User = {
         login: function(username, pw){
@@ -65,16 +60,6 @@ var app = angular.module('bb.ffl', ['ngRoute', 'ngResource', 'ngTable'])
             transformResponse: transformRes
         }
     });
-    Team.prototype.fetchEspn = function(){
-        return $http({
-            method: 'post',
-            url: '/teams/' + this.id + '/fetch_espn',
-            transformResponse: transformRes
-        })
-        .then(function(val){
-            return val.data;
-        });
-    };
     Team.prototype.maxPayroll = function(){
         return this.payroll + this.payroll_available;
     };
@@ -132,13 +117,6 @@ var app = angular.module('bb.ffl', ['ngRoute', 'ngResource', 'ngTable'])
     $scope.id = $routeParams.id;
     $scope.posOrder = function(pvc){
         return League.positions.indexOf(pvc.player.position);
-    };
-    $scope.fetchEspn = function(team){
-        team.fetchEspn()
-        .then(function(roster){
-            $scope.roster = roster;
-            $scope.team.espn_roster_last_updated = new Date();
-        });
     };
     $scope.tableParams = new ngTableParams({
         page: 1,

@@ -17,7 +17,6 @@ Ffl::Application.routes.draw do
   end
   resources :teams, :except => :index
   get 'teams/:id/roster' => 'teams#roster'
-  match 'teams/:id/fetch_espn' => 'teams#fetch_espn' # should be post
   match 'teams/:id/players/:player_id/drop0' => 'teams#drop_and_zero_player' # should be post
   resources :users#, :only => [:create]
   resources :rfa_periods
