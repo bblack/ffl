@@ -1,5 +1,9 @@
 %h1
     {{league.name}}
+%p
+    %a{'ng-href': '/player_value_changes.csv?league_id={{league.id}}', class: 'btn btn-primary'}
+        %span.glyphicon.glyphicon-download-alt
+        Player values
 %table.table.table-condensed.table-striped
     %thead
         %tr
