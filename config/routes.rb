@@ -9,7 +9,6 @@ Ffl::Application.routes.draw do
   match 'application/logout' => 'application#logout'
   match 'application/login' => 'application#login'
   resources :players
-  get '/leagues/:id' => redirect("/leagues/%{id}/teams")
   resources :leagues do
     resources :teams, :only => :index
     get 'draft_form' => 'leagues#draft_form', :on => :member

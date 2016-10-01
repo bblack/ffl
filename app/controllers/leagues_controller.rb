@@ -6,7 +6,7 @@ class LeaguesController < ApplicationController
   def show
     change_current_league(params[:id])
     respond_to do |format|
-      format.html
+      format.html { redirect_to league_teams_path(@current_league) }
       format.json { render json: @current_league }
     end
   end
