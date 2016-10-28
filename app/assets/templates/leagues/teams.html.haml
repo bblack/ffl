@@ -4,7 +4,7 @@
     %a{'ng-href': '/player_value_changes.csv?league_id={{league.id}}', class: 'btn btn-primary'}
         %span.glyphicon.glyphicon-download-alt
         Player values
-    %a.btn.btn-default{'ng-click': 'syncEspn()', 'ng-class': '{disabled: syncPromise.$$state.status == 0}'}
+    %a.btn.btn-default{'ng-click': 'syncEspn()', 'ng-class': '{disabled: syncPromise.$$state.status == 0}', 'ng-if': 'user.god_mode'}
         %span.glyphicon.glyphicon.glyphicon-transfer
         Sync with ESPN
 .table-responsive

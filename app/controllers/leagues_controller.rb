@@ -1,6 +1,9 @@
 class LeaguesController < ApplicationController
   def index
-    render json: League.all
+    respond_to do |format|
+      format.html
+      format.json { render json: League.all }
+    end
   end
 
   def show
