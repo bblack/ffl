@@ -7,16 +7,17 @@
     %a.btn.btn-default{'ng-click': 'syncEspn()', 'ng-class': '{disabled: syncPromise.$$state.status == 0}'}
         %span.glyphicon.glyphicon.glyphicon-transfer
         Sync with ESPN
-%table.table.table-condensed.table-striped
-    %thead
-        %tr
-            %th Team
-            %th Payroll
-            %th Players
-            %th{'ng-repeat' => 'pos in positions'} {{pos}}
-    %tr{'ng-repeat' => 'team in teams'}
-        %td
-            %a{'ng-href' => './teams/{{team.id}}'} {{team.name}}
-        %td {{team.payroll}}
-        %td {{spotsTaken(team)}}
-        %td{'ng-repeat' => 'pos in positions'} {{team.roster[pos]}}
+.table-responsive
+    %table.table.table-condensed.table-striped
+        %thead
+            %tr
+                %th Team
+                %th Payroll
+                %th Players
+                %th{'ng-repeat' => 'pos in positions'} {{pos}}
+        %tr{'ng-repeat' => 'team in teams'}
+            %td
+                %a{'ng-href' => './teams/{{team.id}}'} {{team.name}}
+            %td {{team.payroll}}
+            %td {{spotsTaken(team)}}
+            %td{'ng-repeat' => 'pos in positions'} {{team.roster[pos]}}
