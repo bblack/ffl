@@ -7,6 +7,7 @@ class ApplicationController < ActionController::Base
   before_filter :reject_posts_by_nongods
   before_filter :reject_posts_unless_logged_in
   after_filter :write_header_user
+  after_filter { cookies['XSRF-TOKEN'] = form_authenticity_token if protect_against_forgery? }
 
   def app
     render :app, :layout => false
@@ -137,5 +138,11 @@ class ApplicationController < ActionController::Base
       format.json { render status: 200, json: nil }
     end
   end
+
+  protected
+
+    def verified_request?
+      super || form_authenticity_token == request.headers['X-XSRF-TOKEN']
+    end
 
 end

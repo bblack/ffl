@@ -28,7 +28,7 @@ class LeaguesController < ApplicationController
         add_flash(:notice, false, 'ESPN rosters updated.')
         redirect_to league_url(@current_league)
       end
-      format.json {render status: 200}
+      format.json {render status: 200, json: ''}
     end
   end
 end
