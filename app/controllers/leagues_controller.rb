@@ -23,7 +23,12 @@ class LeaguesController < ApplicationController
   def update_espn_rosters
     change_current_league(params[:id])
     @current_league.update_espn_rosters
-    add_flash(:notice, false, 'ESPN rosters updated.')
-    redirect_to league_url(@current_league)
+    respond_to do |format|
+      format.html do
+        add_flash(:notice, false, 'ESPN rosters updated.')
+        redirect_to league_url(@current_league)
+      end
+      format.json {render status: 200}
+    end
   end
 end

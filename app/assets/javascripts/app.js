@@ -59,7 +59,7 @@ var app = angular.module('bb.ffl', ['ngRoute', 'ngResource', 'ngTable'])
     };
     return Team;
 })
-.factory('League', function($resource){
+.factory('League', function($resource, $http){
     var League = $resource('/leagues/:id', {id: '@id'}, {
         teams: {
             method: 'GET',
@@ -68,6 +68,7 @@ var app = angular.module('bb.ffl', ['ngRoute', 'ngResource', 'ngTable'])
         }
     });
     League.positions =  ['QB', 'RB', 'WR', 'TE', 'D/ST', 'K'];
+    League.syncEspn = (id) => $http.post('/leagues/' + id + '/update_espn_rosters');
     return League;
 })
 .factory('Player', function($resource){
@@ -118,8 +119,15 @@ var app = angular.module('bb.ffl', ['ngRoute', 'ngResource', 'ngTable'])
             return m + roster[key];
         }, 0);
     }
-    $scope.teams = League.teams({id: $scope.leagueId});
+    function getTeams(){
+        $scope.teams = League.teams({id: $scope.leagueId});
+    }
+    getTeams();
     $scope.league = League.get({id: $scope.leagueId});
+    $scope.syncEspn = () => {
+        $scope.syncPromise = League.syncEspn($scope.leagueId)
+        .then(getTeams);
+    };
 })
 .controller('Players', function($scope, $rootScope, $location, League, Player, ngTableParams){
     var leagueId = $rootScope.leagueId = $location.search().leagueId;

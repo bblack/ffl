@@ -77,7 +77,7 @@ class ApplicationController < ActionController::Base
           errors.each { |e| add_flash :error, false, e }
           redirect_to :back
         end
-        format.json { render :json => {:errors => errors} }
+        format.json { render status: 500, json: {errors: errors} }
       end
     end
   end
