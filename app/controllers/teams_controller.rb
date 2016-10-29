@@ -2,40 +2,40 @@ class TeamsController < ApplicationController
   before_filter :load_team, :except => [:index]
 
   def index
-    change_current_league(params[:league_id])
-
-    pvcs = @current_league.signed_players_pvcs.all
-    rosters = EspnRosterSpot
-      .where(roster_revision: @current_league.roster_revision)
-      .where('roster_revision is not null')
-      .includes(:player).all
-      .group_by(&:team_id)
-    @rosters_by_pos = {}
-    by_player = {}
-
-    rosters.each do |tid, roster|
-      roster.each do |spot|
-        by_player[spot.player.id] = {spot: spot}
-        @rosters_by_pos[tid] ||= {}
-        @rosters_by_pos[tid][spot.player.position] ||= 0
-        @rosters_by_pos[tid][spot.player.position] += 1
-      end
-    end
-
-    pvcs.each do |pvc|
-      by_player[pvc.player_id][:pvc] = pvc
-    end
-
-    @payrolls = {}
-
-    by_player.each do |pid, stuff|
-      @payrolls[stuff[:spot].team_id] ||= 0
-      @payrolls[stuff[:spot].team_id] += (stuff[:pvc].new_value || 0)
-    end
-
     respond_to do |format|
-      format.html
+      format.html { redirect_to "/app/leagues/#{params[:league_id]}/teams"}
       format.json do
+        change_current_league(params[:league_id])
+
+        pvcs = @current_league.signed_players_pvcs.all
+        rosters = EspnRosterSpot
+          .where(roster_revision: @current_league.roster_revision)
+          .where('roster_revision is not null')
+          .includes(:player).all
+          .group_by(&:team_id)
+        @rosters_by_pos = {}
+        by_player = {}
+
+        rosters.each do |tid, roster|
+          roster.each do |spot|
+            by_player[spot.player.id] = {spot: spot}
+            @rosters_by_pos[tid] ||= {}
+            @rosters_by_pos[tid][spot.player.position] ||= 0
+            @rosters_by_pos[tid][spot.player.position] += 1
+          end
+        end
+
+        pvcs.each do |pvc|
+          by_player[pvc.player_id][:pvc] = pvc
+        end
+
+        @payrolls = {}
+
+        by_player.each do |pid, stuff|
+          @payrolls[stuff[:spot].team_id] ||= 0
+          @payrolls[stuff[:spot].team_id] += (stuff[:pvc].new_value || 0)
+        end
+
         teams = @current_league.teams.map(&:serializable_hash).index_by{|t| t['id']}
         @payrolls.each{|tid, payroll| teams[tid]['payroll'] = payroll}
         @rosters_by_pos.each{|tid, roster| teams[tid]['roster'] = roster}
@@ -46,7 +46,7 @@ class TeamsController < ApplicationController
 
   def show
     respond_to do |format|
-      format.html
+      format.html { redirect_to "/app/teams/#{params[:id]}"}
       format.json { render json: @team.to_json(:include => [:owner], :methods => [:payroll, :payroll_available] ) }
     end
   end

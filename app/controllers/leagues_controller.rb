@@ -1,16 +1,18 @@
 class LeaguesController < ApplicationController
   def index
     respond_to do |format|
-      format.html
+      format.html { redirect_to '/app/leagues' }
       format.json { render json: League.all }
     end
   end
 
   def show
-    change_current_league(params[:id])
     respond_to do |format|
-      format.html { redirect_to league_teams_path(@current_league) }
-      format.json { render json: @current_league }
+      format.html { redirect_to "/app/leagues/#{params[:id]}" }
+      format.json do
+        change_current_league(params[:id])
+        render json: @current_league
+      end
     end
   end
 
