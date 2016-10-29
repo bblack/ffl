@@ -2,27 +2,16 @@ class PlayersController < ApplicationController
 
   def index
     find_players
-    add_flash :warning, true, "No results matched your query" if @players.empty?
-    respond_to do |format|
-      format.html
-      format.json {
-        response.headers['x-total'] = Player.count.to_s
-        render :json => @players.to_json
-      }
-    end
+    response.headers['x-total'] = Player.count.to_s
+    render :json => @players.to_json
   end
 
   def show
     @player = Player.find(params[:id])
-    respond_to do |format|
-      format.html
-      format.json {
-        render :json => @player.to_json
-      }
-    end
+    render :json => @player.to_json
   end
 
-  # Helpers
+  protected
 
   def find_players
     criteria = params.slice('last_name', 'first_name', 'nfl_team', 'position')
