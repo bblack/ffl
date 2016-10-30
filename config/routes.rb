@@ -5,7 +5,7 @@ Ffl::Application.routes.draw do
   # Sample of regular route:
   #   match 'products/:id' => 'catalog#view'
   # Keep in mind you can assign values other than :controller and :action
-  root :to => 'application#index'
+  root to: redirect('/app')
   match 'application/logout' => 'application#logout'
   match 'application/login' => 'application#login'
   resources :players
