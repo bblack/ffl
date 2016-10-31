@@ -1,0 +1,11 @@
+%h1
+  RFA Period
+  %small for contracts ending {{rfa.final_year}}
+%div
+  %span.glyphicon.glyphicon-calendar
+  {{open_date}} to {{close_date}}
+%div{'ng-repeat': 'team in teams'}
+  %h3 {{team.name}}
+  %table.table.table-condensed.table-striped
+    %tr
+      %td{'ng-repeat': 'contract in rfa.contracts_eligible | filter:contractBelongsTo(team.id)'}

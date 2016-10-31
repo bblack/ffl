@@ -27,6 +27,9 @@ var app = angular.module('bb.ffl', ['ngRoute', 'ngResource', 'ngTable'])
         $http.get('/application/logout');
     }
 })
+.factory('RfaPeriod', function($resource){
+    return $resource('/rfa_periods/:id', {id: '@id'});
+})
 .factory('User', function($http, $rootScope){
     var User = {
         login: function(username, pw){
@@ -156,6 +159,20 @@ var app = angular.module('bb.ffl', ['ngRoute', 'ngResource', 'ngTable'])
         User.login(username, pw);
     };
 })
+.controller('RfaPeriodShow', function($scope, $routeParams, RfaPeriod, League){
+    $scope.rfa = RfaPeriod.get({id: $routeParams.id}, (rfa) => {
+        $scope.teams = League.teams({id: rfa.league_id});
+        ['open_date', 'close_date'].forEach((key) => {
+            $scope[key] = moment.utc($scope.rfa[key]).format('LLLL');
+        });
+    });
+    // $scope.rosterSpots = get roster spots!
+    // $scope.contractBelongsTo = function(teamId){
+    //     return function(contract, ind, arr){
+    //         return contract.pl
+    //     }
+    // }
+})
 .config(function($routeProvider, $locationProvider){
     $routeProvider
     .when('/', {
@@ -181,6 +198,10 @@ var app = angular.module('bb.ffl', ['ngRoute', 'ngResource', 'ngTable'])
     .when('/players/:id', {
         controller: 'PlayerShow',
         templateUrl: '/assets/players/show.html'
+    })
+    .when('/rfa_periods/:id', {
+        controller: 'RfaPeriodShow',
+        templateUrl: '/assets/rfa_periods/show.html'
     })
     .when('/teams/:id', {
         controller: 'Team',

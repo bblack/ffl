@@ -2,7 +2,13 @@ class RfaPeriodsController < ApplicationController
   before_filter :set_members
 
   def show
-
+    respond_to do |format|
+      format.html # TODO: REMOVE
+      format.json do
+        render json: @rfaperiod.as_json(include: :rfa_bids)
+          .merge(contracts_eligible: @rfaperiod.contracts_eligible.as_json(include: :player))
+      end
+    end
   end
 
   def bigredbutton
