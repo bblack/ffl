@@ -166,12 +166,9 @@ var app = angular.module('bb.ffl', ['ngRoute', 'ngResource', 'ngTable'])
             $scope[key] = moment.utc($scope.rfa[key]).format('LLLL');
         });
     });
-    // $scope.rosterSpots = get roster spots!
-    // $scope.contractBelongsTo = function(teamId){
-    //     return function(contract, ind, arr){
-    //         return contract.pl
-    //     }
-    // }
+    $scope.contractBelongsTo = function(teamId){
+        return (contract, ind, arr) => contract.team_id == teamId;
+    }
 })
 .config(function($routeProvider, $locationProvider){
     $routeProvider

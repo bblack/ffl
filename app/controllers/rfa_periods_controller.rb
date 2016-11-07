@@ -7,9 +7,9 @@ class RfaPeriodsController < ApplicationController
       format.json do
         # TODO: make this less crappy
         contracts = @rfaperiod.contracts_eligible.as_json(include: :player)
-        spots = EspnRosterSpot.where(roster_revision: league.roster_revision)
+        spots = EspnRosterSpot.where(roster_revision: @rfaperiod.league.roster_revision)
         contracts.each do |c|
-          c[:team_id] = spots.find{|s| s.espn_player_id == c.player.espn_id}.team_id
+          c['team_id'] = spots.find{|s| s.espn_player_id == c[:player]['espn_id']}.team_id
         end
         render json: @rfaperiod.as_json(include: :rfa_bids)
           .merge(contracts_eligible: contracts)

@@ -7,5 +7,7 @@
 %div{'ng-repeat': 'team in teams'}
   %h3 {{team.name}}
   %table.table.table-condensed.table-striped
-    %tr
-      %td{'ng-repeat': 'contract in rfa.contracts_eligible | filter:contractBelongsTo(team.id)'}
+    %tr{'ng-repeat': 'contract in rfa.contracts_eligible | filter:contractBelongsTo(team.id)'}
+      %td
+        {{contract.player.first_name}}
+        {{contract.player.last_name}}
