@@ -5,6 +5,7 @@
 //= require angular-route/angular-route.min
 //= require moment/moment
 //= require ng-table/dist/ng-table
+//= require underscore/underscore-min
 
 function chunk(arr, n){
     var thisChunk;
@@ -182,6 +183,15 @@ var app = angular.module('bb.ffl', ['ngRoute', 'ngResource', 'ngTable'])
     });
     $scope.contractBelongsTo = function(teamId){
         return (contract, ind, arr) => contract.team_id == teamId;
+    }
+    $scope.highestBid = function(playerId){
+        return _.chain($scope.rfa.rfa_bids)
+            .filter({player_id: playerId})
+            .sortBy('id')
+            .sortBy('value')
+            .last()
+            .result('value')
+            .value()
     }
 })
 .config(function($routeProvider, $locationProvider){
