@@ -5,19 +5,7 @@
 //= require angular-route/angular-route.min
 //= require moment/moment
 //= require ng-table/dist/ng-table
-//= require underscore/underscore-min
-
-function chunk(arr, n){
-    var thisChunk;
-    return arr.reduce((memo, el, i) => {
-        if (i % n == 0) {
-            thisChunk = [];
-            memo.push(thisChunk);
-        }
-        thisChunk.push(el);
-        return memo;
-    }, []);
-}
+//= require lodash/dist/lodash.min
 
 var app = angular.module('bb.ffl', ['ngRoute', 'ngResource', 'ngTable'])
 .config(function($httpProvider){
@@ -39,6 +27,9 @@ var app = angular.module('bb.ffl', ['ngRoute', 'ngResource', 'ngTable'])
     $rootScope.logout = function(){
         $http.get('/application/logout');
     }
+})
+.factory('RfaBid', function($resource){
+    return $resource('/rfa_bids/:id', {id: '@id'});
 })
 .factory('RfaPeriod', function($resource){
     return $resource('/rfa_periods/:id', {id: '@id'});
@@ -172,15 +163,17 @@ var app = angular.module('bb.ffl', ['ngRoute', 'ngResource', 'ngTable'])
         User.login(username, pw);
     };
 })
-.controller('RfaPeriodShow', function($scope, $routeParams, RfaPeriod, League){
-    $scope.rfa = RfaPeriod.get({id: $routeParams.id}, (rfa) => {
-        $scope.teams = League.teams({id: rfa.league_id}, (teams) => {
-            $scope.rows = chunk(teams, 4);
+.controller('RfaPeriodShow', function($scope, $routeParams, RfaBid, RfaPeriod, League){
+    function load(){
+        $scope.rfa = RfaPeriod.get({id: $routeParams.id}, (rfa) => {
+            $scope.teams = League.teams({id: rfa.league_id}, (teams) => {
+                $scope.rows = _.chunk(teams, 4);
+            });
+            ['open_date', 'close_date'].forEach((key) => {
+                $scope[key] = moment.utc($scope.rfa[key]).format('LLLL');
+            });
         });
-        ['open_date', 'close_date'].forEach((key) => {
-            $scope[key] = moment.utc($scope.rfa[key]).format('LLLL');
-        });
-    });
+    }
     $scope.contractBelongsTo = function(teamId){
         return (contract, ind, arr) => contract.team_id == teamId;
     }
@@ -193,6 +186,19 @@ var app = angular.module('bb.ffl', ['ngRoute', 'ngResource', 'ngTable'])
             .result('value')
             .value()
     }
+    $scope.submitBid = function(playerId, bid){
+        new RfaBid({
+            rfa_period_id: $scope.rfa.id,
+            player_id: playerId,
+            value: bid
+        })
+        .$save()
+        .then(() => {
+            load();
+        });
+    }
+
+    load();
 })
 .config(function($routeProvider, $locationProvider){
     $routeProvider

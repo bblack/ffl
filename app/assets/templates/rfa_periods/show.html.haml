@@ -14,3 +14,6 @@
           {{contract.player.last_name}}
         %td
           {{highestBid(contract.player.id)}}
+        %td.bidbox
+          %form{'ng-submit': 'submitBid(contract.player.id, bid)'}
+            %input.form-control.input-sm{type: 'number', placeholder: 'Bid', 'ng-model': 'bid'}

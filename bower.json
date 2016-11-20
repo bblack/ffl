@@ -19,6 +19,7 @@
     "angular-route": "^1.5.8",
     "angular-resource": "^1.5.8",
     "moment": "^2.15.1",
-    "underscore": "^1.8.3"
+    "alertifyjs": "^1.0.11",
+    "lodash": "^4.17.2"
   }
 }
