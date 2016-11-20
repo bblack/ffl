@@ -6,6 +6,18 @@
 //= require moment/moment
 //= require ng-table/dist/ng-table
 
+function chunk(arr, n){
+    var thisChunk;
+    return arr.reduce((memo, el, i) => {
+        if (i % n == 0) {
+            thisChunk = [];
+            memo.push(thisChunk);
+        }
+        thisChunk.push(el);
+        return memo;
+    }, []);
+}
+
 var app = angular.module('bb.ffl', ['ngRoute', 'ngResource', 'ngTable'])
 .config(function($httpProvider){
     var $rootScope;
@@ -161,7 +173,9 @@ var app = angular.module('bb.ffl', ['ngRoute', 'ngResource', 'ngTable'])
 })
 .controller('RfaPeriodShow', function($scope, $routeParams, RfaPeriod, League){
     $scope.rfa = RfaPeriod.get({id: $routeParams.id}, (rfa) => {
-        $scope.teams = League.teams({id: rfa.league_id});
+        $scope.teams = League.teams({id: rfa.league_id}, (teams) => {
+            $scope.rows = chunk(teams, 4);
+        });
         ['open_date', 'close_date'].forEach((key) => {
             $scope[key] = moment.utc($scope.rfa[key]).format('LLLL');
         });
