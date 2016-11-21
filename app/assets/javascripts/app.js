@@ -215,10 +215,9 @@ var app = angular.module('bb.ffl', ['ngRoute', 'ngResource', 'ngTable'])
         .$save()
         .then((res) => alertify.success(res.result));
     }
-    $scope.showKeepbox = (teamId) => {
+    $scope.userOwnsTeam = (teamId) => {
         var user = $scope.$root.user;
-        return $scope.rfa.rfa_decision_period && user &&
-            _.includes(user.team_ids, teamId);
+        return user && _.includes(user.team_ids, teamId);
     };
     load();
 })
