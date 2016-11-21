@@ -122,7 +122,8 @@ class ApplicationController < ActionController::Base
       format.json do
         @current_user = user
         write_header_user
-        render json: nil
+        status = user.nil? ? 403 : 200
+        render status: status, json: nil
       end
     end
   end

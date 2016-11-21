@@ -47,7 +47,9 @@ var app = angular.module('bb.ffl', ['ngRoute', 'ngResource', 'ngTable'])
             return $http.post('/application/login', {
                 name: username,
                 password: pw
-            });
+            })
+            .then(() => alertify.success('Success!'))
+            .catch(() => alertify.error('Failure!'));
         }
     };
     return User;
@@ -214,8 +216,9 @@ var app = angular.module('bb.ffl', ['ngRoute', 'ngResource', 'ngTable'])
         .then((res) => alertify.success(res.result));
     }
     $scope.showKeepbox = (teamId) => {
-        return $scope.rfa.rfa_decision_period &&
-            _.includes($scope.$root.user.team_ids, teamId);
+        var user = $scope.$root.user;
+        return $scope.rfa.rfa_decision_period && user &&
+            _.includes(user.team_ids, teamId);
     };
     load();
 })
