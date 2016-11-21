@@ -19,9 +19,9 @@
             %input.form-control.input-sm{type: 'number', placeholder: 'Bid', 'ng-model': 'bid'}
         %td.keepbox{'ng-if': 'rfa.rfa_decision_period'}
           %label
-            %input{type: 'checkbox', 'ng-model': 'keep',
+            %input{type: 'checkbox', 'ng-model': 'keep[contract.player.id]',
               'ng-disabled': '!(user && userOwnsTeam(team.id))',
-              'ng-change': 'onKeepToggle(contract.player.id, keep)'}
+              'ng-change': 'onKeepToggle(contract.player.id, keep[contract.player.id])'}
             Keep?
         %td.resultbox{'ng-if': 'rfa.redbuttoned'}
           -# Keep | <name of winner> | drop

@@ -11,7 +11,15 @@ class RfaPeriodsController < ApplicationController
         contracts.each do |c|
           c['team_id'] = spots.find{|s| s.espn_player_id == c[:player]['espn_id']}.team_id
         end
-        render json: @rfaperiod.as_json(include: [:rfa_bids, :rfa_decision_period], methods: :open?)
+        render json: @rfaperiod.as_json(
+          include: {
+            :rfa_bids => {},
+            :rfa_decision_period => {
+              include: :rfa_decisions
+            }
+          },
+          methods: :open?
+          )
           .merge(contracts_eligible: contracts)
       end
     end

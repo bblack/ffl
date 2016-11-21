@@ -181,8 +181,14 @@ var app = angular.module('bb.ffl', ['ngRoute', 'ngResource', 'ngTable'])
             ['open_date', 'close_date'].forEach((key) => {
                 $scope[key] = moment.utc($scope.rfa[key]).format('LLLL');
             });
+            if (rfa.rfa_decision_period) {
+                rfa.rfa_decision_period.rfa_decisions.forEach((d) => {
+                    $scope.keep[d.player_id] = d.keep;
+                });
+            }
         });
     }
+    $scope.keep = {};
     $scope.contractBelongsTo = function(teamId){
         return (contract, ind, arr) => contract.team_id == teamId;
     }
