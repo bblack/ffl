@@ -14,6 +14,13 @@
           {{contract.player.last_name}}
         %td
           {{highestBid(contract.player.id)}}
-        %td.bidbox
+        %td.bidbox{'ng-if': 'rfa["open?"]'}
           %form{'ng-submit': 'submitBid(contract.player.id, bid)'}
             %input.form-control.input-sm{type: 'number', placeholder: 'Bid', 'ng-model': 'bid'}
+        %td.keepbox{'ng-if': 'showKeepbox(team.id)'}
+          %label
+            %input{type: 'checkbox', 'ng-model': 'keep',
+              'ng-change': 'onKeepToggle(contract.player.id, keep)'}
+            Keep
+        %td.resultbox{'ng-if': 'rfa.redbuttoned'}
+          -# Keep | <name of winner> | drop

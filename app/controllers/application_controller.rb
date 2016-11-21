@@ -22,7 +22,7 @@ class ApplicationController < ActionController::Base
   end
 
   def write_header_user
-    response.headers['x-user'] = @current_user.to_json(only: [:id, :name, :god_mode])
+    response.headers['x-user'] = @current_user.to_json(only: [:id, :name, :god_mode], methods: :team_ids)
   end
 
   def change_current_league(new_league_id)

@@ -31,6 +31,9 @@ var app = angular.module('bb.ffl', ['ngRoute', 'ngResource', 'ngTable'])
 .factory('RfaBid', function($resource){
     return $resource('/rfa_bids/:id', {id: '@id'});
 })
+.factory('RfaDecision', function($resource){
+    return $resource('/rfa_decisions/');
+})
 .factory('RfaPeriod', function($resource){
     return $resource('/rfa_periods/:id', {id: '@id'});
 })
@@ -163,7 +166,7 @@ var app = angular.module('bb.ffl', ['ngRoute', 'ngResource', 'ngTable'])
         User.login(username, pw);
     };
 })
-.controller('RfaPeriodShow', function($scope, $routeParams, RfaBid, RfaPeriod, League){
+.controller('RfaPeriodShow', function($scope, $routeParams, RfaBid, RfaDecision, RfaPeriod, League){
     function load(){
         $scope.rfa = RfaPeriod.get({id: $routeParams.id}, (rfa) => {
             $scope.teams = League.teams({id: rfa.league_id}, (teams) => {
@@ -197,7 +200,18 @@ var app = angular.module('bb.ffl', ['ngRoute', 'ngResource', 'ngTable'])
             load();
         });
     }
-
+    $scope.onKeepToggle = function(playerId, keep){
+        new RfaDecision({
+            rfa_decision_period_id: $scope.rfa.rfa_decision_period.id,
+            player_id: playerId,
+            keep: keep
+        })
+        .$save();
+    }
+    $scope.showKeepbox = (teamId) => {
+        return $scope.rfa.rfa_decision_period &&
+            _.includes($scope.$root.user.team_ids, teamId);
+    };
     load();
 })
 .config(function($routeProvider, $locationProvider){
