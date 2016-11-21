@@ -6,8 +6,12 @@
 //= require moment/moment
 //= require ng-table/dist/ng-table
 //= require lodash/dist/lodash.min
+//= require alertifyjs/dist/js/alertify
 
 var app = angular.module('bb.ffl', ['ngRoute', 'ngResource', 'ngTable'])
+.run(() => {
+    alertify.parent(document.body);
+})
 .config(function($httpProvider){
     var $rootScope;
     $httpProvider.interceptors.push(function($injector){
@@ -206,7 +210,8 @@ var app = angular.module('bb.ffl', ['ngRoute', 'ngResource', 'ngTable'])
             player_id: playerId,
             keep: keep
         })
-        .$save();
+        .$save()
+        .then((res) => alertify.success(res.result));
     }
     $scope.showKeepbox = (teamId) => {
         return $scope.rfa.rfa_decision_period &&
