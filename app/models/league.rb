@@ -75,20 +75,18 @@ class League < ActiveRecord::Base
     now = Time.now
 
     ActiveRecord::Base.transaction do
-      picks.each do |pick|
-        first_year = self.current_season
-
+      new_contracts = picks.map do |pick|
         PlayerValueChange.create!(
           pick.slice('player_id', 'new_value').merge(
             :league_id => self.id,
             :comment => "draft #{now}",
-            :first_year => first_year,
-            :last_year => first_year - 1 + contract_length_for_value(pick['new_value'])
+            :first_year => current_season,
+            :last_year => current_season - 1 + contract_length_for_value(pick['new_value'])
           )
         )
       end
 
-      clear_values_for_unsigned_players()
+      new_contracts + clear_values_for_unsigned_players()
     end
   end
 

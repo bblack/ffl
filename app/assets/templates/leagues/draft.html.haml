@@ -1,0 +1,32 @@
+%h1 Draft
+%table.table.table-condensed.table-striped
+  %thead
+    %tr
+      %th Player
+      %th Value
+      %th
+  %tr
+    %td
+      %ui-select{'ng-model': 'nextpick.player', theme: 'bootstrap', 'focus-on': 'pickPushed'}
+        %ui-select-match{placeholder: 'Last name...'}
+          {{$select.selected.first_name}} {{$select.selected.last_name}}
+          {{$select.selected.position}}, {{$select.selected.nfl_team}}
+        %ui-select-choices{repeat: 'player in players',
+          refresh: 'refreshPlayers($select.search)',
+          'refresh-delay': 500,
+          'minimum-input-length': 3}
+          {{player.first_name}} {{player.last_name}}
+          {{player.position}}, {{player.nfl_team}}
+    %td
+      %input.form-control{type: 'number', 'ng-model': 'nextpick.value'}
+    %td
+      %button.btn.btn-primary{'ng-click': 'add(nextpick)'} Another
+  %tr{'ng-repeat': 'pick in picks'}
+    %td {{pick.player.first_name}} {{pick.player.last_name}}
+    %td {{pick.value}}
+    %td
+      %button.btn.btn-danger.btn-sm{'ng-click': 'picks.splice($index, 1)'}
+        %span.glyphicon.glyphicon-remove
+  %tr
+    %td{colspan: 3}
+      %button.btn.btn-success{'ng-click': 'submit()'} Draft!

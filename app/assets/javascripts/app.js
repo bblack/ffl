@@ -7,8 +7,9 @@
 //= require ng-table/dist/ng-table
 //= require lodash/dist/lodash.min
 //= require alertifyjs/dist/js/alertify
+//= require angular-ui-select/dist/select.min
 
-var app = angular.module('bb.ffl', ['ngRoute', 'ngResource', 'ngTable'])
+var app = angular.module('bb.ffl', ['ngRoute', 'ngResource', 'ngTable', 'ui.select'])
 .run(() => {
     alertify.parent(document.body);
 })
@@ -111,6 +112,31 @@ var app = angular.module('bb.ffl', ['ngRoute', 'ngResource', 'ngTable'])
         });
     };
     return Player;
+})
+.controller('Draft', function($scope, $http, $routeParams){
+    $scope.refreshPlayers = function(search){
+        $http.get('/players.json', {
+            params: {
+                last_name: search
+            }
+        })
+        .then((res) => $scope.players = res.data);
+    }
+    $scope.add = function(pick){
+        $scope.picks.push(pick);
+        $scope.nextpick = {};
+        $scope.$broadcast('pickPushed');
+    }
+    $scope.picks = [];
+    $scope.nextpick = {};
+    $scope.submit = function(){
+        $http.post('/leagues/' + $routeParams.id + '/draft', {
+            picks: $scope.picks.map((pick) => {
+                return {player_id: pick.player.id, new_value: pick.value};
+            })
+        })
+        .then(() => alertify.success('ok!'))
+    }
 })
 .controller('Team', function($scope, $rootScope, $routeParams, League, Team, Player, ngTableParams){
     $scope.id = $routeParams.id;
@@ -240,6 +266,10 @@ var app = angular.module('bb.ffl', ['ngRoute', 'ngResource', 'ngTable'])
         redirectTo: function(routeParams){
             return '/leagues/' + routeParams.id + '/teams';
         }
+    })
+    .when('/leagues/:id/draft', {
+        controller: 'Draft',
+        templateUrl: '/assets/leagues/draft.html'
     })
     .when('/leagues/:id/teams', {
         controller: 'LeagueTeams',

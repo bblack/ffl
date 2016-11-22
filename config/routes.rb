@@ -11,7 +11,6 @@ Ffl::Application.routes.draw do
   resources :players
   resources :leagues do
     resources :teams, :only => :index
-    get 'draft_form' => 'leagues#draft_form', :on => :member
     post 'draft'     => 'leagues#draft', :on => :member
     post 'update_espn_rosters' => 'leagues#update_espn_rosters', on: :member
   end
