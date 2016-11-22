@@ -1,9 +1,22 @@
 %h1
   RFA Period
   %small for contracts ending {{rfa.final_year}}
-%div
+%p
   %span.glyphicon.glyphicon-calendar
   {{open_date}} to {{close_date}}
+%p{'ng-if': 'user.god_mode'}
+  %button.btn.btn-danger{'ng-if': '!rfa.redbuttoned', 'ng-click': 'redbutton()'} Red button
+  .alert.alert-info{'ng-if': 'rfa.redbuttoned'} This RFA period has been redbuttoned.
+.alert.alert-info{'ng-if': 'rfa.rfa_decision_period'}
+  Owners may select whether to keep their RFAs from
+  %strong {{rfaperiod.rfa_decision_period.open_date || 'the beginning of time'}}
+  until
+  %strong {{rfaperiod.rfa_decision_period.close_date || 'the end of time'}}
+  \.
+.alert.alert-info{'ng-if': 'rfa.rfa_decision_period._tentative_payroll'}
+  Your tentative payroll is
+  %strong {{rfa.rfa_decision_period._tentative_payroll}}
+  \.
 .row{'ng-repeat': 'row in rows'}
   .col-lg-3.col-md-4.col-sm-6{'ng-repeat': 'team in row'}
     %h3 {{team.name}}
