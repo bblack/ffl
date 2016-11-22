@@ -1,5 +1,6 @@
 //= require jquery
 //= require jquery-ui
+// require app
 
 function fieldValueChanged(field) {
   field.style.backgroundColor = 'pink';
