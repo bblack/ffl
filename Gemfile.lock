@@ -34,6 +34,7 @@ GEM
     builder (3.0.4)
     closure-compiler (1.1.12)
     erubis (2.7.0)
+    execjs (2.7.0)
     haml (4.0.7)
       tilt
     hike (1.2.3)
@@ -51,6 +52,9 @@ GEM
     mime-types (1.25.1)
     mini_portile2 (2.1.0)
     multi_json (1.12.1)
+    ngannotate-rails (1.2.2)
+      execjs
+      rails (>= 3.1)
     nokogiri (1.6.8)
       mini_portile2 (~> 2.1.0)
       pkg-config (~> 1.1.7)
@@ -117,6 +121,7 @@ DEPENDENCIES
   haml
   jquery-rails
   jquery-ui-rails
+  ngannotate-rails
   nokogiri
   pg
   rails (= 3.2.22.2)
