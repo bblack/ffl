@@ -1,0 +1,33 @@
+<h1>
+  {{league.name}}
+</h1>
+<p>
+  <a class='btn btn-primary' ng-href='/player_value_changes.csv?league_id={{league.id}}'>
+    <span class='glyphicon glyphicon-download-alt'></span>
+    Player values
+  </a>
+  <a class='btn btn-default' ng-class='{disabled: syncPromise.$$state.status == 0}' ng-click='syncEspn()' ng-if='user.god_mode'>
+    <span class='glyphicon glyphicon glyphicon-transfer'></span>
+    Sync with ESPN
+  </a>
+</p>
+<div class='table-responsive'>
+  <table class='table table-condensed table-striped'>
+    <thead>
+      <tr>
+        <th>Team</th>
+        <th>Payroll</th>
+        <th>Players</th>
+        <th ng-repeat='pos in positions'>{{pos}}</th>
+      </tr>
+    </thead>
+    <tr ng-repeat='team in teams'>
+      <td>
+        <a ng-href='./teams/{{team.id}}'>{{team.name}}</a>
+      </td>
+      <td>{{team.payroll}}</td>
+      <td>{{spotsTaken(team)}}</td>
+      <td ng-repeat='pos in positions'>{{team.roster[pos]}}</td>
+    </tr>
+  </table>
+</div>

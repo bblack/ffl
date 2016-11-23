@@ -1,0 +1,44 @@
+<h1>Draft</h1>
+<table class='table table-condensed table-striped'>
+  <thead>
+    <tr>
+      <th>Player</th>
+      <th>Value</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tr>
+    <td>
+      <ui-select focus-on='pickPushed' ng-model='nextpick.player' theme='bootstrap'>
+        <ui-select-match placeholder='Last name...'>
+          {{$select.selected.first_name}} {{$select.selected.last_name}}
+          {{$select.selected.position}}, {{$select.selected.nfl_team}}
+        </ui-select-match>
+        <ui-select-choices minimum-input-length='3' refresh-delay='500' refresh='refreshPlayers($select.search)' repeat='player in players'>
+          {{player.first_name}} {{player.last_name}}
+          {{player.position}}, {{player.nfl_team}}
+        </ui-select-choices>
+      </ui-select>
+    </td>
+    <td>
+      <input class='form-control' ng-model='nextpick.value' type='number'>
+    </td>
+    <td>
+      <button class='btn btn-primary' ng-click='add(nextpick)'>Another</button>
+    </td>
+  </tr>
+  <tr ng-repeat='pick in picks'>
+    <td>{{pick.player.first_name}} {{pick.player.last_name}}</td>
+    <td>{{pick.value}}</td>
+    <td>
+      <button class='btn btn-danger btn-sm' ng-click='picks.splice($index, 1)'>
+        <span class='glyphicon glyphicon-remove'></span>
+      </button>
+    </td>
+  </tr>
+  <tr>
+    <td colspan='3'>
+      <button class='btn btn-success' ng-click='submit()'>Draft!</button>
+    </td>
+  </tr>
+</table>

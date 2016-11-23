@@ -1,0 +1,17 @@
+<h1>
+  Leagues
+</h1>
+<table class='table'>
+  <tr>
+    <th>
+      Name
+    </th>
+  </tr>
+  <tr ng-repeat='league in leagues'>
+    <td>
+      <a ng-href='./leagues/{{league.id}}'>
+        {{league.name}}
+      </a>
+    </td>
+  </tr>
+</table>

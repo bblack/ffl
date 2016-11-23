@@ -1,0 +1,53 @@
+<h1>
+  RFA Period
+  <small>for contracts ending {{rfa.final_year}}</small>
+</h1>
+<p>
+  <span class='glyphicon glyphicon-calendar'></span>
+  {{open_date}} to {{close_date}}
+</p>
+<p ng-if='user.god_mode'>
+  <button class='btn btn-danger' ng-click='redbutton()' ng-if='!rfa.redbuttoned'>Red button</button>
+  <div class='alert alert-info' ng-if='rfa.redbuttoned'>This RFA period has been redbuttoned.</div>
+</p>
+<div class='alert alert-info' ng-if='rfa.rfa_decision_period'>
+  Owners may select whether to keep their RFAs from
+  <strong>{{rfaperiod.rfa_decision_period.open_date || 'the beginning of time'}}</strong>
+  until
+  <strong>{{rfaperiod.rfa_decision_period.close_date || 'the end of time'}}</strong>
+  .
+</div>
+<div class='alert alert-info' ng-if='rfa.rfa_decision_period._tentative_payroll'>
+  Your tentative payroll is
+  <strong>{{rfa.rfa_decision_period._tentative_payroll}}</strong>
+  .
+</div>
+<div class='row' ng-repeat='row in rows'>
+  <div class='col-lg-3 col-md-4 col-sm-6' ng-repeat='team in row'>
+    <h3>{{team.name}}</h3>
+    <table class='table table-condensed table-striped'>
+      <tr ng-repeat='contract in rfa.contracts_eligible | filter:contractBelongsTo(team.id)'>
+        <td>
+          {{contract.player.first_name}}
+          {{contract.player.last_name}}
+        </td>
+        <td>
+          {{highestBid(contract.player.id)}}
+        </td>
+        <td class='bidbox' ng-if='rfa["open?"]'>
+          <form ng-submit='submitBid(contract.player.id, bid)'>
+            <input class='form-control input-sm' ng-model='bid' placeholder='Bid' type='number'>
+          </form>
+        </td>
+        <td class='keepbox' ng-if='rfa.rfa_decision_period'>
+          <label>
+            <input ng-change='onKeepToggle(contract.player.id, keep[contract.player.id])' ng-disabled='!(user &amp;&amp; userOwnsTeam(team.id))' ng-model='keep[contract.player.id]' type='checkbox'>
+            Keep?
+          </label>
+        </td>
+        <td class='resultbox' ng-if='rfa.redbuttoned'>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
