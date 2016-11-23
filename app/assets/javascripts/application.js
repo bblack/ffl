@@ -4,7 +4,7 @@
 //= require angular-resource/angular-resource.min
 //= require angular-route/angular-route.min
 //= require moment/moment
-//= require ng-table/dist/ng-table
+//= require ng-table/dist/ng-table.min
 //= require lodash/dist/lodash.min
 //= require alertifyjs/dist/js/alertify
 //= require angular-ui-select/dist/select.min
