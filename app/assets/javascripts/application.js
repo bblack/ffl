@@ -138,10 +138,10 @@ var app = angular.module('bb.ffl', ['ngRoute', 'ngResource', 'ngTable', 'ui.sele
         .then(() => alertify.success('ok!'))
     }
 })
-.controller('Team', function($scope, $rootScope, $routeParams, League, Team, Player, ngTableParams){
+.controller('Team', function($scope, $rootScope, $routeParams, League, Team, Player, NgTableParams){
     $scope.id = $routeParams.id;
     $scope.posOrder = (pvc) => League.positions.indexOf(pvc.player.position);
-    $scope.tableParams = new ngTableParams({}, {
+    $scope.tableParams = new NgTableParams({}, {
         counts: [],
         getData: (params) => Team.roster({id: $scope.id}).$promise
     });
@@ -171,10 +171,10 @@ var app = angular.module('bb.ffl', ['ngRoute', 'ngResource', 'ngTable', 'ui.sele
         .then(getTeams);
     };
 })
-.controller('Players', function($scope, $rootScope, $location, League, Player, ngTableParams){
+.controller('Players', function($scope, $rootScope, $location, League, Player, NgTableParams){
     var leagueId = $rootScope.leagueId = $location.search().leagueId;
     $scope.league = League.get({id: leagueId});
-    $scope.tableParams = new ngTableParams({
+    $scope.tableParams = new NgTableParams({
         count: 10,
         page: 1
     }, {
