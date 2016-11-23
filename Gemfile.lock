@@ -32,8 +32,8 @@ GEM
     bootstrap-sass (3.2.0.2)
       sass (~> 3.2)
     builder (3.0.4)
+    closure-compiler (1.1.12)
     erubis (2.7.0)
-    execjs (2.7.0)
     haml (4.0.7)
       tilt
     hike (1.2.3)
@@ -107,14 +107,13 @@ GEM
       polyglot
       polyglot (>= 0.3.1)
     tzinfo (0.3.51)
-    uglifier (3.0.1)
-      execjs (>= 0.3.0, < 3)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   bootstrap-sass (~> 3.2.0)
+  closure-compiler
   haml
   jquery-rails
   jquery-ui-rails
@@ -125,7 +124,6 @@ DEPENDENCIES
   sass-rails (>= 3.2)
   sqlite3
   test-unit (~> 3.0)
-  uglifier
 
 RUBY VERSION
    ruby 2.3.0p0
