@@ -15,11 +15,12 @@
   ],
   "dependencies": {
     "ng-table": "1.0.0",
-    "angular": "1.5",
-    "angular-route": "^1.5.8",
-    "angular-resource": "^1.5.8",
-    "moment": "^2.15.1",
-    "alertifyjs": "^1.0.11",
-    "lodash": "^4.17.2"
+    "angular": "1.6.4",
+    "angular-route": "1.6.4",
+    "angular-resource": "1.6.4",
+    "moment": "2.18.1",
+    "alertifyjs": "1.0.11",
+    "lodash": "4.17.4",
+    "angular-ui-select": "0.19.7"
   }
 }
