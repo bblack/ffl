@@ -5,3 +5,4 @@ tmp/
 .powenv
 .rvmrc
 #vendor/assets/components/
+.ruby-version
