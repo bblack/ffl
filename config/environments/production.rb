@@ -68,5 +68,10 @@ Ffl::Application.configure do
 
   # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
   # config.assets.precompile += %w( search.js )
-  config.assets.precompile = [ Proc.new{ |path| !File.extname(path).in?(['.js', '.css', '.map', '.gzip']) }, /application.(css|js)$/ ]
+  config.assets.precompile = [
+    Proc.new do |path|
+      !File.extname(path).in?(['.js', '.css', '.map', '.gzip'])
+    end,
+    /application.(css|js)$/
+  ]
 end
