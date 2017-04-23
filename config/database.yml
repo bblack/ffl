@@ -6,7 +6,6 @@ development:
   hostname: 127.0.0.1
   database: ffl_development
   pool: 5
-  username: ffl
   password:
   timeout: 5000
 
