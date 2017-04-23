@@ -201,9 +201,7 @@ var app = angular.module('bb.ffl', ['ngRoute', 'ngResource', 'ngTable', 'ui.sele
 .controller('RfaPeriodShow', function($scope, $routeParams, RfaBid, RfaDecision, RfaPeriod, League){
     function load(){
         $scope.rfa = RfaPeriod.get({id: $routeParams.id}, (rfa) => {
-            $scope.teams = League.teams({id: rfa.league_id}, (teams) => {
-                $scope.rows = _.chunk(teams, 4);
-            });
+            $scope.rows = _.chunk(rfa.teams, 4);
             ['open_date', 'close_date'].forEach((key) => {
                 $scope[key] = moment.utc($scope.rfa[key]).format('LLLL');
             });

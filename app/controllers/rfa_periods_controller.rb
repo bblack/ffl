@@ -25,6 +25,13 @@ class RfaPeriodsController < ApplicationController
           res_object[:rfa_decision_period][:_tentative_payroll] =
             @rfaperiod.rfa_decision_period.tentative_payroll_for_team(@current_team.id)
         end
+        res_object[:teams] = @rfaperiod.league.teams.map do |team|
+          {
+            id: team.id,
+            name: team.name,
+            max_bid_allowed: team.max_rfa_bid(@rfaperiod.id)
+          }
+        end
         render json: res_object
       end
     end
