@@ -32,7 +32,7 @@
           {{highestBid(contract.player.id)}}
         %td.bidbox{'ng-if': 'rfa["open?"]'}
           %form{'ng-submit': 'submitBid(contract.player.id, bid)'}
-            %input.form-control.input-sm{type: 'number', placeholder: 'Bid', 'ng-model': 'bid'}
+            %input.form-control.input-sm.pull-right{type: 'number', 'ng-model': 'bid'}
         %td.keepbox{'ng-if': 'rfa.rfa_decision_period'}
           %label
             %input{type: 'checkbox', 'ng-model': 'keep[contract.player.id]',
