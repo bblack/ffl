@@ -11,6 +11,7 @@
             %th Name
             %th Position
             %th Value
+            %th Contract thru
     %tr{'ng-repeat' => 'pvc in $data | orderBy:posOrder'}
         %td
             %a{'ng-href' => '{{pvc.player.link()}}'}
@@ -18,3 +19,4 @@
                 %small {{pvc.player.nfl_team}}
         %td {{pvc.player.position}}
         %td {{pvc.new_value}}
+        %td {{pvc.last_year}}
