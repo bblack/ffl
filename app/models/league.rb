@@ -95,7 +95,8 @@ class League < ActiveRecord::Base
     slots = []
     while true do
       # avail: -1: all, 1: available, 2: free agents, 3: on waivers, 4: on rosters, 5: keepers
-      url = "http://games.espn.com/ffl/freeagency?leagueId=#{self.espn_id}&seasonId=2016&startIndex=#{offset}&avail=4"
+      # TODO: add attribute league.season and put that in url here
+      url = "http://games.espn.com/ffl/freeagency?leagueId=#{self.espn_id}&seasonId=2017&startIndex=#{offset}&avail=4"
       doc = Nokogiri::HTML(open(url))
       doc.css('table.playerTableTable tr.pncPlayerRow').each do |tr|
         espn_player_id = tr.attributes['id'].value.match(/plyr(\d+)/)[1]
