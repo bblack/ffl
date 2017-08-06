@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160809142350) do
+ActiveRecord::Schema.define(:version => 20170806213816) do
 
   create_table "espn_roster_spots", :force => true do |t|
     t.integer  "espn_player_id"
@@ -35,7 +35,7 @@ ActiveRecord::Schema.define(:version => 20160809142350) do
     t.integer  "new_value"
     t.integer  "first_year"
     t.integer  "last_year"
-    t.integer  "comment"
+    t.text     "comment"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "league_id"
