@@ -2,19 +2,19 @@ require 'nokogiri'
 require 'open-uri'
 
 namespace :db do
-  
   desc "Fetch player info from espn and fill/update db"
 
   task :fill => :environment do
-    startindex = 0
+    next_page_url = "http://games.espn.go.com/ffl/leaders?leagueId=172724&seasonTotals=true&startIndex=0"
 
-    while true
-      puts "Starting from ##{startindex}..."
-      uri = "http://games.espn.go.com/ffl/leaders?leagueId=172724&seasonTotals=true&startIndex=#{startindex}"
-
-      doc = Nokogiri::HTML(open(uri))
-      anchors = doc.css('.playertablePlayerName a')
-      anchors = anchors.select{|a| a.child.text?}
+    while next_page_url.present?
+      puts "#{next_page_url}..."
+      doc = Nokogiri::HTML(open(next_page_url))
+      next_page_a = doc.css('.paginationNav a')
+        .select{|a| a.text.match /NEXT/}
+        .first
+      next_page_url = next_page_a ? next_page_a.attribute('href').value : nil
+      anchors = doc.css('.playertablePlayerName a').select{|a| a.child.text?}
 
       players = anchors.map do |a|
         sib = a.next_sibling
@@ -35,7 +35,7 @@ namespace :db do
 
       players.each do |p|
         existing_player = Player.where(espn_id: p[:espn_id]).first
-        
+
         if existing_player
           existing_player.update_attributes!(p)
         else
@@ -43,9 +43,6 @@ namespace :db do
           puts "Created #{new_player.inspect}"
         end
       end
-
-      break if anchors.none?
-      startindex += anchors.count
     end
 
   end
